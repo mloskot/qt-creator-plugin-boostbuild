@@ -11,7 +11,9 @@ HEADERS += \
     boostbuildconstants.hpp
 
 OTHER_FILES += \
-    BoostBuildPlugin.json
+    BoostBuildPlugin.json \
+    LICENSE.md \
+    README.md
 
 # Qt Creator linking
 
