@@ -1,8 +1,6 @@
 Boost Software License - Version 1.0 - August 17, 2003
 ======================================================
 
-http://www.boost.org/LICENSE_1_0.txt
-
 Permission is hereby granted, free of charge, to any person or organization
 obtaining a copy of the software and accompanying documentation covered by
 this license (the "Software") to use, reproduce, display, distribute,
@@ -24,3 +22,5 @@ SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE
 FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+
+Source: [LICENSE_1_0.txt](http://www.boost.org/LICENSE_1_0.txt)
