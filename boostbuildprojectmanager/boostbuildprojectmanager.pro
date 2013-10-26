@@ -1,17 +1,20 @@
+# BoostBuild Plugin for Qt Creator
+QTC_PLUGIN_NAME = BoostBuildProjectManager
+
+PROVIDER = mloskot
+
 DEFINES += BOOSTBUILD_LIBRARY
 
-# BoostBuild files
-
 SOURCES += \
-    boostbuildplugin.cpp
+    bbprojectplugin.cpp
 
 HEADERS += \
-    boostbuildplugin.hpp \
-    boostbuild_global.hpp \
-    boostbuildconstants.hpp
+    bb_global.hpp \
+    bbprojectconstants.hpp \
+    bbprojectplugin.hpp
 
 OTHER_FILES += \
-    BoostBuildPlugin.json \
+    $$QTC_PLUGIN_NAME.json \
     LICENSE.md \
     README.md
 
@@ -33,13 +36,11 @@ isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/home/mloskot/dev/qt/_git/qt-creator/_bui
 ##    "~/Library/Application Support/QtProject/Qt Creator" on Mac
 # USE_USER_DESTDIR = yes
 
-PROVIDER = mloskot
-
 ###### If the plugin can be depended upon by other plugins, this code needs to be outsourced to
 ###### <dirname>_dependencies.pri, where <dirname> is the name of the directory containing the
 ###### plugin's sources.
 
-QTC_PLUGIN_NAME = BoostBuild
+
 QTC_LIB_DEPENDS += \
     # nothing here at this time
 
