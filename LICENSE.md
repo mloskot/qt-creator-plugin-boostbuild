@@ -1,9 +1,7 @@
-Boost Software License
-======================
+Boost Software License - Version 1.0 - August 17, 2003
+======================================================
 
-* Version 1.0
-* August 17th, 2003
-
+http://www.boost.org/LICENSE_1_0.txt
 
 Permission is hereby granted, free of charge, to any person or organization
 obtaining a copy of the software and accompanying documentation covered by
