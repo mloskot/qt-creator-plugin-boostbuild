@@ -3,15 +3,15 @@ QTC_PLUGIN_NAME = BoostBuildProjectManager
 
 PROVIDER = mloskot
 
-DEFINES += BOOSTBUILD_LIBRARY
+DEFINES += BOOSTBUILDPROJECTMANAGER_LIBRARY
 
 SOURCES += \
-    bbprojectplugin.cpp
+    bbprojectmanagerplugin.cpp
 
 HEADERS += \
-    bb_global.hpp \
-    bbprojectconstants.hpp \
-    bbprojectplugin.hpp
+    bbprojectmanager_global.hpp \
+    bbprojectmanagerconstants.hpp \
+    bbprojectmanagerplugin.hpp
 
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \

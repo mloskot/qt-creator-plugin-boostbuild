@@ -1,16 +1,17 @@
-#ifndef BOOSTBUILDPLUGIN_HPP
-#define BOOSTBUILDPLUGIN_HPP
+#ifndef BBPROJECTMANAGERPLUGIN_HPP_INCLUDED
+#define BBPROJECTMANAGERPLUGIN_HPP_INCLUDED
 
-#include "boostbuild_global.hpp"
+#include "bbprojectmanager_global.hpp"
 
 #include <extensionsystem/iplugin.h>
 
-namespace BoostBuild { namespace Internal {
+namespace BoostBuildProjectManager { namespace Internal {
 
 class BoostBuildPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "BoostBuild.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin"
+                      FILE "BoostBuildProjectManager.json")
 
 public:
     BoostBuildPlugin();
@@ -26,5 +27,4 @@ private slots:
 
 }}
 
-#endif // BOOSTBUILDPLUGIN_HPP
-
+#endif // BBPROJECTMANAGERPLUGIN_HPP_INCLUDED

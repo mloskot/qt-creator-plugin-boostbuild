@@ -1,5 +1,5 @@
-#include "boostbuildplugin.hpp"
-#include "boostbuildconstants.hpp"
+#include "bbprojectmanagerplugin.hpp"
+#include "bbprojectmanagerconstants.hpp"
 
 #include <coreplugin/icore.h>
 #include <coreplugin/icontext.h>
@@ -15,7 +15,7 @@
 
 #include <QtPlugin>
 
-namespace BoostBuild { namespace Internal {
+namespace BoostBuildProjectManager { namespace Internal {
 
 BoostBuildPlugin::BoostBuildPlugin()
 {
@@ -77,6 +77,3 @@ void BoostBuildPlugin::triggerAction()
 }
 
 }}
-
-Q_EXPORT_PLUGIN2(BoostBuildPlugin, BoostBuildPlugin)
-
