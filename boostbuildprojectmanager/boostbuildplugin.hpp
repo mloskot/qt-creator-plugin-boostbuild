@@ -5,8 +5,7 @@
 
 #include <extensionsystem/iplugin.h>
 
-namespace BoostBuild {
-namespace Internal {
+namespace BoostBuild { namespace Internal {
 
 class BoostBuildPlugin : public ExtensionSystem::IPlugin
 {
@@ -17,7 +16,7 @@ public:
     BoostBuildPlugin();
     ~BoostBuildPlugin();
 
-    bool initialize(const QStringList &arguments, QString *errorString);
+    bool initialize(QStringList const& arguments, QString* errorString);
     void extensionsInitialized();
     ShutdownFlag aboutToShutdown();
 
@@ -25,8 +24,7 @@ private slots:
     void triggerAction();
 };
 
-} // namespace Internal
-} // namespace BoostBuild
+}}
 
 #endif // BOOSTBUILDPLUGIN_HPP
 

@@ -28,7 +28,7 @@ BoostBuildPlugin::~BoostBuildPlugin()
     // Delete members
 }
 
-bool BoostBuildPlugin::initialize(const QStringList &arguments, QString *errorString)
+bool BoostBuildPlugin::initialize(QStringList const& arguments, QString* errorString)
 {
     // Register objects in the plugin manager's object pool
     // Load settings
@@ -76,9 +76,7 @@ void BoostBuildPlugin::triggerAction()
                              tr("This is an action from BoostBuild."));
 }
 
-
-} // namespace Internal
-} // namespace BoostBuild
+}}
 
 Q_EXPORT_PLUGIN2(BoostBuildPlugin, BoostBuildPlugin)
 
