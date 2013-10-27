@@ -5,13 +5,13 @@
 
 #include <extensionsystem/iplugin.h>
 
-namespace BoostBuildProjectManager { namespace Internal {
+namespace BoostBuildProjectManager {
+namespace Internal {
 
 class BoostBuildPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin"
-                      FILE "BoostBuildProjectManager.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "BoostBuildProjectManager.json")
 
 public:
     BoostBuildPlugin();
@@ -22,9 +22,10 @@ public:
     ShutdownFlag aboutToShutdown();
 
 private slots:
-    void triggerAction();
+
 };
 
-}}
+} // namespace Internal
+} // namespace BoostBuildProjectManager
 
 #endif // BBPROJECTMANAGERPLUGIN_HPP_INCLUDED

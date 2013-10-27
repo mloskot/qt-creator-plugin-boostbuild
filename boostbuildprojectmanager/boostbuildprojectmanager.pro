@@ -5,13 +5,19 @@ PROVIDER = mloskot
 
 DEFINES += BOOSTBUILDPROJECTMANAGER_LIBRARY
 
+CONFIG += c++11
+
 SOURCES += \
-    bbprojectmanagerplugin.cpp
+    bbprojectmanagerplugin.cpp \
+    bbprojectmanager.cpp \
+    bbproject.cpp
 
 HEADERS += \
     bbprojectmanager_global.hpp \
     bbprojectmanagerconstants.hpp \
-    bbprojectmanagerplugin.hpp
+    bbprojectmanagerplugin.hpp \
+    bbprojectmanager.hpp \
+    bbproject.hpp
 
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \

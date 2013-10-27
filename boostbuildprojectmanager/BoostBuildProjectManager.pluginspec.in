@@ -1,4 +1,4 @@
-<plugin name=\"BoostBuild\" version=\"0.0.1\" compatVersion=\"0.0.1\">
+<plugin name=\"BoostBuildProjectManager\" version=\"0.0.1\" compatVersion=\"0.0.1\">
     <vendor>mloskot</vendor>
     <copyright>2013 (C) Mateusz Łoskot</copyright>
     <license>Boost Software License - Version 1.0 - August 17th, 2003
@@ -24,6 +24,7 @@ SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE
 FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.</license>
+    <category>Build Systems</category>
     <description>Qt Creator plugin for Boost.Build</description>
     <url>https://bitbucket.org/mloskot/qt-creator-plugin-boostbuild/</url>
     $$dependencyList
