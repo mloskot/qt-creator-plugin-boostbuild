@@ -1,13 +1,13 @@
+#include "bbprojectmanager.hpp"
 #include "bbprojectmanagerplugin.hpp"
 #include "bbprojectmanagerconstants.hpp"
-
 #include <coreplugin/icore.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/coreconstants.h>
-
+#include <coreplugin/mimedatabase.h>
 #include <QAction>
 #include <QMessageBox>
 #include <QMainWindow>
@@ -30,6 +30,8 @@ BoostBuildPlugin::~BoostBuildPlugin()
 
 bool BoostBuildPlugin::initialize(QStringList const& arguments, QString* errorString)
 {
+    Q_UNUSED(arguments)
+
     // Register objects in the plugin manager's object pool
     // Load settings
     // Add actions to menus
@@ -37,8 +39,11 @@ bool BoostBuildPlugin::initialize(QStringList const& arguments, QString* errorSt
     // In the initialize function, a plugin can be sure that the plugins it
     // depends on have initialized their members.
 
-    Q_UNUSED(arguments)
-    Q_UNUSED(errorString)
+    QLatin1String const mimeTypes(":boostbuildproject/BoostBuildProjectManager.mimetypes.xml");
+    if (!Core::MimeDatabase::addMimeTypes(mimeTypes, errorString))
+        return false;
+
+    addAutoReleasedObject(new ProjectManager);
 
     return true;
 }
