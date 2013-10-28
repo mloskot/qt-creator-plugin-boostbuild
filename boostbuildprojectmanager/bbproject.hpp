@@ -10,6 +10,7 @@ namespace Internal {
 
 class ProjectFile;
 class ProjectManager;
+class ProjectNode;
 
 class Project : public ProjectExplorer::Project
 {
@@ -29,16 +30,30 @@ public:
     QStringList files(FilesMode fileMode) const;
 
 private:
+    // Corresponding project manager passed to the constructor
     ProjectManager* manager_;
-    ProjectFile* projectFile_;
-    QString fileName_; // Jamfile.v2 path
-    QString filesFileName_;
+
+    // Jamfile passed to the constructor (Jamroot, Jamfile, Jamfile.v2).
+    QString fileName_;
+
+    // Directory name of the Jamfile.
+    // Boost.Build treats each Jamfile is a separate project,
+    // where hierarchy of Jamfiles makes hierarchy of projects.
+    //
+    // TODO: Parse jamfile looking for project rule,
     QString projectName_;
 
-signals:
+    // Auxiliary file Jamfile.v2.files with list of sources and headers.
+    // Role of this file is similar to the .files file in the Generic Project.
+    QString filesFileName_;
+    QStringList files_;
 
-public slots:
+    ProjectFile* projectFile_;
+    ProjectNode* projectNode_;
 
+    // TODO:
+    // Add watche for Jamfile changes.
+    // Add Jamfile parsing.
 };
 
 } // namespace Internal

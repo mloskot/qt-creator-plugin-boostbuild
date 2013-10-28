@@ -1,16 +1,13 @@
 #include "bbprojectnode.hpp"
 #include "bbproject.hpp"
+#include <coreplugin/idocument.h>
 #include <projectexplorer/projectnodes.h>
-
-namespace Core {
-class IDocument;
-}
 
 namespace BoostBuildProjectManager {
 namespace Internal {
 
 ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
-    : ProjectNode(projectFile->filePath())
+    : ProjectExplorer::ProjectNode(projectFile->filePath())
     , project_(project)
     , projectFile_(projectFile)
 {
@@ -19,7 +16,7 @@ ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
 
 bool ProjectNode::hasBuildTargets() const
 {
-    true;
+    return true;
 }
 
 QList<ProjectExplorer::ProjectNode::ProjectAction>
@@ -77,10 +74,8 @@ bool ProjectNode::renameFile(QString const& filePath, QString const& newFilePath
 QList<ProjectExplorer::RunConfiguration*> ProjectNode::runConfigurationsFor(Node* node)
 {
     Q_UNUSED(node);
-    return QList<RunConfiguration*>();
+    return QList<ProjectExplorer::RunConfiguration*>();
 }
 
 } // namespace Internal
 } // namespace BoostBuildProjectManager
-
-#endif // BBPROJECTNODE_HPP_INCLUDED
