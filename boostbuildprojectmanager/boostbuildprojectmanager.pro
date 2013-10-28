@@ -23,6 +23,9 @@ HEADERS += \
     bbprojectmanagerplugin.hpp \
     bbprojectnode.hpp
 
+RESOURCES += boostbuildproject.qrc \
+    boostbuildproject.qrc
+
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \
     LICENSE.md \
