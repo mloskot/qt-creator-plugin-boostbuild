@@ -8,16 +8,20 @@ DEFINES += BOOSTBUILDPROJECTMANAGER_LIBRARY
 CONFIG += c++11
 
 SOURCES += \
-    bbprojectmanagerplugin.cpp \
+    bbproject.cpp \
+    bbprojectfile.cpp \
     bbprojectmanager.cpp \
-    bbproject.cpp
+    bbprojectmanagerplugin.cpp \
+    bbprojectnode.cpp
 
 HEADERS += \
+    bbproject.hpp \
+    bbprojectfile.hpp \
+    bbprojectmanager.hpp \
     bbprojectmanager_global.hpp \
     bbprojectmanagerconstants.hpp \
     bbprojectmanagerplugin.hpp \
-    bbprojectmanager.hpp \
-    bbproject.hpp
+    bbprojectnode.hpp
 
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \

@@ -2,9 +2,17 @@
 #define BBPROJECTMANAGER_HPP_INCLUDED
 
 #include <projectexplorer/iprojectmanager.h>
+#include <QList>
+#include <QString>
+
+namespace ProjectExplorer {
+class Project;
+}
 
 namespace BoostBuildProjectManager {
 namespace Internal {
+
+class Project;
 
 class ProjectManager : public ProjectExplorer::IProjectManager
 {
@@ -13,16 +21,16 @@ class ProjectManager : public ProjectExplorer::IProjectManager
 public:
     ProjectManager();
 
+    void registerProject(Project* project);
+    void unregisterProject(Project* project);
+
     //
     // ProjectExplorer::IProjectManager
     //
     QString mimeType() const;
     ProjectExplorer::Project* openProject(QString const& fileName, QString* errorString);
-
-signals:
-
-public slots:
-
+    private:
+    QList<Project*> projects_;
 };
 
 } // namespace Internal

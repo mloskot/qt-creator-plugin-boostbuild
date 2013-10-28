@@ -1,8 +1,8 @@
 #include "bbprojectmanager.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbproject.hpp"
-
 #include <QFileInfo>
+#include <QString>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
@@ -30,6 +30,17 @@ ProjectManager::openProject(QString const& fileName, QString* errorString)
     return new Project(this, fileName);
 }
 
+void ProjectManager::registerProject(Project* project)
+{
+    Q_ASSERT(project);
+    projects_.append(project);
+}
+
+void ProjectManager::unregisterProject(Project* project)
+{
+    Q_ASSERT(project);
+    projects_.removeAll(project);
+}
 
 } // namespace Internal
 } // namespace BoostBuildProjectManager

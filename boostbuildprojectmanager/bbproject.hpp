@@ -8,6 +8,7 @@ namespace Core { class IDocument; }
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+class ProjectFile;
 class ProjectManager;
 
 class Project : public ProjectExplorer::Project
@@ -16,6 +17,7 @@ class Project : public ProjectExplorer::Project
 
 public:
     Project(ProjectManager* manager, QString const& fileName);
+    ~Project();
 
     //
     // ProjectExplorer::Project
@@ -23,15 +25,15 @@ public:
     QString displayName() const;
     Core::IDocument* document() const;
     ProjectExplorer::IProjectManager* projectManager() const;
-    ProjectExplorer::ProjectNode *rootProjectNode() const;
+    ProjectExplorer::ProjectNode* rootProjectNode() const;
     QStringList files(FilesMode fileMode) const;
 
 private:
     ProjectManager* manager_;
-    QString fileName_;
-    QString projectName_;
-    QString jamFileName_;
+    ProjectFile* projectFile_;
+    QString fileName_; // Jamfile.v2 path
     QString filesFileName_;
+    QString projectName_;
 
 signals:
 
