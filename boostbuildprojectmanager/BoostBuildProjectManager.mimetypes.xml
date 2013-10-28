@@ -3,9 +3,11 @@
   <mime-type type="text/x-boostbuild-project">
     <sub-class-of type="text/plain"/>
     <comment>Boost.Build Project file</comment>
-    <glob pattern="Jamfile"/>
-    <glob pattern="Jamfile.v2"/>
-    <glob pattern="Jamroot"/>
+    <glob pattern="[Jj]amfile"/>
+    <glob pattern="[Jj]amfile.jam"/>
+    <glob pattern="[Jj]amfile.v2"/>
+    <glob pattern="[Jj]amroot"/>
+    <glob pattern="[Jj]amroot.jam"/>
     <!--
     TODO: add more patterns, see
     http://svn.boost.org/svn/boost/trunk/tools/build/v2/build/project.py
