@@ -11,7 +11,6 @@ ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
     , project_(project)
     , projectFile_(projectFile)
 {
-    setDisplayName(project_->displayName());
 }
 
 bool ProjectNode::hasBuildTargets() const

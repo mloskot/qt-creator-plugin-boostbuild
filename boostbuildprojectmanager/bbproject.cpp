@@ -29,9 +29,11 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     QFileInfo const fileInfo(fileName_);
     QDir const dir(fileInfo.dir());
 
-    projectName_ = QString(QLatin1String("%1 (%2)"))
-            .arg(fileInfo.absoluteDir().dirName(), fileInfo.completeBaseName());
+    projectName_ = fileInfo.absoluteDir().dirName();
+    // TODO: String const displayName(projectName_ + " (" + fileInfo.completeBaseName() + ")");
     filesFileName_ = QFileInfo(dir, fileName_ + QLatin1String(".files")).absoluteFilePath();
+
+    projectNode_->setDisplayName(projectName_);
 
     manager_->registerProject(this);
 }
