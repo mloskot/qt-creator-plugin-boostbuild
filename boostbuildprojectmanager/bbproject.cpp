@@ -29,7 +29,8 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     QFileInfo const fileInfo(fileName_);
     QDir const dir(fileInfo.dir());
 
-    projectName_ = fileInfo.absoluteDir().dirName();
+    projectName_ = QString(QLatin1String("%1 (%2)"))
+            .arg(fileInfo.absoluteDir().dirName(), fileInfo.completeBaseName());
     filesFileName_ = QFileInfo(dir, fileName_ + QLatin1String(".files")).absoluteFilePath();
 
     manager_->registerProject(this);
@@ -65,6 +66,14 @@ QStringList Project::files(FilesMode fileMode) const
 {
     Q_UNUSED(fileMode);
     return files_;
+}
+
+bool Project::needsConfiguration() const
+{
+    // TODO: Does Boost.Build project require any configuration on loading?
+    //       - b2/bjam command lookup
+    //       - targets listing
+    return false;
 }
 
 } // namespace Internal

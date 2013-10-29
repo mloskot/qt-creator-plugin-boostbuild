@@ -21,13 +21,14 @@ public:
     ~Project();
 
     //
-    // ProjectExplorer::Project
+    // ProjectExplorer::Project overridables
     //
     QString displayName() const;
     Core::IDocument* document() const;
     ProjectExplorer::IProjectManager* projectManager() const;
     ProjectExplorer::ProjectNode* rootProjectNode() const;
     QStringList files(FilesMode fileMode) const;
+    bool needsConfiguration() const;
 
 private:
     // Corresponding project manager passed to the constructor
