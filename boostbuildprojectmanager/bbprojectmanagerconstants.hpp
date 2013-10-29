@@ -9,7 +9,7 @@ char const PROJECT_ID[]      = "BoostBuildProjectManager.BoostBuildProject";
 
 char const MIMETYPE_PROJECT[] = "text/x-boostbuild-project";
 char const MIMETYPE_JAMFILE[] = "application/vnd.boostbuild.v2";
-char const MIMETYPE_FILES[]   = "application/vnd.boostbuild.files";
+char const MIMETYPE_FILES[]   = "application/vnd.qtcreator.boostbuild.files";
 
 } // namespace Constants
 } // namespace BoostBuildProjectManager
