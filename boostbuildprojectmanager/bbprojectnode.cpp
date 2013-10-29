@@ -16,7 +16,7 @@ ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
 
 bool ProjectNode::hasBuildTargets() const
 {
-    return true;
+    return false;
 }
 
 QList<ProjectExplorer::ProjectNode::ProjectAction>
