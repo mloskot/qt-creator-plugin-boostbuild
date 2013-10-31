@@ -4,6 +4,7 @@
 #include "bbprojectmanagerconstants.hpp"
 #include "bbprojectnode.hpp"
 #include <coreplugin/icontext.h>
+#include <coreplugin/icore.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/projectnodes.h>
@@ -22,7 +23,6 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     Q_ASSERT(manager_);
     Q_ASSERT(!fileName_.isEmpty());
 
-    setId(Constants::PROJECT_ID);
     setProjectContext(Core::Context(Constants::PROJECT_CONTEXT));
     setProjectLanguages(Core::Context(ProjectExplorer::Constants::LANG_CXX));
 
@@ -47,6 +47,11 @@ Project::~Project()
 QString Project::displayName() const
 {
     return projectName_;
+}
+
+Core::Id Project::id() const
+{
+    return Core::Id(Constants::PROJECT_ID);
 }
 
 Core::IDocument* Project::document() const

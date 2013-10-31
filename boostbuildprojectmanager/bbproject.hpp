@@ -24,6 +24,7 @@ public:
     // ProjectExplorer::Project overridables
     //
     QString displayName() const;
+    Core::Id id() const;
     Core::IDocument* document() const;
     ProjectExplorer::IProjectManager* projectManager() const;
     ProjectExplorer::ProjectNode* rootProjectNode() const;
