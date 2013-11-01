@@ -72,7 +72,8 @@ QList<ProjectExplorer::BuildInfo*> BuildConfigurationFactory::availableSetups(
   , QString const& projectPath) const
 {
     // TODO:ProjectExplorer::Project::projectDirectory(projectPath)
-    BuildInfo* info = createBuildInfo(k, Utils::FileName::fromString(AutotoolsProject::defaultBuildDirectory(projectPath)));
+    BuildInfo* info = createBuildInfo(k, Utils::FileName::fromString(
+        ProjectExplorer::Project::projectDirectory(projectPath)));
     //: The name of the build configuration created by default for a autotools project.
     info->displayName = tr("Default");
     //info->buildDirectory
@@ -95,11 +96,15 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     bc->setDefaultDisplayName(info->displayName);
     bc->setBuildDirectory(info->buildDirectory);
 
-    // TODO:
+    // Build steps
     ProjectExplorer::BuildStepList* buildSteps =
         bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD);
+    Q_ASSERT(buildSteps);
+
+    // Clean steps
     ProjectExplorer::BuildStepList* cleanSteps =
         bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN);
+    Q_ASSERT(cleanSteps);
 
     return bc;
 }
