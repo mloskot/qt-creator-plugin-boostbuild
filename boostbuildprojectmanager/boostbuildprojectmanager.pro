@@ -13,7 +13,8 @@ SOURCES += \
     bbprojectmanager.cpp \
     bbprojectmanagerplugin.cpp \
     bbprojectnode.cpp \
-    bbbuildconfiguration.cpp
+    bbbuildconfiguration.cpp \
+    bbbuildinfo.cpp
 
 HEADERS += \
     bbproject.hpp \
@@ -23,7 +24,8 @@ HEADERS += \
     bbprojectmanagerconstants.hpp \
     bbprojectmanagerplugin.hpp \
     bbprojectnode.hpp \
-    bbbuildconfiguration.hpp
+    bbbuildconfiguration.hpp \
+    bbbuildinfo.hpp
 
 RESOURCES += boostbuildproject.qrc \
     boostbuildproject.qrc
