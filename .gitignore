@@ -2,3 +2,6 @@
 *.pro.user*
 *.pluginspec
 *.json
+
+# build directories
+*build-boostbuildprojectmanager*
