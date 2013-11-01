@@ -57,12 +57,12 @@ public:
     canClone(ProjectExplorer::Target const* parent,
              ProjectExplorer::BuildConfiguration* source) const;
 
-    AutotoolsBuildConfiguration*
+    BuildConfiguration*
     clone(ProjectExplorer::Target* parent, ProjectExplorer::BuildConfiguration* source);
 
     bool canRestore(ProjectExplorer::Target const* parent, QVariantMap const& map) const;
 
-    AutotoolsBuildConfiguration*
+    BuildConfiguration*
     restore(ProjectExplorer::Target *parent, QVariantMap const& map);
 
 private:
