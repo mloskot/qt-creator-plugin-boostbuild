@@ -5,7 +5,9 @@ namespace BoostBuildProjectManager {
 namespace Constants {
 
 char const PROJECT_CONTEXT[] = "BoostBuildProjectManager.ProjectContext";
-char const PROJECT_ID[]      = "BoostBuildProjectManager.BoostBuildProject";
+char const PROJECT_ID[]      = "BoostBuildProjectManager.Project";
+
+char const BUILDCONFIGURATION_ID[] = "BoostBuildProjectManager.BuildConfiguration";
 
 char const MIMETYPE_PROJECT[] = "text/x-boostbuild-project";
 char const MIMETYPE_JAMFILE[] = "application/vnd.boostbuild.v2";
