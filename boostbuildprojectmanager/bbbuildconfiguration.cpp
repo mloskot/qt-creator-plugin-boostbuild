@@ -5,6 +5,8 @@
 #include <coreplugin/mimedatabase.h>
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/kitinformation.h>
+#include <projectexplorer/project.h>
+#include <projectexplorer/namedwidget.h>
 #include <projectexplorer/target.h>
 #include <utils/qtcassert.h>
 // Qt
@@ -32,7 +34,7 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id
     // TODO: cloneSteps
 }
 
-NamedWidget *BuildConfiguration::createConfigWidget()
+ProjectExplorer::NamedWidget *BuildConfiguration::createConfigWidget()
 {
     // TODO
     return 0; //new BuildSettingsWidget(this);
@@ -59,7 +61,7 @@ int BuildConfigurationFactory::priority(
 }
 
 QList<ProjectExplorer::BuildInfo*>
-availableBuilds(ProjectExplorer::Target const* parent) const
+BuildConfigurationFactory::availableBuilds(ProjectExplorer::Target const* parent) const
 {
     QList<ProjectExplorer::BuildInfo*> result;
     result << createBuildInfo(parent->kit()

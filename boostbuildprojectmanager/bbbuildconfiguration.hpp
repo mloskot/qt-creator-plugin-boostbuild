@@ -7,6 +7,10 @@
 #include <QList>
 #include <QString>
 
+namespace ProjectExplorer {
+class NamedWidget;
+}
+
 namespace BoostBuildProjectManager {
 namespace Internal {
 
@@ -67,6 +71,9 @@ public:
 
 private:
     bool canHandle(ProjectExplorer::Target const* target) const;
+
+    ProjectExplorer::BuildInfo*
+    createBuildInfo(ProjectExplorer::Kit const* k, Utils::FileName const& buildDir) const;
 };
 
 } // namespace Internal
