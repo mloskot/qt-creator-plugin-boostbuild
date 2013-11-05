@@ -4,7 +4,7 @@
 namespace BoostBuildProjectManager {
 namespace Internal {
 
-BuildInfo::BuildInfo(BuildConfigurationFactory* f)
+BuildInfo::BuildInfo(BuildConfigurationFactory const* f)
     : ProjectExplorer::BuildInfo(f)
 {
 }

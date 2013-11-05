@@ -14,7 +14,7 @@ class BuildConfigurationFactory;
 class BuildInfo : public ProjectExplorer::BuildInfo
 {
 public:
-    explicit BuildInfo(BuildConfigurationFactory* f);
+    explicit BuildInfo(BuildConfigurationFactory const* f);
 
     ProjectExplorer::BuildConfiguration::BuildType type;
 };
