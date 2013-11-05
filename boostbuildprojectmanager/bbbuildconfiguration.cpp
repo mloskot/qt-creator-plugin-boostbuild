@@ -13,6 +13,8 @@
 #include <utils/qtcassert.h>
 // Qt
 #include <QFileInfo>
+// std
+#include <memory>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
@@ -111,6 +113,59 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     Q_ASSERT(cleanSteps);
 
     return bc;
+}
+
+bool
+BuildConfigurationFactory::canClone(ProjectExplorer::Target const* parent
+       , ProjectExplorer::BuildConfiguration* source) const
+{
+    Q_ASSERT(parent);
+    Q_ASSERT(source);
+
+    return canHandle(parent)
+            ? source->id() == Constants::BUILDCONFIGURATION_ID
+            : false;
+}
+
+BuildConfiguration*
+BuildConfigurationFactory::clone(ProjectExplorer::Target* parent
+                               , ProjectExplorer::BuildConfiguration* source)
+{
+    Q_ASSERT(parent);
+    Q_ASSERT(source);
+
+    BuildConfiguration* copy = 0;
+    if (canClone(parent, source))
+    {
+        BuildConfiguration* old = static_cast<BuildConfiguration*>(source);
+        copy = new BuildConfiguration(parent, old);
+    }
+    return copy;
+}
+
+bool BuildConfigurationFactory::canRestore(ProjectExplorer::Target const* parent
+                                         , QVariantMap const& map) const
+{
+    Q_ASSERT(parent);
+
+    return canHandle(parent)
+            ? ProjectExplorer::idFromMap(map) == Constants::BUILDCONFIGURATION_ID
+            : false;
+}
+
+BuildConfiguration*
+BuildConfigurationFactory::restore(ProjectExplorer::Target *parent
+                                 , QVariantMap const& map)
+{
+    Q_ASSERT(parent);
+
+    if (canRestore(parent, map))
+    {
+        std::unique_ptr<BuildConfiguration> bc(new BuildConfiguration(parent));
+        if (bc->fromMap(map))
+            return bc.release();
+    }
+    return 0;
 }
 
 bool BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) const
