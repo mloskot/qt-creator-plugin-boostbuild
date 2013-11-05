@@ -14,6 +14,8 @@ class NamedWidget;
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+class BuildInfo;
+
 class BuildConfiguration : public ProjectExplorer::BuildConfiguration
 {
     Q_OBJECT
@@ -54,12 +56,12 @@ public:
     availableSetups(ProjectExplorer::Kit const* k, QString const& projectPath) const;
 
     ProjectExplorer::BuildConfiguration*
-    create(ProjectExplorer::Target const* parent,
-           ProjectExplorer::BuildInfo const* info) const;
+    create(ProjectExplorer::Target* parent
+         , ProjectExplorer::BuildInfo const* info) const;
 
     bool
-    canClone(ProjectExplorer::Target const* parent,
-             ProjectExplorer::BuildConfiguration* source) const;
+    canClone(ProjectExplorer::Target const* parent
+           , ProjectExplorer::BuildConfiguration* source) const;
 
     BuildConfiguration*
     clone(ProjectExplorer::Target* parent, ProjectExplorer::BuildConfiguration* source);
@@ -72,7 +74,7 @@ public:
 private:
     bool canHandle(ProjectExplorer::Target const* target) const;
 
-    ProjectExplorer::BuildInfo*
+    BuildInfo*
     createBuildInfo(ProjectExplorer::Kit const* k, Utils::FileName const& buildDir) const;
 };
 

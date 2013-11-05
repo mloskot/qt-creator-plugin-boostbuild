@@ -1,9 +1,11 @@
 #include "bbbuildconfiguration.hpp"
+#include "bbbuildinfo.hpp"
 #include "bbprojectmanagerconstants.hpp"
 // Qt Creator
 #include <coreplugin/icore.h>
 #include <coreplugin/mimedatabase.h>
 #include <projectexplorer/buildinfo.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/namedwidget.h>
@@ -79,14 +81,14 @@ QList<ProjectExplorer::BuildInfo*> BuildConfigurationFactory::availableSetups(
     //: The name of the build configuration created by default for a autotools project.
     info->displayName = tr("Default");
     //info->buildDirectory
-    QList<BuildInfo*> result;
+    QList<ProjectExplorer::BuildInfo*> result;
     result << info;
     return result;
 }
 
 ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     ProjectExplorer::Target* parent
-  , BuildInfo const* info) const
+  , ProjectExplorer::BuildInfo const* info) const
 {
     QTC_ASSERT(parent, return 0);
     QTC_ASSERT(info->factory() == this, return 0);
@@ -120,14 +122,13 @@ bool BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) cons
             : false;
 }
 
-ProjectExplorer::BuildInfo*
-BuildConfigurationFactory::createBuildInfo(
-        ProjectExplorer::Kit const* k
-      , Utils::FileName const& buildDir) const
+BuildInfo* BuildConfigurationFactory::createBuildInfo(
+    ProjectExplorer::Kit const* k
+  , Utils::FileName const& buildDir) const
 {
     Q_ASSERT(k);
 
-    ProjectExplorer::BuildInfo* info = new ProjectExplorer::BuildInfo(this);
+    BuildInfo* info = new BuildInfo(this);
     info->typeName = tr("Build");
     info->buildDirectory = buildDir;
     info->kitId = k->id();
