@@ -44,6 +44,12 @@ ProjectExplorer::NamedWidget *BuildConfiguration::createConfigWidget()
     return 0; //new BuildSettingsWidget(this);
 }
 
+BuildConfiguration::BuildType BuildConfiguration::buildType() const
+{
+    // TODO: Should I return something different from Unknown?
+    return Unknown;
+}
+
 BuildConfigurationFactory::BuildConfigurationFactory(QObject* parent)
     : IBuildConfigurationFactory(parent)
 {
