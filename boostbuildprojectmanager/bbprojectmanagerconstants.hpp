@@ -8,6 +8,10 @@ char const PROJECT_CONTEXT[] = "BoostBuildProjectManager.ProjectContext";
 char const PROJECT_ID[]      = "BoostBuildProjectManager.Project";
 
 char const BUILDCONFIGURATION_ID[] = "BoostBuildProjectManager.BuildConfiguration";
+char const BUILDSTEP_ID[] = "BoostBuildProjectManager.BuildStep";
+
+char const BJAM_COMMAND[] = "bjam";
+char const BB2_COMMAND[] = "b2";
 
 char const MIMETYPE_PROJECT[] = "text/x-boostbuild-project";
 char const MIMETYPE_JAMFILE[] = "application/vnd.boostbuild.v2";
