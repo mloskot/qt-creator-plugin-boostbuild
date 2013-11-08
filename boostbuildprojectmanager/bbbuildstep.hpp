@@ -5,6 +5,8 @@
 #include <projectexplorer/abstractprocessstep.h>
 #include <projectexplorer/buildstep.h>
 // Qt
+#include <QString>
+#include <QVariantMap>
 
 namespace ProjectExplorer {
 class Project;
@@ -12,6 +14,30 @@ class Project;
 
 namespace BoostBuildProjectManager {
 namespace Internal {
+
+// TODO: see doc in AutogenStep
+class BuildStep : public ProjectExplorer::AbstractProcessStep
+{
+    Q_OBJECT
+    friend class BuildStepFactory;
+    friend class BuildStepConfigWidget;
+
+public:
+    BuildStep(ProjectExplorer::BuildStepList* bsl);
+
+    bool init();
+    void run(QFutureInterface<bool>& interface);
+    ProjectExplorer::BuildStepConfigWidget* createConfigWidget();
+    bool immutable() const;
+    QString additionalArguments() const;
+    QVariantMap toMap() const;
+
+protected:
+    BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
+    BuildStep(ProjectExplorer::BuildStepList* bsl, const Core::Id id);
+
+    bool fromMap(QVariantMap const& map);
+};
 
 /// Factory used to create instances of BuildStep.
 class BuildStepFactory : public ProjectExplorer::IBuildStepFactory
@@ -40,27 +66,28 @@ public:
     bool canHandle(ProjectExplorer::BuildStepList* parent) const;
 };
 
-// TODO: see doc in AutogenStep
-class BuildStep : public ProjectExplorer::AbstractProcessStep
+class BuildStepConfigWidget : public ProjectExplorer::BuildStepConfigWidget
 {
     Q_OBJECT
-    friend class BuildStepFactory;
 
 public:
-    BuildStep(ProjectExplorer::BuildStepList* bsl);
+    BuildStepConfigWidget(BuildStep* buildStep);
+    ~BuildStepConfigWidget();
+    QString displayName() const;
+    QString summaryText() const;
 
-    bool init();
-    void run(QFutureInterface<bool>& interface);
-    ProjectExplorer::BuildStepConfigWidget* createConfigWidget();
-    bool immutable() const;
-    QString additionalArguments() const;
-    QVariantMap toMap() const;
+private slots:
+    // TODO:
+    //void itemChanged(QListWidgetItem* item);
+    //void makeLineEditTextEdited();
+    //void makeArgumentsLineEditTextEdited();
+    //void updateMakeOverrrideLabel();
+    //void updateDetails();
 
-protected:
-    BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
-    BuildStep(ProjectExplorer::BuildStepList* bsl, const Core::Id id);
-
-    bool fromMap(QVariantMap const& map);
+private:
+    //Ui::GenericMakeStep* m_ui;
+    BuildStep* step_;
+    QString summary_;
 };
 
 } // namespace Internal

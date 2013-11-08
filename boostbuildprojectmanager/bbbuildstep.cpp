@@ -10,12 +10,78 @@
 #include <projectexplorer/target.h>
 #include <utils/qtcassert.h>
 // Qt
+#include <QFormLayout>
 #include <QString>
 // std
 #include <memory>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
+
+BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
+    : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
+{
+    //setDefaultDisplayName(tr(""));
+}
+
+BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
+    : AbstractProcessStep(bsl, bs)
+{
+    //setDefaultDisplayName(tr(""));
+}
+
+BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
+    : AbstractProcessStep(bsl, id)
+{
+    //setDefaultDisplayName(tr(""));
+}
+
+bool BuildStep::fromMap(QVariantMap const& map)
+{
+    // TODO: madditionalArguments = map.value(QLatin1String(AUTOGEN_ADDITIONAL_ARGUMENTS_KEY)).toString();
+    return ProjectExplorer::BuildStep::fromMap(map);
+}
+
+bool BuildStep::init()
+{
+    ProjectExplorer::BuildConfiguration *bc = buildConfiguration();
+
+    ProjectExplorer::ProcessParameters *pp = processParameters();
+    pp->setMacroExpander(bc->macroExpander());
+    pp->setEnvironment(bc->environment());
+    pp->setWorkingDirectory(bc->buildDirectory().toString());
+    pp->setCommand(QLatin1String(Constants::BB2_COMMAND)); // TODO: configuragle
+    pp->setArguments(additionalArguments());
+    pp->resolveAll();
+
+    return ProjectExplorer::AbstractProcessStep::init();
+}
+
+void BuildStep::run(QFutureInterface<bool>& interface)
+{
+
+    (void)interface;
+}
+
+ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()
+{
+    QTC_ASSERT(0, return 0);
+}
+
+bool BuildStep::immutable() const
+{
+    QTC_ASSERT(0, return false);
+}
+
+QString BuildStep::additionalArguments() const
+{
+    QTC_ASSERT(0, return QString());
+}
+
+QVariantMap BuildStep::toMap() const
+{
+    QTC_ASSERT(0, return QVariantMap());
+}
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
     : IBuildStepFactory(parent)
@@ -97,70 +163,31 @@ bool BuildStepFactory::canHandle(ProjectExplorer::BuildStepList* parent) const
         && parent->id() == ProjectExplorer::Constants::BUILDSTEPS_BUILD;
 }
 
-BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
-    : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
+BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
+    : step_(step)
 {
-    //setDefaultDisplayName(tr(""));
+    QFormLayout *fl = new QFormLayout(this);
+    fl->setMargin(0);
+    fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    setLayout(fl);
 }
 
-BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
-    : AbstractProcessStep(bsl, bs)
-{
-    //setDefaultDisplayName(tr(""));
-}
-
-BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
-    : AbstractProcessStep(bsl, id)
-{
-    //setDefaultDisplayName(tr(""));
-}
-
-bool BuildStep::fromMap(QVariantMap const& map)
-{
-    // TODO: madditionalArguments = map.value(QLatin1String(AUTOGEN_ADDITIONAL_ARGUMENTS_KEY)).toString();
-    return ProjectExplorer::BuildStep::fromMap(map);
-}
-
-bool BuildStep::init()
-{
-    ProjectExplorer::BuildConfiguration *bc = buildConfiguration();
-
-    ProjectExplorer::ProcessParameters *pp = processParameters();
-    pp->setMacroExpander(bc->macroExpander());
-    pp->setEnvironment(bc->environment());
-    pp->setWorkingDirectory(bc->buildDirectory().toString());
-    pp->setCommand(QLatin1String(Constants::BB2_COMMAND)); // TODO: configuragle
-    pp->setArguments(additionalArguments());
-    pp->resolveAll();
-
-    return ProjectExplorer::AbstractProcessStep::init();
-}
-
-void BuildStep::run(QFutureInterface<bool>& interface)
+BuildStepConfigWidget::~BuildStepConfigWidget()
 {
 
-    (void)interface;
 }
 
-ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()
+QString BuildStepConfigWidget::displayName() const
 {
-    QTC_ASSERT(0, return 0);
+    // TODO tr("Boost.Build", "BoostBuildProjectManager::BuildStepConfigWidget display name.");
+    return step_->displayName();
 }
 
-bool BuildStep::immutable() const
+QString BuildStepConfigWidget::summaryText() const
 {
-    QTC_ASSERT(0, return false);
+    return summary_;
 }
 
-QString BuildStep::additionalArguments() const
-{
-    QTC_ASSERT(0, return QString());
-}
-
-QVariantMap BuildStep::toMap() const
-{
-    QTC_ASSERT(0, return QVariantMap());
-}
 
 } // namespace Internal
 } // namespace BoostBuildProjectManager
