@@ -1,10 +1,12 @@
 #include "bbbuildconfiguration.hpp"
 #include "bbbuildinfo.hpp"
+#include "bbbuildstep.hpp"
 #include "bbprojectmanagerconstants.hpp"
 // Qt Creator
 #include <coreplugin/icore.h>
 #include <coreplugin/mimedatabase.h>
 #include <projectexplorer/buildinfo.h>
+#include <projectexplorer/buildsteplist.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/project.h>
@@ -108,15 +110,28 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     bc->setDefaultDisplayName(info->displayName);
     bc->setBuildDirectory(info->buildDirectory);
 
+    // TODO: check Jamfile/Jamroot exists
+    // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
+
     // Build steps
     ProjectExplorer::BuildStepList* buildSteps =
-        bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD);
+            bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD);
     Q_ASSERT(buildSteps);
+
+    BuildStep* buildStep = new BuildStep(buildSteps);
+    //buildStep->setBuildTarget(QLatin1String("all"), true);
+    //TODO: buildStep->setAdditionalArguments(QLatin1String("..."));
+    buildSteps->insertStep(0, buildStep);
 
     // Clean steps
     ProjectExplorer::BuildStepList* cleanSteps =
         bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN);
     Q_ASSERT(cleanSteps);
+
+    BuildStep* cleanStep = new BuildStep(cleanSteps);
+    //cleanStep->setBuildTarget(QLatin1String("all"), true);
+    //cleanStep->setAdditionalArguments(QLatin1String("--clean"));
+    cleanSteps->insertStep(0, cleanStep);
 
     return bc;
 }
