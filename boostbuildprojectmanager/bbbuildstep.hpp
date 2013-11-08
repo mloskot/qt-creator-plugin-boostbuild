@@ -3,11 +3,10 @@
 
 // Qt Creator
 #include <projectexplorer/abstractprocessstep.h>
+#include <projectexplorer/buildstep.h>
 // Qt
 
 namespace ProjectExplorer {
-class BuildStep;
-class IBuildStepFactory;
 class Project;
 }
 
@@ -37,10 +36,12 @@ public:
     bool canRestore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map) const;
     ProjectExplorer::BuildStep*
     restore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map);
+
+    bool canHandle(ProjectExplorer::BuildStepList* parent) const;
 };
 
 // TODO: see doc in AutogenStep
-class BuildStep : public ProjectExplorer::AbstractBuildStep
+class BuildStep : public ProjectExplorer::AbstractProcessStep
 {
     Q_OBJECT
     friend class BuildStepFactory;
@@ -54,6 +55,12 @@ public:
     bool immutable() const;
     QString additionalArguments() const;
     QVariantMap toMap() const;
+
+protected:
+    BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
+    BuildStep(ProjectExplorer::BuildStepList* bsl, const Core::Id id);
+
+    bool fromMap(QVariantMap const& map);
 };
 
 } // namespace Internal

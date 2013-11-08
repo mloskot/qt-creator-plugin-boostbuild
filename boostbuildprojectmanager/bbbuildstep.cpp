@@ -1,9 +1,18 @@
 #include "bbbuildstep.hpp"
 #include "bbprojectmanagerconstants.hpp"
 // Qt Creator
+#include <projectexplorer/buildconfiguration.h>
+#include <projectexplorer/buildstep.h>
 #include <projectexplorer/buildsteplist.h>
+#include <projectexplorer/project.h>
+#include <projectexplorer/projectconfiguration.h>
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/target.h>
+#include <utils/qtcassert.h>
 // Qt
 #include <QString>
+// std
+#include <memory>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
@@ -14,7 +23,7 @@ BuildStepFactory::BuildStepFactory(QObject* parent)
 }
 
 QList<Core::Id>
-BuildStepFactory::availableCreationIds(ProjectExplorer::BuildStepList* bc) const
+BuildStepFactory::availableCreationIds(ProjectExplorer::BuildStepList* parent) const
 {
     return canHandle(parent)
         ? QList<Core::Id>() << Core::Id(Constants::BUILDSTEP_ID)
@@ -24,7 +33,7 @@ BuildStepFactory::availableCreationIds(ProjectExplorer::BuildStepList* bc) const
 QString BuildStepFactory::displayNameForId(const Core::Id id) const
 {
     QString name;
-    if (id == BUILDSTEP_ID)
+    if (id == Constants::BUILDSTEP_ID)
     {
         name = tr("Boost.Build"
                 , "Display name for BoostBuildProjectManager::BuildStep id.");
@@ -35,37 +44,81 @@ QString BuildStepFactory::displayNameForId(const Core::Id id) const
 bool BuildStepFactory::canCreate(ProjectExplorer::BuildStepList* parent
                                , Core::Id const id) const
 {
+    return canHandle(parent) && Core::Id(Constants::BUILDSTEP_ID) == id;
 }
 
 ProjectExplorer::BuildStep*
 BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const id)
 {
+    return canCreate(parent, id) ? new BuildStep(parent) : 0;
 }
 
 bool BuildStepFactory::canClone(ProjectExplorer::BuildStepList *parent
                               , ProjectExplorer::BuildStep *source) const
 {
+    return canCreate(parent, source->id());
 }
 
 ProjectExplorer::BuildStep*
 BuildStepFactory::clone(ProjectExplorer::BuildStepList* parent
-                      , ProjectExplorer::BuildStep* source);
+                      , ProjectExplorer::BuildStep* source)
+{
+    return canClone(parent, source)
+            ? new BuildStep(parent, static_cast<BuildStep*>(source))
+            : 0;
+}
 
 bool BuildStepFactory::canRestore(ProjectExplorer::BuildStepList* parent
                                 , QVariantMap const& map) const
 {
+    return canCreate(parent, ProjectExplorer::idFromMap(map));
 }
 
 ProjectExplorer::BuildStep*
 BuildStepFactory::restore(ProjectExplorer::BuildStepList* parent
                         , QVariantMap const& map)
 {
+    Q_ASSERT(parent);
 
+    if (canRestore(parent, map))
+    {
+        std::unique_ptr<BuildStep> bs(new BuildStep(parent));
+        if (bs->fromMap(map))
+            return bs.release();
+    }
+    return 0;
+}
+
+bool BuildStepFactory::canHandle(ProjectExplorer::BuildStepList* parent) const
+{
+    QTC_ASSERT(parent, return false);
+
+    return parent->target()->project()->id() == Constants::PROJECT_ID
+        && parent->id() == ProjectExplorer::Constants::BUILDSTEPS_BUILD;
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
 {
+    //setDefaultDisplayName(tr(""));
+}
+
+BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
+    : AbstractProcessStep(bsl, bs)
+{
+    //setDefaultDisplayName(tr(""));
+}
+
+BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
+    : AbstractProcessStep(bsl, id)
+{
+    //setDefaultDisplayName(tr(""));
+}
+
+bool BuildStep::fromMap(QVariantMap const& map)
+{
+    // TODO: madditionalArguments = map.value(QLatin1String(AUTOGEN_ADDITIONAL_ARGUMENTS_KEY)).toString();
+    return ProjectExplorer::BuildStep::fromMap(map);
 }
 
 bool BuildStep::init()
@@ -76,7 +129,7 @@ bool BuildStep::init()
     pp->setMacroExpander(bc->macroExpander());
     pp->setEnvironment(bc->environment());
     pp->setWorkingDirectory(bc->buildDirectory().toString());
-    pp->setCommand(Constants::BB2_COMMAND); // TODO: configuragle
+    pp->setCommand(QLatin1String(Constants::BB2_COMMAND)); // TODO: configuragle
     pp->setArguments(additionalArguments());
     pp->resolveAll();
 
@@ -85,22 +138,28 @@ bool BuildStep::init()
 
 void BuildStep::run(QFutureInterface<bool>& interface)
 {
+
+    (void)interface;
 }
 
 ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()
 {
+    QTC_ASSERT(0, return 0);
 }
 
 bool BuildStep::immutable() const
 {
+    QTC_ASSERT(0, return false);
 }
 
 QString BuildStep::additionalArguments() const
 {
+    QTC_ASSERT(0, return QString());
 }
 
 QVariantMap BuildStep::toMap() const
 {
+    QTC_ASSERT(0, return QVariantMap());
 }
 
 } // namespace Internal
