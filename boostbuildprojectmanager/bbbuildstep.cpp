@@ -8,6 +8,61 @@
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+BuildStepFactory::BuildStepFactory(QObject* parent)
+    : IBuildStepFactory(parent)
+{
+}
+
+QList<Core::Id>
+BuildStepFactory::availableCreationIds(ProjectExplorer::BuildStepList* bc) const
+{
+    return canHandle(parent)
+        ? QList<Core::Id>() << Core::Id(Constants::BUILDSTEP_ID)
+        : QList<Core::Id>();
+}
+
+QString BuildStepFactory::displayNameForId(const Core::Id id) const
+{
+    QString name;
+    if (id == BUILDSTEP_ID)
+    {
+        name = tr("Boost.Build"
+                , "Display name for BoostBuildProjectManager::BuildStep id.");
+    }
+    return name;
+}
+
+bool BuildStepFactory::canCreate(ProjectExplorer::BuildStepList* parent
+                               , Core::Id const id) const
+{
+}
+
+ProjectExplorer::BuildStep*
+BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const id)
+{
+}
+
+bool BuildStepFactory::canClone(ProjectExplorer::BuildStepList *parent
+                              , ProjectExplorer::BuildStep *source) const
+{
+}
+
+ProjectExplorer::BuildStep*
+BuildStepFactory::clone(ProjectExplorer::BuildStepList* parent
+                      , ProjectExplorer::BuildStep* source);
+
+bool BuildStepFactory::canRestore(ProjectExplorer::BuildStepList* parent
+                                , QVariantMap const& map) const
+{
+}
+
+ProjectExplorer::BuildStep*
+BuildStepFactory::restore(ProjectExplorer::BuildStepList* parent
+                        , QVariantMap const& map)
+{
+
+}
+
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
 {

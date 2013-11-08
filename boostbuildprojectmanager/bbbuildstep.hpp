@@ -14,9 +14,36 @@ class Project;
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+/// Factory used to create instances of BuildStep.
+class BuildStepFactory : public ProjectExplorer::IBuildStepFactory
+{
+    Q_OBJECT
+
+public:
+    BuildStepFactory(QObject* parent = 0);
+
+    QList<Core::Id> availableCreationIds(ProjectExplorer::BuildStepList* bc) const;
+    QString displayNameForId(const Core::Id id) const;
+
+    bool canCreate(ProjectExplorer::BuildStepList* parent, Core::Id const id) const;
+    ProjectExplorer::BuildStep*
+    create(ProjectExplorer::BuildStepList* parent, Core::Id const id);
+
+    bool canClone(ProjectExplorer::BuildStepList *parent
+                , ProjectExplorer::BuildStep *source) const;
+    ProjectExplorer::BuildStep*
+    clone(ProjectExplorer::BuildStepList* parent, ProjectExplorer::BuildStep* source);
+
+    bool canRestore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map) const;
+    ProjectExplorer::BuildStep*
+    restore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map);
+};
+
+// TODO: see doc in AutogenStep
 class BuildStep : public ProjectExplorer::AbstractBuildStep
 {
     Q_OBJECT
+    friend class BuildStepFactory;
 
 public:
     BuildStep(ProjectExplorer::BuildStepList* bsl);
