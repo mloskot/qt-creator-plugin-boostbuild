@@ -31,6 +31,9 @@ public:
     QStringList files(FilesMode fileMode) const;
     bool needsConfiguration() const;
 
+protected:
+    bool fromMap(QVariantMap const& map);
+
 private:
     // Corresponding project manager passed to the constructor
     ProjectManager* manager_;

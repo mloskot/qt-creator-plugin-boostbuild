@@ -3,11 +3,15 @@
 #include "bbprojectmanager.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbprojectnode.hpp"
+// Qt Creator
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
+#include <projectexplorer/kit.h>
+#include <projectexplorer/kitmanager.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/projectnodes.h>
+// Qt
 #include <QDir>
 #include <QFileInfo>
 
@@ -81,6 +85,26 @@ bool Project::needsConfiguration() const
     //       - b2/bjam command lookup
     //       - targets listing
     return false;
+}
+
+// This function is called at the very beginning to restore the settings
+// from .user file, if there is any with previous settings stored.
+bool Project::fromMap(QVariantMap const& map)
+{
+    if (!ProjectExplorer::Project::fromMap(map))
+        return false;
+
+    // TODO:  see autotools
+    // TODO: Load the project tree structure.
+
+    // Create target, if necessary
+    if (!activeTarget())
+    {
+        if (ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit())
+            addTarget(createTarget(defaultKit));
+    }
+
+    return activeTarget() != 0;
 }
 
 } // namespace Internal
