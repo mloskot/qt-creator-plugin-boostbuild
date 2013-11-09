@@ -59,13 +59,12 @@ bool BuildStep::init()
 
 void BuildStep::run(QFutureInterface<bool>& interface)
 {
-
     (void)interface;
 }
 
 ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()
 {
-    QTC_ASSERT(0, return 0);
+    return new BuildStepConfigWidget(this);
 }
 
 bool BuildStep::immutable() const
