@@ -45,8 +45,8 @@ bool BoostBuildPlugin::initialize(QStringList const& arguments, QString* errorSt
     if (!Core::MimeDatabase::addMimeTypes(mimeTypes, errorString))
         return false;
 
-    addAutoReleasedObject(new BuildConfigurationFactory);
     addAutoReleasedObject(new BuildStepFactory);
+    addAutoReleasedObject(new BuildConfigurationFactory);
     //TODO addAutoReleasedObject(new RunConfigurationFactory);
     addAutoReleasedObject(new ProjectManager);
 
