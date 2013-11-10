@@ -6,9 +6,11 @@
 // Qt
 #include <QDebug>
 
-#define BBPM_QDEBUG(msg) qDebug().nospace() \
-    << "[" << BoostBuildProjectManager::Constants::BOOSTBUILD << "] " \
-    << "(" << __PRETTY_FUNCTION__ << ") " << msg
+#define BBPM_QDEBUG(msg) \
+    qDebug().nospace() \
+        << "[" << BoostBuildProjectManager::Constants::BOOSTBUILD << "] " \
+        << "(" << __PRETTY_FUNCTION__ << ")"; \
+    qDebug().nospace() << "\t" << msg
 
 #else
 
