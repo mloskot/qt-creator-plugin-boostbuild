@@ -12,6 +12,7 @@ class ProjectFile;
 class ProjectManager;
 class ProjectNode;
 
+//  Implements a project node in the project explorer.
 class Project : public ProjectExplorer::Project
 {
     Q_OBJECT
@@ -29,9 +30,16 @@ public:
     ProjectExplorer::IProjectManager* projectManager() const;
     ProjectExplorer::ProjectNode* rootProjectNode() const;
     QStringList files(FilesMode fileMode) const;
+
+    // Indicates if "Configure Project" panel should be opened on project loading.
+    // This step may be used to select a kit, build directory, and others.
+    // See QmakeProjectManager as an example.
     bool needsConfiguration() const;
 
 protected:
+
+    // Deserializes all project data from the map object
+    // Calls the base ProjectExplorer::Project::toMap function first.
     bool fromMap(QVariantMap const& map);
 
 private:

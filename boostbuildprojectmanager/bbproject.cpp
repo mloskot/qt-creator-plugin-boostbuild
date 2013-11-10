@@ -1,8 +1,11 @@
+#include "bbbuildconfiguration.hpp"
+#include "bbbuildstep.hpp"
 #include "bbproject.hpp"
 #include "bbprojectfile.hpp"
 #include "bbprojectmanager.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbprojectnode.hpp"
+#include "bbutility.hpp"
 // Qt Creator
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
@@ -11,9 +14,13 @@
 #include <projectexplorer/project.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/projectnodes.h>
+#include <projectexplorer/target.h>
+#include <qtsupport/customexecutablerunconfiguration.h>
 // Qt
 #include <QDir>
 #include <QFileInfo>
+// std
+#include <memory>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
@@ -40,6 +47,8 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     projectNode_->setDisplayName(projectName_);
 
     manager_->registerProject(this);
+
+    BBPM_QDEBUG("created project: " << displayName());
 }
 
 Project::~Project()
@@ -75,15 +84,21 @@ ProjectExplorer::ProjectNode* Project::rootProjectNode() const
 
 QStringList Project::files(FilesMode fileMode) const
 {
+    BBPM_QDEBUG(displayName() << "has" << files_.size() << "files");
+
     Q_UNUSED(fileMode);
     return files_;
 }
 
 bool Project::needsConfiguration() const
 {
-    // TODO: Does Boost.Build project require any configuration on loading?
-    //       - b2/bjam command lookup
-    //       - targets listing
+    // TODO:
+    // Does Boost.Build project require any configuration on loading?
+    // - Kit selection
+    // - build/stage directory
+    // - targets listing
+    // CMakeProjectManager seems to request configuration in fromMap()
+
     return false;
 }
 
@@ -91,19 +106,46 @@ bool Project::needsConfiguration() const
 // from .user file, if there is any with previous settings stored.
 bool Project::fromMap(QVariantMap const& map)
 {
+    BBPM_QDEBUG(displayName());
+
     if (!ProjectExplorer::Project::fromMap(map))
         return false;
 
-    // TODO:  see autotools
-    // TODO: Load the project tree structure.
+    // NOTE:
+    // Call setActiveBuildConfiguration when creating new build configurations.
 
-    // Create target, if necessary
     if (!activeTarget())
     {
-        if (ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit())
-            addTarget(createTarget(defaultKit));
+        // Configure project from scratch
+
+        // TODO: do we need on-loading wizard similar to CMakeProjectManager?
+        ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit();
+        ProjectExplorer::Target* target= createTarget(defaultKit);
+        addTarget(target);
+    }
+    else
+    {
+        // Configure project from settings sorced from .user file
+        BBPM_QDEBUG(displayName() << "has user file");
     }
 
+    // Sanity check (taken from GenericProjectManager):
+    // We need both a BuildConfiguration and a RunConfiguration!
+    QList<ProjectExplorer::Target*> targetList = targets();
+    foreach (ProjectExplorer::Target* t, targetList)
+    {
+        if (!t->activeBuildConfiguration())
+        {
+            removeTarget(t);
+            continue;
+        }
+        if (!t->activeRunConfiguration())
+            t->addRunConfiguration(
+                        new QtSupport::CustomExecutableRunConfiguration(t));
+    }
+
+    // TODO: refresh(Everything);
+    QTC_ASSERT(hasActiveBuildSettings(), return false);
     return activeTarget() != 0;
 }
 
