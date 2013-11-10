@@ -1,6 +1,10 @@
 #include "bbprojectmanager.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbproject.hpp"
+#include "bbutility.hpp"
+// Qt Creator
+#include <projectexplorer/iprojectmanager.h>
+// Qt
 #include <QFileInfo>
 #include <QString>
 
@@ -13,12 +17,16 @@ ProjectManager::ProjectManager()
 
 QString ProjectManager::mimeType() const
 {
+    BBPM_QDEBUG(Constants::MIMETYPE_PROJECT);
+
     return QLatin1String(Constants::MIMETYPE_PROJECT);
 }
 
 ProjectExplorer::Project*
 ProjectManager::openProject(QString const& fileName, QString* errorString)
 {
+    BBPM_QDEBUG("opening project:" << fileName);
+
     if (!QFileInfo(fileName).isFile())
     {
         if (errorString)

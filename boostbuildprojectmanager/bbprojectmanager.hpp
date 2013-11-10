@@ -1,7 +1,9 @@
 #ifndef BBPROJECTMANAGER_HPP_INCLUDED
 #define BBPROJECTMANAGER_HPP_INCLUDED
 
+// Qt Creator
 #include <projectexplorer/iprojectmanager.h>
+// Qt
 #include <QList>
 #include <QString>
 
@@ -14,6 +16,7 @@ namespace Internal {
 
 class Project;
 
+// Sole implementation of the IProjectManager class for the extension.
 class ProjectManager : public ProjectExplorer::IProjectManager
 {
     Q_OBJECT
@@ -21,15 +24,16 @@ class ProjectManager : public ProjectExplorer::IProjectManager
 public:
     ProjectManager();
 
+    QString mimeType() const;
+
+    // Creates new instance of Project class.
+    ProjectExplorer::Project*
+    openProject(QString const& fileName, QString* errorString);
+
     void registerProject(Project* project);
     void unregisterProject(Project* project);
 
-    //
-    // ProjectExplorer::IProjectManager
-    //
-    QString mimeType() const;
-    ProjectExplorer::Project* openProject(QString const& fileName, QString* errorString);
-    private:
+private:
     QList<Project*> projects_;
 };
 
