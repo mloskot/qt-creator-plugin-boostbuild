@@ -39,7 +39,7 @@ protected:
     bool fromMap(QVariantMap const& map);
 };
 
-/// Factory used to create instances of BuildStep.
+// Factory used to create instances of BuildStep.
 class BuildStepFactory : public ProjectExplorer::IBuildStepFactory
 {
     Q_OBJECT

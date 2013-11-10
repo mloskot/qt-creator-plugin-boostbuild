@@ -69,17 +69,17 @@ ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()
 
 bool BuildStep::immutable() const
 {
-    QTC_ASSERT(0, return false);
+    return false;
 }
 
 QString BuildStep::additionalArguments() const
 {
-    QTC_ASSERT(0, return QString());
+    return QString();
 }
 
 QVariantMap BuildStep::toMap() const
 {
-    QTC_ASSERT(0, return QVariantMap());
+    return QVariantMap();
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
