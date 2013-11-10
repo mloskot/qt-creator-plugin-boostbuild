@@ -4,6 +4,8 @@
 namespace BoostBuildProjectManager {
 namespace Constants {
 
+char const BOOSTBUILD[] = "Boost.Build";
+
 char const PROJECT_CONTEXT[] = "BoostBuildProjectManager.ProjectContext";
 char const PROJECT_ID[]      = "BoostBuildProjectManager.Project";
 
