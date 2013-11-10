@@ -38,8 +38,7 @@ RESOURCES += boostbuildproject.qrc \
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \
     LICENSE.md \
-    README.md \
-    README.qtcreator.md
+    NOTES.md
 
 # Qt Creator linking
 
