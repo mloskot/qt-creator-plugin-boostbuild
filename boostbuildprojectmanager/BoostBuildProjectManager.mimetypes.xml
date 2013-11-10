@@ -3,6 +3,7 @@
   <mime-type type="text/x-boostbuild-project">
     <sub-class-of type="text/plain"/>
     <comment>Boost.Build Project file</comment>
+    <glob pattern="Jamroot"/>
     <glob pattern="Jamfile.v2"/>
     <!--
     TODO: add more patterns?
@@ -13,5 +14,6 @@
     <sub-class-of type="text/plain"/>
     <comment>Boost.Build Project Files</comment>
     <glob pattern="Jamfile.v2.files"/>
+    <glob pattern="Jamroot.files"/>
   </mime-type>
 </mime-info>
