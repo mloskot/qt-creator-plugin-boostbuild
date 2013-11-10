@@ -5,6 +5,7 @@ PROVIDER = mloskot
 
 DEFINES += BOOSTBUILDPROJECTMANAGER_LIBRARY
 
+CONFIG(debug, release|debug):DEFINES += _DEBUG
 CONFIG += c++11
 
 SOURCES += \
@@ -15,7 +16,8 @@ SOURCES += \
     bbprojectnode.cpp \
     bbbuildconfiguration.cpp \
     bbbuildinfo.cpp \
-    bbbuildstep.cpp
+    bbbuildstep.cpp \
+    bbutility.cpp
 
 HEADERS += \
     bbproject.hpp \
@@ -27,7 +29,8 @@ HEADERS += \
     bbprojectnode.hpp \
     bbbuildconfiguration.hpp \
     bbbuildinfo.hpp \
-    bbbuildstep.hpp
+    bbbuildstep.hpp \
+    bbutility.hpp
 
 RESOURCES += boostbuildproject.qrc \
     boostbuildproject.qrc
@@ -35,7 +38,8 @@ RESOURCES += boostbuildproject.qrc \
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \
     LICENSE.md \
-    README.md
+    README.md \
+    README.qtcreator.md
 
 # Qt Creator linking
 
@@ -65,7 +69,8 @@ QTC_LIB_DEPENDS += \
 
 QTC_PLUGIN_DEPENDS += \
     coreplugin \
-    projectexplorer
+    projectexplorer\
+    qtsupport
 
 QTC_PLUGIN_RECOMMENDS += \
     # optional plugin dependencies. nothing here at this time
