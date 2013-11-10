@@ -1,5 +1,6 @@
 #include "bbbuildstep.hpp"
 #include "bbprojectmanagerconstants.hpp"
+#include "bbutility.hpp"
 // Qt Creator
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildstep.h>
@@ -21,31 +22,32 @@ namespace Internal {
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
 {
-    //setDefaultDisplayName(tr(""));
+    setDefaultDisplayName(tr("Boost.Build"));
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
     : AbstractProcessStep(bsl, bs)
 {
-    //setDefaultDisplayName(tr(""));
+    setDefaultDisplayName(tr("Boost.Build"));
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
     : AbstractProcessStep(bsl, id)
 {
-    //setDefaultDisplayName(tr(""));
+    setDefaultDisplayName(tr("Boost.Build"));
 }
 
 bool BuildStep::fromMap(QVariantMap const& map)
 {
+    BBPM_QDEBUG("TODO");
+    // TODO: see CMakeProjectManager
     // TODO: madditionalArguments = map.value(QLatin1String(AUTOGEN_ADDITIONAL_ARGUMENTS_KEY)).toString();
     return ProjectExplorer::BuildStep::fromMap(map);
 }
 
 bool BuildStep::init()
 {
-    ProjectExplorer::BuildConfiguration *bc = buildConfiguration();
-
+    ProjectExplorer::BuildConfiguration* bc = buildConfiguration();
     ProjectExplorer::ProcessParameters *pp = processParameters();
     pp->setMacroExpander(bc->macroExpander());
     pp->setEnvironment(bc->environment());
@@ -54,6 +56,7 @@ bool BuildStep::init()
     pp->setArguments(additionalArguments());
     pp->resolveAll();
 
+    BBPM_QDEBUG(displayName() << ", " << bc->buildDirectory().toString());
     return ProjectExplorer::AbstractProcessStep::init();
 }
 
@@ -74,12 +77,19 @@ bool BuildStep::immutable() const
 
 QString BuildStep::additionalArguments() const
 {
+    BBPM_QDEBUG("TODO");
     return QString();
 }
 
 QVariantMap BuildStep::toMap() const
 {
+    BBPM_QDEBUG("TODO");
     return QVariantMap();
+}
+
+void BuildStep::setStepType(StepType type)
+{
+    m_stepType = type;
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
@@ -95,7 +105,7 @@ BuildStepFactory::availableCreationIds(ProjectExplorer::BuildStepList* parent) c
         : QList<Core::Id>();
 }
 
-QString BuildStepFactory::displayNameForId(const Core::Id id) const
+QString BuildStepFactory::displayNameForId(Core::Id const id) const
 {
     QString name;
     if (id == Constants::BUILDSTEP_ID)
@@ -115,6 +125,7 @@ bool BuildStepFactory::canCreate(ProjectExplorer::BuildStepList* parent
 ProjectExplorer::BuildStep*
 BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const id)
 {
+    BBPM_QDEBUG("TODO");
     return canCreate(parent, id) ? new BuildStep(parent) : 0;
 }
 
@@ -165,6 +176,7 @@ bool BuildStepFactory::canHandle(ProjectExplorer::BuildStepList* parent) const
 BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
     : step_(step)
 {
+    BBPM_QDEBUG("TODO");
     QFormLayout *fl = new QFormLayout(this);
     fl->setMargin(0);
     fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
@@ -173,7 +185,6 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
 
 BuildStepConfigWidget::~BuildStepConfigWidget()
 {
-
 }
 
 QString BuildStepConfigWidget::displayName() const

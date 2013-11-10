@@ -23,6 +23,7 @@ class BuildStep : public ProjectExplorer::AbstractProcessStep
     friend class BuildStepConfigWidget;
 
 public:
+
     BuildStep(ProjectExplorer::BuildStepList* bsl);
 
     bool init();
@@ -32,11 +33,18 @@ public:
     QString additionalArguments() const;
     QVariantMap toMap() const;
 
+    enum StepType { Build, Clean };
+
+    void setStepType(StepType type);
+
 protected:
     BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
     BuildStep(ProjectExplorer::BuildStepList* bsl, const Core::Id id);
 
     bool fromMap(QVariantMap const& map);
+
+private:
+    StepType m_stepType;
 };
 
 // Factory used to create instances of BuildStep.
