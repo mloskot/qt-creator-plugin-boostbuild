@@ -1,3 +1,4 @@
+#include "bbbuildconfiguration.hpp"
 #include "bbbuildstep.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbutility.hpp"
@@ -5,13 +6,17 @@
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildstep.h>
 #include <projectexplorer/buildsteplist.h>
+#include <projectexplorer/kitinformation.h>
+#include <projectexplorer/processparameters.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/projectconfiguration.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/toolchain.h>
 #include <utils/qtcassert.h>
 // Qt
 #include <QFormLayout>
+#include <QLineEdit>
 #include <QString>
 // std
 #include <memory>
@@ -181,6 +186,19 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
     fl->setMargin(0);
     fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     setLayout(fl);
+
+    arguments_ = new QLineEdit(this);
+    fl->addRow(tr("Arguments:"), arguments_);
+    arguments_->setText(step_->additionalArguments());
+
+    updateDetails();
+
+    connect(arguments_, SIGNAL(textChanged(QString)),
+            step, SLOT(setAdditionalArguments(QString)));
+    connect(step, SIGNAL(additionalArgumentsChanged(QString)),
+            this, SLOT(updateDetails()));
+    connect(step_->project(), SIGNAL(environmentChanged()),
+            this, SLOT(updateDetails()));
 }
 
 BuildStepConfigWidget::~BuildStepConfigWidget()
@@ -189,8 +207,9 @@ BuildStepConfigWidget::~BuildStepConfigWidget()
 
 QString BuildStepConfigWidget::displayName() const
 {
-    // TODO tr("Boost.Build", "BoostBuildProjectManager::BuildStepConfigWidget display name.");
-    return step_->displayName();
+    // TODO: return step_->displayName();
+    return tr("Boost.Build"
+            , "BoostBuildProjectManager::BuildStepConfigWidget display name.");
 }
 
 QString BuildStepConfigWidget::summaryText() const
@@ -198,6 +217,40 @@ QString BuildStepConfigWidget::summaryText() const
     return summary_;
 }
 
+
+void BuildStepConfigWidget::updateDetails()
+{
+    ProjectExplorer::BuildConfiguration* bc = step_->buildConfiguration();
+    if (!bc)
+        bc = step_->target()->activeBuildConfiguration();
+    Q_ASSERT(bc);
+
+    ProjectExplorer::ToolChain* tc =
+            ProjectExplorer::ToolChainKitInformation::toolChain(step_->target()->kit());
+
+    if (tc)
+    {
+        // TODO
+        //QString arguments = Utils::QtcProcess::joinArgs(step_->m_buildTargets);
+        //Utils::QtcProcess::addArgs(&arguments, step_->additionalArguments());
+
+        ProjectExplorer::ProcessParameters params;
+        params.setMacroExpander(bc->macroExpander());
+        params.setEnvironment(bc->environment());
+        params.setWorkingDirectory(bc->buildDirectory().toString());
+        params.setCommand(tc->makeCommand(bc->environment())); // TODO: bjam/b2
+        //params.setArguments(arguments);
+        summary_ = params.summary(displayName());
+    }
+    else
+    {
+        summary_ = QLatin1String("<b>")
+                 + ProjectExplorer::ToolChainKitInformation::msgNoToolChainInTarget()
+                 + QLatin1String("</b>");
+    }
+
+    emit updateSummary();
+}
 
 } // namespace Internal
 } // namespace BoostBuildProjectManager

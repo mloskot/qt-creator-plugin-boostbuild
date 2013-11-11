@@ -5,6 +5,7 @@
 #include <projectexplorer/abstractprocessstep.h>
 #include <projectexplorer/buildstep.h>
 // Qt
+#include <QLineEdit>
 #include <QString>
 #include <QVariantMap>
 
@@ -90,12 +91,13 @@ private slots:
     //void makeLineEditTextEdited();
     //void makeArgumentsLineEditTextEdited();
     //void updateMakeOverrrideLabel();
-    //void updateDetails();
+    void updateDetails();
 
 private:
     //Ui::GenericMakeStep* m_ui;
     BuildStep* step_;
     QString summary_;
+    QLineEdit* arguments_;
 };
 
 } // namespace Internal
