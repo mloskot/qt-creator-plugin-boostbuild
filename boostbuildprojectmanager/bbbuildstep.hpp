@@ -15,6 +15,10 @@ namespace ProjectExplorer {
 class Project;
 }
 
+namespace Utils {
+class Environment;
+}
+
 namespace BoostBuildProjectManager {
 namespace Internal {
 
@@ -44,6 +48,7 @@ protected:
     BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
     BuildStep(ProjectExplorer::BuildStepList* bsl, const Core::Id id);
 
+    QString makeCommand(Utils::Environment const& env) const;
     bool fromMap(QVariantMap const& map);
 
 private:

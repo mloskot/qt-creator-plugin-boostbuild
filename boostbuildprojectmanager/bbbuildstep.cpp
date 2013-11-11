@@ -13,6 +13,7 @@
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/toolchain.h>
+#include <utils/environment.h>
 #include <utils/qtcassert.h>
 // Qt
 #include <QFormLayout>
@@ -42,6 +43,13 @@ BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
     setDefaultDisplayName(tr("Boost.Build"));
 }
 
+QString BuildStep::makeCommand(Utils::Environment const& env) const
+{
+    BBPM_QDEBUG("TODO: bjam vs b2 selection");
+    Q_UNUSED(env);
+    return QLatin1String(Constants::BB2_COMMAND);
+}
+
 bool BuildStep::fromMap(QVariantMap const& map)
 {
     BBPM_QDEBUG("TODO");
@@ -52,12 +60,28 @@ bool BuildStep::fromMap(QVariantMap const& map)
 
 bool BuildStep::init()
 {
+    m_tasks.clear();
+    ProjectExplorer::ToolChain* tc =
+        ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit());
+    if (!tc)
+    {
+        BBPM_QDEBUG("Qt Creator needs compiler");
+        typedef ProjectExplorer::Task Task;
+        Task task(Task::Error
+             , tr("Qt Creator needs a compiler set up to build. Configure a compiler in the kit options.")
+             , Utils::FileName(), -1
+             , ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM);
+
+        m_tasks.append(task);
+        return !m_tasks.empty(); // otherwise the tasks will not get reported
+    }
+
     ProjectExplorer::BuildConfiguration* bc = buildConfiguration();
-    ProjectExplorer::ProcessParameters *pp = processParameters();
+    ProjectExplorer::ProcessParameters* pp = processParameters();
     pp->setMacroExpander(bc->macroExpander());
     pp->setEnvironment(bc->environment());
     pp->setWorkingDirectory(bc->buildDirectory().toString());
-    pp->setCommand(QLatin1String(Constants::BB2_COMMAND)); // TODO: configuragle
+    pp->setCommand(makeCommand(bc->environment()));
     pp->setArguments(additionalArguments());
     pp->resolveAll();
 
@@ -67,6 +91,8 @@ bool BuildStep::init()
 
 void BuildStep::run(QFutureInterface<bool>& fi)
 {
+    BBPM_QDEBUG("running: " << displayName());
+
     bool canContinue = true;
     foreach (ProjectExplorer::Task const& t, m_tasks)
     {
@@ -234,7 +260,6 @@ QString BuildStepConfigWidget::summaryText() const
     return summary_;
 }
 
-
 void BuildStepConfigWidget::updateDetails()
 {
     ProjectExplorer::BuildConfiguration* bc = step_->buildConfiguration();
@@ -255,7 +280,7 @@ void BuildStepConfigWidget::updateDetails()
         params.setMacroExpander(bc->macroExpander());
         params.setEnvironment(bc->environment());
         params.setWorkingDirectory(bc->buildDirectory().toString());
-        params.setCommand(tc->makeCommand(bc->environment())); // TODO: bjam/b2
+        params.setCommand(step_->makeCommand(bc->environment()));
         //params.setArguments(arguments);
         summary_ = params.summary(displayName());
     }
