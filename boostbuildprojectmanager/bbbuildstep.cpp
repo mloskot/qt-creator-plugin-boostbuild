@@ -65,9 +65,26 @@ bool BuildStep::init()
     return ProjectExplorer::AbstractProcessStep::init();
 }
 
-void BuildStep::run(QFutureInterface<bool>& interface)
+void BuildStep::run(QFutureInterface<bool>& fi)
 {
-    (void)interface;
+    bool canContinue = true;
+    foreach (ProjectExplorer::Task const& t, m_tasks)
+    {
+        addTask(t);
+        canContinue = false;
+    }
+
+    if (!canContinue)
+    {
+        emit addOutput(tr("Configuration is faulty. Check the Issues view for details.")
+                     , BuildStep::MessageOutput);
+        fi.reportResult(false);
+        emit finished();
+    }
+    else
+    {
+        AbstractProcessStep::run(fi);
+    }
 }
 
 ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()

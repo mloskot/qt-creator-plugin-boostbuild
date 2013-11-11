@@ -4,8 +4,10 @@
 // Qt Creator
 #include <projectexplorer/abstractprocessstep.h>
 #include <projectexplorer/buildstep.h>
+#include <projectexplorer/task.h>
 // Qt
 #include <QLineEdit>
+#include <QList>
 #include <QString>
 #include <QVariantMap>
 
@@ -45,6 +47,7 @@ protected:
     bool fromMap(QVariantMap const& map);
 
 private:
+    QList<ProjectExplorer::Task> m_tasks;
     StepType m_stepType;
 };
 
