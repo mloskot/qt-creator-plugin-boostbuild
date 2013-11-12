@@ -37,23 +37,32 @@ public:
     void run(QFutureInterface<bool>& interface);
     ProjectExplorer::BuildStepConfigWidget* createConfigWidget();
     bool immutable() const;
-    QString additionalArguments() const;
+
     QVariantMap toMap() const;
+    bool fromMap(QVariantMap const& map);
+
+    QString makeCommand(Utils::Environment const& env) const;
+
+    QString additionalArguments() const;
 
     enum StepType { Build, Clean };
 
     void setStepType(StepType type);
 
+public slots:
+    void setAdditionalArguments(QString const& list);
+
+signals:
+    void additionalArgumentsChanged(QString const& list);
+
 protected:
     BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
-    BuildStep(ProjectExplorer::BuildStepList* bsl, const Core::Id id);
-
-    QString makeCommand(Utils::Environment const& env) const;
-    bool fromMap(QVariantMap const& map);
+    BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id);
 
 private:
-    QList<ProjectExplorer::Task> m_tasks;
-    StepType m_stepType;
+    QList<ProjectExplorer::Task> tasks_;
+    QString arguments_;
+    StepType stepType_;
 };
 
 // Factory used to create instances of BuildStep.

@@ -28,34 +28,22 @@ namespace Internal {
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
 {
-    setDefaultDisplayName(tr("Boost.Build"));
+    setDefaultDisplayName(Constants::BOOSTBUILD);
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
     : AbstractProcessStep(bsl, bs)
+    , tasks_(bs->tasks_)
+    , arguments_(bs->arguments_)
+    , stepType_(bs->stepType_)
 {
-    setDefaultDisplayName(tr("Boost.Build"));
+    setDefaultDisplayName(Constants::BOOSTBUILD);
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
     : AbstractProcessStep(bsl, id)
 {
-    setDefaultDisplayName(tr("Boost.Build"));
-}
-
-QString BuildStep::makeCommand(Utils::Environment const& env) const
-{
-    BBPM_QDEBUG("TODO: bjam vs b2 selection");
-    Q_UNUSED(env);
-    return QLatin1String(Constants::BB2_COMMAND);
-}
-
-bool BuildStep::fromMap(QVariantMap const& map)
-{
-    BBPM_QDEBUG("TODO");
-    // TODO: see CMakeProjectManager
-    // TODO: madditionalArguments = map.value(QLatin1String(AUTOGEN_ADDITIONAL_ARGUMENTS_KEY)).toString();
-    return ProjectExplorer::BuildStep::fromMap(map);
+    setDefaultDisplayName(Constants::BOOSTBUILD);
 }
 
 bool BuildStep::init()
@@ -82,7 +70,7 @@ bool BuildStep::init()
     pp->setEnvironment(bc->environment());
     pp->setWorkingDirectory(bc->buildDirectory().toString());
     pp->setCommand(makeCommand(bc->environment()));
-    pp->setArguments(additionalArguments());
+    pp->setArguments(arguments());
     pp->resolveAll();
 
     BBPM_QDEBUG(displayName() << ", " << bc->buildDirectory().toString());
@@ -123,16 +111,40 @@ bool BuildStep::immutable() const
     return false;
 }
 
-QString BuildStep::additionalArguments() const
-{
-    BBPM_QDEBUG("TODO");
-    return QString();
-}
-
 QVariantMap BuildStep::toMap() const
 {
     BBPM_QDEBUG("TODO");
     return QVariantMap();
+}
+
+bool BuildStep::fromMap(QVariantMap const& map)
+{
+    BBPM_QDEBUG("TODO");
+    // TODO: see CMakeProjectManager
+    // TODO: additionalArguments = map.value(QLatin1String(BOOSTBUILD_ADDITIONAL_ARGUMENTS_KEY)).toString();
+    return ProjectExplorer::BuildStep::fromMap(map);
+}
+
+QString BuildStep::makeCommand(Utils::Environment const& env) const
+{
+    BBPM_QDEBUG("TODO: bjam vs b2 selection");
+    Q_UNUSED(env);
+
+    return QLatin1String(Constants::BB2_COMMAND);
+}
+
+QString BuildStep::additionalArguments() const
+{
+    return arguments_;
+}
+
+void BuildStep::setAdditionalArguments(QString const& list)
+{
+    if (list != arguments_)
+    {
+        arguments_ = list;
+        emit additionalArgumentsChanged(list);
+    }
 }
 
 void BuildStep::setStepType(StepType type)
@@ -232,16 +244,16 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
 
     arguments_ = new QLineEdit(this);
     fl->addRow(tr("Arguments:"), arguments_);
-    arguments_->setText(step_->additionalArguments());
+    arguments_->setText(step_->arguments());
 
     updateDetails();
 
-    connect(arguments_, SIGNAL(textChanged(QString)),
-            step, SLOT(setAdditionalArguments(QString)));
-    connect(step, SIGNAL(additionalArgumentsChanged(QString)),
-            this, SLOT(updateDetails()));
-    connect(step_->project(), SIGNAL(environmentChanged()),
-            this, SLOT(updateDetails()));
+    connect(arguments_, SIGNAL(textChanged(QString))
+          , step, SLOT(setAdditionalArguments(QString)));
+    connect(step, SIGNAL(additionalArgumentsChanged(QString))
+          , this, SLOT(updateDetails()));
+    connect(step_->project(), SIGNAL(environmentChanged())
+          , this, SLOT(updateDetails()));
 }
 
 BuildStepConfigWidget::~BuildStepConfigWidget()
@@ -251,7 +263,7 @@ BuildStepConfigWidget::~BuildStepConfigWidget()
 QString BuildStepConfigWidget::displayName() const
 {
     // TODO: return step_->displayName();
-    return tr("Boost.Build"
+    return tr(Constants::BOOSTBUILD
             , "BoostBuildProjectManager::BuildStepConfigWidget display name.");
 }
 
@@ -281,14 +293,14 @@ void BuildStepConfigWidget::updateDetails()
         params.setEnvironment(bc->environment());
         params.setWorkingDirectory(bc->buildDirectory().toString());
         params.setCommand(step_->makeCommand(bc->environment()));
-        //params.setArguments(arguments);
+        params.setArguments(step_->arguments());
         summary_ = params.summary(displayName());
     }
     else
     {
         summary_ = QLatin1String("<b>")
-                 + ProjectExplorer::ToolChainKitInformation::msgNoToolChainInTarget()
-                 + QLatin1String("</b>");
+            + ProjectExplorer::ToolChainKitInformation::msgNoToolChainInTarget()
+            + QLatin1String("</b>");
     }
 
     emit updateSummary();

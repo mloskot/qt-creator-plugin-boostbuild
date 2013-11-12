@@ -130,12 +130,7 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
 
     BuildStep* buildStep = new BuildStep(buildSteps);
     buildStep->setStepType(BuildStep::Build);
-    //buildStep->setBuildTarget(QLatin1String("all"), true);
-    //TODO: buildStep->setAdditionalArguments(QLatin1String("..."));
     buildSteps->insertStep(0, buildStep);
-    // TODO: Set default target to all
-    //if (project->hasBuildTarget(QLatin1String("all")))
-    //    buildStep->setBuildTarget(QLatin1String("all"), true);
 
     // Clean steps
     ProjectExplorer::BuildStepList* cleanSteps =
@@ -144,8 +139,7 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
 
     BuildStep* cleanStep = new BuildStep(cleanSteps);
     cleanStep->setStepType(BuildStep::Clean);
-    //cleanStep->setBuildTarget(QLatin1String("all"), true);
-    //cleanStep->setAdditionalArguments(QLatin1String("--clean"));
+    cleanStep->setArguments(QLatin1String("--clean"));
     cleanSteps->insertStep(0, cleanStep);
 
     return bc;
