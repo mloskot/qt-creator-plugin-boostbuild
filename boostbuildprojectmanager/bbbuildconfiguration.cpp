@@ -124,23 +124,33 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
 
     // Build steps
-    ProjectExplorer::BuildStepList* buildSteps =
-            bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD);
-    Q_ASSERT(buildSteps);
-
-    BuildStep* buildStep = new BuildStep(buildSteps);
-    buildStep->setStepType(BuildStep::Build);
-    buildSteps->insertStep(0, buildStep);
+    if (ProjectExplorer::BuildStepList* buildSteps =
+            bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD))
+    {
+        BuildStep* step = new BuildStep(buildSteps);
+        step->setStepType(BuildStep::StepType::Build);
+        // TODO: make BuildStep interfere this: setBuildType
+        if (bc->buildType() == BuildConfiguration::Release)
+            step->setAdditionalArguments(QLatin1String("variant=release"));
+        else
+            step->setAdditionalArguments(QLatin1String("variant=debug"));
+        buildSteps->insertStep(0, step);
+    }
 
     // Clean steps
-    ProjectExplorer::BuildStepList* cleanSteps =
-        bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN);
-    Q_ASSERT(cleanSteps);
-
-    BuildStep* cleanStep = new BuildStep(cleanSteps);
-    cleanStep->setStepType(BuildStep::Clean);
-    cleanStep->setAdditionalArguments(QLatin1String("--clean"));
-    cleanSteps->insertStep(0, cleanStep);
+    if (ProjectExplorer::BuildStepList* cleanSteps =
+            bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN))
+    {
+        BuildStep* step = new BuildStep(cleanSteps);
+        step->setStepType(BuildStep::StepType::Clean);
+        // TODO: make BuildStep interfere this: setBuildType
+        if (bc->buildType() == BuildConfiguration::Release)
+            step->setAdditionalArguments(QLatin1String("variant=release"));
+        else
+            step->setAdditionalArguments(QLatin1String("variant=debug"));
+        step->setAdditionalArguments(QLatin1String("--clean"));
+        cleanSteps->insertStep(0, step);
+    }
 
     return bc;
 }
@@ -210,15 +220,13 @@ bool BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) cons
 BuildInfo* BuildConfigurationFactory::createBuildInfo(
     ProjectExplorer::Kit const* k
   , QString const& projectPath
-  , BuildConfiguration::BuildType type) const
+  , BuildConfiguration::BuildType buildVariant) const
 {
     Q_ASSERT(k);
 
     BuildInfo* info = new BuildInfo(this);
-    info->type = type;
+    info->setBuildVariant(buildVariant);
     info->typeName = tr("Build");
-    info->displayName = type == BuildConfiguration::Release
-                        ? tr("Release") : tr("Debug");
     info->buildDirectory = defaultBuildDirectory(projectPath);
     info->kitId = k->id();
     info->supportsShadowBuild = true;

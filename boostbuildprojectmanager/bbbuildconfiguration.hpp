@@ -70,7 +70,7 @@ private:
 
     BuildInfo* createBuildInfo(ProjectExplorer::Kit const* k
                              , QString const& projectPath
-                             , BuildConfiguration::BuildType type) const;
+                             , BuildConfiguration::BuildType buildVariant) const;
 
     Utils::FileName defaultBuildDirectory(QString const& projectPath) const;
 };
