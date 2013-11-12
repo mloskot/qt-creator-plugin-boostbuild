@@ -27,6 +27,7 @@ namespace Internal {
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
+    , stepType_(StepType::Build)
 {
 }
 
@@ -40,6 +41,7 @@ BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
     : AbstractProcessStep(bsl, id)
+    , stepType_(StepType::Build)
 {
 }
 
@@ -71,6 +73,12 @@ bool BuildStep::init()
     pp->setCommand(makeCommand(bc->environment()));
     pp->setArguments(additionalArguments());
     pp->resolveAll();
+
+    // TODO
+    //setOutputParser(new CMakeParser());
+    //if (IOutputParser* parser = target()->kit()->createOutputParser())
+    //   appendOutputParser(parser);
+    //outputParser()->setWorkingDirectory(pp->effectiveWorkingDirectory());
 
     BBPM_QDEBUG(displayName() << ", " << bc->buildDirectory().toString());
     return ProjectExplorer::AbstractProcessStep::init();
@@ -112,8 +120,9 @@ bool BuildStep::immutable() const
 
 QVariantMap BuildStep::toMap() const
 {
+    QVariantMap map(ProjectExplorer::AbstractProcessStep::toMap());
     BBPM_QDEBUG("TODO");
-    return QVariantMap();
+    return map;
 }
 
 bool BuildStep::fromMap(QVariantMap const& map)
@@ -146,7 +155,7 @@ void BuildStep::setAdditionalArguments(QString const& list)
     }
 }
 
-void BuildStep::setStepType(StepType type)
+void BuildStep::setStepType(StepType::Enum type)
 {
     stepType_ = type;
 }
@@ -166,6 +175,8 @@ BuildStepFactory::availableCreationIds(ProjectExplorer::BuildStepList* parent) c
 
 QString BuildStepFactory::displayNameForId(Core::Id const id) const
 {
+    BBPM_QDEBUG("id: " << id.toString());
+
     QString name;
     if (id == Constants::BUILDSTEP_ID)
     {
@@ -184,8 +195,17 @@ bool BuildStepFactory::canCreate(ProjectExplorer::BuildStepList* parent
 ProjectExplorer::BuildStep*
 BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const id)
 {
-    BBPM_QDEBUG("TODO");
-    return canCreate(parent, id) ? new BuildStep(parent) : 0;
+    BBPM_QDEBUG("id: " << id.toString());
+    if (!canCreate(parent, id))
+        return 0;
+
+    BuildStep* step = new BuildStep(parent);
+    if (parent->id() == ProjectExplorer::Constants::BUILDSTEPS_CLEAN)
+    {
+        step->setStepType(BuildStep::StepType::Clean);
+        step->setAdditionalArguments(QLatin1String("--clean"));
+    }
+    return step;
 }
 
 bool BuildStepFactory::canClone(ProjectExplorer::BuildStepList *parent
