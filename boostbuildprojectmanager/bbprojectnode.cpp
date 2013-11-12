@@ -11,6 +11,7 @@ ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
     , project_(project)
     , projectFile_(projectFile)
 {
+    // TODO: setDisplayName(QFileInfo(projectFile->filePath()).completeBaseName());
 }
 
 bool ProjectNode::hasBuildTargets() const

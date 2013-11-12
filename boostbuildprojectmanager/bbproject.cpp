@@ -41,14 +41,15 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     QDir const dir(fileInfo.dir());
 
     projectName_ = fileInfo.absoluteDir().dirName();
-    // TODO: String const displayName(projectName_ + " (" + fileInfo.completeBaseName() + ")");
     filesFileName_ = QFileInfo(dir, fileName_ + QLatin1String(".files")).absoluteFilePath();
 
     projectNode_->setDisplayName(projectName_);
 
     manager_->registerProject(this);
 
-    BBPM_QDEBUG("created project: " << displayName());
+    BBPM_QDEBUG("created project: "
+                << displayName()
+                << " (" << fileInfo.completeBaseName() << ")");
 }
 
 Project::~Project()
