@@ -43,17 +43,17 @@ public:
 
     QString makeCommand(Utils::Environment const& env) const;
 
-    QString additionalArguments() const;
+    QString allArguments() const;
 
     struct StepType { enum Enum { Build, Clean }; };
 
     void setStepType(StepType::Enum type);
 
 public slots:
-    void setAdditionalArguments(QString const& list);
+    void setArguments(QString const& list);
 
 signals:
-    void additionalArgumentsChanged(QString const& list);
+    void argumentsChanged(QString const& list);
 
 protected:
     BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs);
@@ -61,7 +61,7 @@ protected:
 
 private:
     QList<ProjectExplorer::Task> tasks_;
-    QString arguments_;
+    QStringList arguments_;
     StepType::Enum stepType_;
 };
 

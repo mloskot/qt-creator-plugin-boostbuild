@@ -15,6 +15,7 @@
 #include <projectexplorer/toolchain.h>
 #include <utils/environment.h>
 #include <utils/qtcassert.h>
+#include <utils/qtcprocess.h>
 // Qt
 #include <QFormLayout>
 #include <QLineEdit>
@@ -71,7 +72,7 @@ bool BuildStep::init()
     pp->setEnvironment(bc->environment());
     pp->setWorkingDirectory(bc->buildDirectory().toString());
     pp->setCommand(makeCommand(bc->environment()));
-    pp->setArguments(additionalArguments());
+    pp->setArguments(allArguments());
     pp->resolveAll();
 
     // TODO
@@ -141,23 +142,31 @@ QString BuildStep::makeCommand(Utils::Environment const& env) const
     return QLatin1String(Constants::BB2_COMMAND);
 }
 
-QString BuildStep::additionalArguments() const
+QString BuildStep::allArguments() const
 {
-    return arguments_;
+    return Utils::QtcProcess::joinArgs(arguments_);
 }
 
-void BuildStep::setAdditionalArguments(QString const& list)
+void BuildStep::setArguments(QString const& args)
 {
-    if (list != arguments_)
+    Utils::QtcProcess::SplitError err;
+    QStringList argsList = Utils::QtcProcess::splitArgs(args, false, &err);
+    if (err == Utils::QtcProcess::SplitOk)
     {
-        arguments_ = list;
-        emit additionalArgumentsChanged(list);
+        arguments_ = argsList;
+        emit argumentsChanged(list);
     }
 }
 
 void BuildStep::setStepType(StepType::Enum type)
 {
     stepType_ = type;
+    if (stepType_ == StepType::Debug)
+        arguments_.append(QLatin1String("variant=debug"));
+    else if (stepType_ == StepType::Release)
+        arguments_.append(QLatin1String("variant=release"));
+    else
+        Q_ASSERT(!"invalid step type");
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
@@ -203,7 +212,7 @@ BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const 
     if (parent->id() == ProjectExplorer::Constants::BUILDSTEPS_CLEAN)
     {
         step->setStepType(BuildStep::StepType::Clean);
-        step->setAdditionalArguments(QLatin1String("--clean"));
+        step->setArguments(QLatin1String("--clean"));
     }
     return step;
 }
@@ -263,13 +272,13 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
 
     arguments_ = new QLineEdit(this);
     fl->addRow(tr("Arguments:"), arguments_);
-    arguments_->setText(step_->additionalArguments());
+    arguments_->setText(step_->allArguments());
 
     updateDetails();
 
     connect(arguments_, SIGNAL(textChanged(QString))
-          , step, SLOT(setAdditionalArguments(QString)));
-    connect(step, SIGNAL(additionalArgumentsChanged(QString))
+          , step, SLOT(setArguments(QString)));
+    connect(step, SIGNAL(argumentsChanged(QString))
           , this, SLOT(updateDetails()));
     connect(step_->project(), SIGNAL(environmentChanged())
           , this, SLOT(updateDetails()));
@@ -312,7 +321,7 @@ void BuildStepConfigWidget::updateDetails()
         params.setEnvironment(bc->environment());
         params.setWorkingDirectory(bc->buildDirectory().toString());
         params.setCommand(step_->makeCommand(bc->environment()));
-        params.setArguments(step_->additionalArguments());
+        params.setArguments(step_->allArguments());
         summary_ = params.summary(displayName());
     }
     else

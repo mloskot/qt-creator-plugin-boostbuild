@@ -131,9 +131,9 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
         step->setStepType(BuildStep::StepType::Build);
         // TODO: make BuildStep interfere this: setBuildType
         if (bc->buildType() == BuildConfiguration::Release)
-            step->setAdditionalArguments(QLatin1String("variant=release"));
+            step->setArguments(QLatin1String("variant=release"));
         else
-            step->setAdditionalArguments(QLatin1String("variant=debug"));
+            step->setArguments(QLatin1String("variant=debug"));
         buildSteps->insertStep(0, step);
     }
 
@@ -145,10 +145,10 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
         step->setStepType(BuildStep::StepType::Clean);
         // TODO: make BuildStep interfere this: setBuildType
         if (bc->buildType() == BuildConfiguration::Release)
-            step->setAdditionalArguments(QLatin1String("variant=release"));
+            step->setArguments(QLatin1String("variant=release"));
         else
-            step->setAdditionalArguments(QLatin1String("variant=debug"));
-        step->setAdditionalArguments(QLatin1String("--clean"));
+            step->setArguments(QLatin1String("variant=debug"));
+        step->setArguments(QLatin1String("--clean"));
         cleanSteps->insertStep(0, step);
     }
 
