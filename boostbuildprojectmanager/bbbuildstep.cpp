@@ -28,7 +28,6 @@ namespace Internal {
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
 {
-    setDefaultDisplayName(Constants::BOOSTBUILD);
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
@@ -37,18 +36,18 @@ BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
     , arguments_(bs->arguments_)
     , stepType_(bs->stepType_)
 {
-    setDefaultDisplayName(Constants::BOOSTBUILD);
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
     : AbstractProcessStep(bsl, id)
 {
-    setDefaultDisplayName(Constants::BOOSTBUILD);
 }
 
 bool BuildStep::init()
 {
-    m_tasks.clear();
+    setDefaultDisplayName(QLatin1String(Constants::BOOSTBUILD));
+
+    tasks_.clear();
     ProjectExplorer::ToolChain* tc =
         ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit());
     if (!tc)
@@ -60,8 +59,8 @@ bool BuildStep::init()
              , Utils::FileName(), -1
              , ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM);
 
-        m_tasks.append(task);
-        return !m_tasks.empty(); // otherwise the tasks will not get reported
+        tasks_.append(task);
+        return !tasks_.empty(); // otherwise the tasks will not get reported
     }
 
     ProjectExplorer::BuildConfiguration* bc = buildConfiguration();
@@ -70,7 +69,7 @@ bool BuildStep::init()
     pp->setEnvironment(bc->environment());
     pp->setWorkingDirectory(bc->buildDirectory().toString());
     pp->setCommand(makeCommand(bc->environment()));
-    pp->setArguments(arguments());
+    pp->setArguments(additionalArguments());
     pp->resolveAll();
 
     BBPM_QDEBUG(displayName() << ", " << bc->buildDirectory().toString());
@@ -82,7 +81,7 @@ void BuildStep::run(QFutureInterface<bool>& fi)
     BBPM_QDEBUG("running: " << displayName());
 
     bool canContinue = true;
-    foreach (ProjectExplorer::Task const& t, m_tasks)
+    foreach (ProjectExplorer::Task const& t, tasks_)
     {
         addTask(t);
         canContinue = false;
@@ -149,7 +148,7 @@ void BuildStep::setAdditionalArguments(QString const& list)
 
 void BuildStep::setStepType(StepType type)
 {
-    m_stepType = type;
+    stepType_ = type;
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
@@ -244,7 +243,7 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
 
     arguments_ = new QLineEdit(this);
     fl->addRow(tr("Arguments:"), arguments_);
-    arguments_->setText(step_->arguments());
+    arguments_->setText(step_->additionalArguments());
 
     updateDetails();
 
@@ -293,7 +292,7 @@ void BuildStepConfigWidget::updateDetails()
         params.setEnvironment(bc->environment());
         params.setWorkingDirectory(bc->buildDirectory().toString());
         params.setCommand(step_->makeCommand(bc->environment()));
-        params.setArguments(step_->arguments());
+        params.setArguments(step_->additionalArguments());
         summary_ = params.summary(displayName());
     }
     else

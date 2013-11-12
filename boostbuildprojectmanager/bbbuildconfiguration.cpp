@@ -139,7 +139,7 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
 
     BuildStep* cleanStep = new BuildStep(cleanSteps);
     cleanStep->setStepType(BuildStep::Clean);
-    cleanStep->setArguments(QLatin1String("--clean"));
+    cleanStep->setAdditionalArguments(QLatin1String("--clean"));
     cleanSteps->insertStep(0, cleanStep);
 
     return bc;
