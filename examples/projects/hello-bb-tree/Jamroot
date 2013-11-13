@@ -1,0 +1,5 @@
+project hello-bb-tree ;
+
+build-project a1 ;
+build-project a2 ;
+exe hello : hello.cpp ;

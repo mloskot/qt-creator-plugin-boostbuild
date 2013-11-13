@@ -1,0 +1,4 @@
+project b1 ;
+build-project c1 ;
+exe app2 : app2.cpp ;
+
