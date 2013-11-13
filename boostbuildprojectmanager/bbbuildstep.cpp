@@ -154,19 +154,21 @@ void BuildStep::setArguments(QString const& args)
     if (err == Utils::QtcProcess::SplitOk)
     {
         arguments_ = argsList;
-        emit argumentsChanged(list);
+        emit argumentsChanged(args);
     }
 }
 
 void BuildStep::setStepType(StepType::Enum type)
 {
     stepType_ = type;
+    /*
     if (stepType_ == StepType::Debug)
         arguments_.append(QLatin1String("variant=debug"));
     else if (stepType_ == StepType::Release)
         arguments_.append(QLatin1String("variant=release"));
     else
         Q_ASSERT(!"invalid step type");
+        */
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
@@ -256,9 +258,7 @@ BuildStepFactory::restore(ProjectExplorer::BuildStepList* parent
 bool BuildStepFactory::canHandle(ProjectExplorer::BuildStepList* parent) const
 {
     QTC_ASSERT(parent, return false);
-
-    return parent->target()->project()->id() == Constants::PROJECT_ID
-        && parent->id() == ProjectExplorer::Constants::BUILDSTEPS_BUILD;
+    return parent->target()->project()->id() == Constants::PROJECT_ID;
 }
 
 BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
