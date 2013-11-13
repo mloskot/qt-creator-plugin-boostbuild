@@ -4,4 +4,5 @@
 *.json
 
 # build directories
+*build28*
 *build-boostbuildprojectmanager*
