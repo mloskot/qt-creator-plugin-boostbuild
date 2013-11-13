@@ -19,7 +19,7 @@ char const BB2_COMMAND[] = "b2";
 
 char const MIMETYPE_PROJECT[] = "text/x-boostbuild-project";
 char const MIMETYPE_JAMFILE[] = "application/vnd.boostbuild.v2";
-char const MIMETYPE_FILES[]   = "application/vnd.qtcreator.boostbuild.files";
+char const MIMETYPE_JAMFILE_FILES[]   = "application/vnd.qtcreator.boostbuild.files";
 
 char const VARIANT_DEBUG[] = QT_TR_NOOP("Debug");
 char const VARIANT_RELEASE[] = QT_TR_NOOP("Release");

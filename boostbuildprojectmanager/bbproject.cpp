@@ -25,6 +25,7 @@
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+//////////////////////////////////////////////////////////////////////////////////////////
 Project::Project(ProjectManager* manager, QString const& fileName)
     : manager_(manager)
     , fileName_(fileName)
@@ -42,7 +43,6 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     projectName_ = fileInfo.absoluteDir().dirName();
     filesFileName_ = QFileInfo(dir, fileName_ + QLatin1String(".files")).absoluteFilePath();
-
     projectNode_->setDisplayName(projectName_);
 
     manager_->registerProject(this);
@@ -148,6 +148,70 @@ bool Project::fromMap(QVariantMap const& map)
     // TODO: refresh(Everything);
     QTC_ASSERT(hasActiveBuildSettings(), return false);
     return activeTarget() != 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+ProjectFilesFile::ProjectFilesFile(Project* parent, QString const& fileName)
+    : Core::IDocument(parent)
+    , project_(parent)
+{
+    setFilePath(fileName);
+}
+
+bool ProjectFilesFile::save(QString* errorString, QString const& fileName, bool autoSave)
+{
+    Q_UNUSED(errorString)
+    Q_UNUSED(fileName)
+    Q_UNUSED(autoSave)
+    return false;
+}
+
+QString ProjectFilesFile::defaultPath() const
+{
+    return QString();
+}
+
+QString ProjectFilesFile::suggestedFileName() const
+{
+    return QString();
+}
+
+QString ProjectFilesFile::mimeType() const
+{
+    return QLatin1String(Constants::MIMETYPE_JAMFILE_FILES);
+}
+
+bool ProjectFilesFile::isModified() const
+{
+    return false;
+}
+
+bool ProjectFilesFile::isSaveAsAllowed() const
+{
+    return false;
+}
+
+
+Core::IDocument::ReloadBehavior
+ProjectFilesFile::reloadBehavior(Core::IDocument::ChangeTrigger state
+                               , Core::IDocument::ChangeType type) const
+{
+    Q_UNUSED(state)
+    Q_UNUSED(type)
+    return Core::IDocument::BehaviorSilent;
+}
+
+bool ProjectFilesFile::reload(QString* errorString, ReloadFlag flag, ChangeType type)
+{
+    Q_UNUSED(errorString)
+    Q_UNUSED(flag)
+
+    if (type == Core::IDocument::TypePermissions)
+        return true;
+
+    // TODO: reload list of files
+
+    return true;
 }
 
 } // namespace Internal

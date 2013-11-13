@@ -1,18 +1,21 @@
 #ifndef BBPROJECT_HPP_INCLUDED
 #define BBPROJECT_HPP_INCLUDED
 
+// Qt Creator
+#include <coreplugin/idocument.h>
 #include <projectexplorer/project.h>
-
-namespace Core { class IDocument; }
+// Qt
+#include <QString>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
 
 class ProjectFile;
+class ProjectFilesFile;
 class ProjectManager;
 class ProjectNode;
 
-//  Implements a project node in the project explorer.
+// Represents a project node in the project explorer.
 class Project : public ProjectExplorer::Project
 {
     Q_OBJECT
@@ -67,6 +70,30 @@ private:
     // TODO:
     // Add watche for Jamfile changes.
     // Add Jamfile parsing.
+};
+
+// Manages a project files stored in .files file.
+class ProjectFilesFile : public Core::IDocument
+{
+    Q_OBJECT
+
+public:
+    ProjectFilesFile(Project* parent, QString const& fileName);
+
+    bool save(QString* errorString, QString const& fileName, bool autoSave);
+
+    QString defaultPath() const;
+    QString suggestedFileName() const;
+    QString mimeType() const;
+
+    bool isModified() const;
+    bool isSaveAsAllowed() const;
+
+    ReloadBehavior reloadBehavior(ChangeTrigger state, ChangeType type) const;
+    bool reload(QString* errorString, ReloadFlag flag, ChangeType type);
+
+private:
+    Project* project_;
 };
 
 } // namespace Internal

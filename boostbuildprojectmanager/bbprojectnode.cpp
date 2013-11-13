@@ -1,7 +1,10 @@
 #include "bbprojectnode.hpp"
 #include "bbproject.hpp"
+#include "bbutility.hpp"
+// Qt Creator
 #include <coreplugin/idocument.h>
 #include <projectexplorer/projectnodes.h>
+// Qt
 
 namespace BoostBuildProjectManager {
 namespace Internal {
@@ -23,6 +26,8 @@ QList<ProjectExplorer::ProjectNode::ProjectAction>
 ProjectNode::supportedActions(Node* node) const
 {
     Q_UNUSED(node);
+
+    // TODO: Jamfiles (auto)editing not supported, does it make sense to manage files?
     return QList<ProjectNode::ProjectAction>();
 }
 
