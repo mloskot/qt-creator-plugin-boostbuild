@@ -60,7 +60,7 @@ private:
     // where hierarchy of Jamfiles makes hierarchy of projects.
     QString projectName_;
 
-    // Auxiliary file Jamfile.user.files with list of source files.
+    // Auxiliary file Jamfile.${JAMFILE_FILES_EXT} with list of source files.
     // Role of this file is similar to the .files file in the GenericProjectManager,
     // hence managing of this file is implemented in very similar manner.
     QString filesFileName_;

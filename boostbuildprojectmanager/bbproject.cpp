@@ -44,9 +44,11 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     QFileInfo const fileInfo(fileName_);
     QDir const dir(fileInfo.dir());
+    QString const filesFileName(fileName_ + QLatin1String(Constants::JAMFILE_FILES_EXT));
 
     projectName_ = fileInfo.absoluteDir().dirName();
-    filesFileName_ = QFileInfo(dir, fileName_ + QLatin1String(".files")).absoluteFilePath();
+    filesFileName_ = QFileInfo(filesFileName).absoluteFilePath();
+
     projectNode_->setDisplayName(projectName_);
 
     manager_->registerProject(this);
@@ -124,7 +126,7 @@ void Project::refresh()
 
     // Parse project:
     // The manager does not parse Jamfile files.
-    // Only generates and parses list of source files in .user.files
+    // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
     QString const projectDir(projectDirectory());
     filesRaw_ = Utility::readLines(filesFileName());
     files_ = Utility::makeAbsolutePaths(projectDir, filesRaw_);
