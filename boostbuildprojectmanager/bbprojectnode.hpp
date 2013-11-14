@@ -4,6 +4,7 @@
 // Qt Creator
 #include <projectexplorer/projectnodes.h>
 // Qt
+#include <QFutureInterface>
 #include <QList>
 #include <QSet>
 #include <QString>
@@ -46,6 +47,9 @@ public:
     void refresh(QSet<QString> oldFileList);
 
 private:
+
+    void buildFilesList(QString const& baseDir, QFutureInterface<void>& future) const;
+
     ProjectExplorer::FolderNode*
     createFolderByName(QStringList const& components, int end);
 

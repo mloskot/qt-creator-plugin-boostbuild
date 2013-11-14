@@ -10,6 +10,7 @@
 #include <projectexplorer/projectnodes.h>
 #include <utils/qtcassert.h>
 // Qt
+#include <QFutureInterface>
 #include <QHash>
 #include <QList>
 #include <QSet>
@@ -99,12 +100,18 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     // Only do this once, at first run.
     if (oldFileList.isEmpty())
     {
-        using ProjectExplorer::FileNode;
-        FileNode* filesNode = new FileNode(project_->filesFileName()
-                                         , ProjectExplorer::ProjectFileType
-                                         , Constants::FileNotGenerated);
+        //TODO: buildFilesList
 
-        addFileNodes(QList<FileNode*>() << filesNode, this);
+        using ProjectExplorer::FileNode;
+        FileNode* projectFileNode = new FileNode(project_->projectFilePath()
+                                               , ProjectExplorer::ProjectFileType
+                                               , Constants::FileNotGenerated);
+
+        FileNode* filesFileNode = new FileNode(project_->filesFileName()
+                                             , ProjectExplorer::ProjectFileType
+                                             , Constants::FileNotGenerated);
+
+        addFileNodes(QList<FileNode*>() << projectFileNode << filesFileNode, this);
     }
 
     oldFileList.remove(project_->filesFileName());
@@ -234,6 +241,38 @@ ProjectNode::findFolderByName(QStringList const& components, int const end) cons
     }
 
     return 0;
+}
+
+void ProjectNode::buildFilesList(QString const& baseDir
+                               , QFutureInterface<void>& future) const
+{
+    QFileInfoList const fileInfoList =
+        QDir(baseDir).entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+
+    foreach (QFileInfo const& fileInfo, fileInfoList)
+    {
+        // TODO: emit progress, allow cancellation
+        Q_UNUSED(future)
+
+        if (fileInfo.isDir())
+        {
+            if (fileInfo.isSymLink())
+                continue;
+
+            QString const filePath = fileInfo.filePath();
+            buildFilesList(filePath, future);
+
+            BBPM_QDEBUG(filePath);
+            // tree->childDirectories.append(t);
+        }
+        else
+        {
+            QString const filePath(fileInfo.absoluteFilePath());
+            BBPM_QDEBUG(filePath);
+            //m_files.contains(fileInfo.absoluteFilePath)
+            //t->fullPath = fileInfo.filePath();
+        }
+    }
 }
 
 } // namespace Internal
