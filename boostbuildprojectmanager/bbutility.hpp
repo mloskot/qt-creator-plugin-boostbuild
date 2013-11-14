@@ -5,6 +5,12 @@
 #include "bbprojectmanagerconstants.hpp"
 // Qt
 #include <QDebug>
+#include <QHash>
+#include <QSet>
+#include <QString>
+#include <QStringList>
+
+////////////////////////////////////////////////////////////////////////////////
 
 #define BBPM_QDEBUG(msg) \
     qDebug().nospace() \
@@ -17,4 +23,20 @@
 #define BBPM_QDEBUG(msg)
 
 #endif // _DEBUG
+
+////////////////////////////////////////////////////////////////////////////////
+namespace BoostBuildProjectManager {
+namespace Utility {
+
+// Read all lines from a file.
+QStringList readLines(QString const& absoluteFileName);
+
+// Converts the path from relative to the project to an absolute path.
+QStringList makeAbsolutePaths(QString const& basePath, QStringList const& paths);
+
+QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
+                                             , QSet<QString> const& files);
+} // namespace Utility
+} // namespace BoostBuildProjectManager
+
 #endif // BBUTILITY_HPP_INCLUDED
