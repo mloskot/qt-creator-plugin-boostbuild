@@ -1,10 +1,20 @@
 #ifndef BBPROJECTNODE_HPP_INCLUDED
 #define BBPROJECTNODE_HPP_INCLUDED
 
+// Qt Creator
 #include <projectexplorer/projectnodes.h>
+// Qt
+#include <QList>
+#include <QSet>
+#include <QString>
+#include <QStringList>
 
 namespace Core {
 class IDocument;
+}
+
+namespace ProjectExplorer {
+class RunConfiguration;
 }
 
 namespace BoostBuildProjectManager {
@@ -33,7 +43,17 @@ public:
     bool renameFile(QString const& filePath, QString const& newFilePath);
     QList<ProjectExplorer::RunConfiguration*> runConfigurationsFor(Node* node);
 
+    void refresh(QSet<QString> oldFileList);
+
 private:
+    ProjectExplorer::FolderNode*
+    createFolderByName(QStringList const& components, int end);
+
+    ProjectExplorer::FolderNode*
+    findFolderByName(QStringList const& components, int end) const;
+
+    void removeEmptySubFolders(FolderNode* parent, FolderNode* subParent);
+
     Project* project_;
     Core::IDocument* projectFile_;
 };

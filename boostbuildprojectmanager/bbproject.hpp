@@ -24,9 +24,6 @@ public:
     Project(ProjectManager* manager, QString const& fileName);
     ~Project();
 
-    //
-    // ProjectExplorer::Project overridables
-    //
     QString displayName() const;
     Core::Id id() const;
     Core::IDocument* document() const;
@@ -39,6 +36,10 @@ public:
     // See QmakeProjectManager as an example.
     bool needsConfiguration() const;
 
+    void refresh();
+    QString filesFileName() const;
+    QStringList files() const;
+
 protected:
 
     // Deserializes all project data from the map object
@@ -46,6 +47,8 @@ protected:
     bool fromMap(QVariantMap const& map);
 
 private:
+    void parseProject();
+
     // Corresponding project manager passed to the constructor
     ProjectManager* manager_;
 
@@ -55,20 +58,21 @@ private:
     // Directory name of the Jamfile.
     // Boost.Build treats each Jamfile is a separate project,
     // where hierarchy of Jamfiles makes hierarchy of projects.
-    //
-    // TODO: Parse jamfile looking for project rule,
     QString projectName_;
 
-    // Auxiliary file Jamfile.v2.files with list of sources and headers.
-    // Role of this file is similar to the .files file in the Generic Project.
+    // Auxiliary file Jamfile.user.files with list of source files.
+    // Role of this file is similar to the .files file in the GenericProjectManager,
+    // hence managing of this file is implemented in very similar manner.
     QString filesFileName_;
     QStringList files_;
+    QStringList filesRaw_;
+    QHash<QString, QString> entriesRaw_;
 
     ProjectFile* projectFile_;
     ProjectNode* projectNode_;
 
     // TODO:
-    // Add watche for Jamfile changes.
+    // Add watcher for Jamfile changes.
     // Add Jamfile parsing.
 };
 

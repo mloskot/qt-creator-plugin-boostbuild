@@ -1,3 +1,7 @@
+//
+// Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+// Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+//
 #include "bbbuildconfiguration.hpp"
 #include "bbbuildstep.hpp"
 #include "bbproject.hpp"
@@ -20,12 +24,12 @@
 #include <QDir>
 #include <QFileInfo>
 // std
-#include <memory>
+#include <memory> // TODO: Qt's scoped ptr?
 
 namespace BoostBuildProjectManager {
 namespace Internal {
 
-//////////////////////////////////////////////////////////////////////////////////////////
+// Project /////////////////////////////////////////////////////////////////////
 Project::Project(ProjectManager* manager, QString const& fileName)
     : manager_(manager)
     , fileName_(fileName)
@@ -49,7 +53,8 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     BBPM_QDEBUG("created project: "
                 << displayName()
-                << " (" << fileInfo.completeBaseName() << ")");
+                << " (" << fileInfo.completeBaseName() << ")"
+                << " in " << projectDirectory());
 }
 
 Project::~Project()
@@ -85,10 +90,19 @@ ProjectExplorer::ProjectNode* Project::rootProjectNode() const
 
 QStringList Project::files(FilesMode fileMode) const
 {
-    BBPM_QDEBUG(displayName() << "has" << files_.size() << "files");
-
     Q_UNUSED(fileMode);
+    BBPM_QDEBUG(displayName() << "has" << files_.size() << "files");
     return files_;
+}
+
+QStringList Project::files() const
+{
+    return files(FilesMode::AllFiles);
+}
+
+QString Project::filesFileName() const
+{
+    return filesFileName_;
 }
 
 bool Project::needsConfiguration() const
@@ -101,6 +115,23 @@ bool Project::needsConfiguration() const
     // CMakeProjectManager seems to request configuration in fromMap()
 
     return false;
+}
+
+void Project::refresh()
+{
+    QSet<QString> oldFileList;
+    oldFileList = files_.toSet();
+
+    // Parse project:
+    // The manager does not parse Jamfile files.
+    // Only generates and parses list of source files in .user.files
+    QString const projectDir(projectDirectory());
+    filesRaw_ = Utility::readLines(filesFileName());
+    files_ = Utility::makeAbsolutePaths(projectDir, filesRaw_);
+
+    emit fileListChanged();
+
+    projectNode_->refresh(oldFileList);
 }
 
 // This function is called at the very beginning to restore the settings
@@ -145,12 +176,14 @@ bool Project::fromMap(QVariantMap const& map)
                         new QtSupport::CustomExecutableRunConfiguration(t));
     }
 
-    // TODO: refresh(Everything);
     QTC_ASSERT(hasActiveBuildSettings(), return false);
-    return activeTarget() != 0;
+    QTC_ASSERT(activeTarget() != 0, return false);
+
+    refresh();
+    return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
+// ProjectFilesFile ////////////////////////////////////////////////////////////
 ProjectFilesFile::ProjectFilesFile(Project* parent, QString const& fileName)
     : Core::IDocument(parent)
     , project_(parent)

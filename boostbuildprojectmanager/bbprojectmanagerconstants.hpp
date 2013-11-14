@@ -24,6 +24,8 @@ char const MIMETYPE_JAMFILE_FILES[]   = "application/vnd.qtcreator.boostbuild.fi
 char const VARIANT_DEBUG[] = QT_TR_NOOP("Debug");
 char const VARIANT_RELEASE[] = QT_TR_NOOP("Release");
 
+bool const FileNotGenerated = false; // meaningful name for common boolean value
+
 } // namespace Constants
 } // namespace BoostBuildProjectManager
 
