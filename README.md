@@ -1,10 +1,7 @@
 Qt Creator Plugin for Boost.Build
 =================================
 
-TL;TR
------
-
-A Boost.Build project manager plugin for [Qt Creator]().
+A Boost.Build project manager plugin for [Qt Creator](http://qt-project.org/wiki/Category:Tools::QtCreator).
 
 Overview
 --------
