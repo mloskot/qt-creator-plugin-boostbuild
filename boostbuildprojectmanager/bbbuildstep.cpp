@@ -122,7 +122,7 @@ bool BuildStep::immutable() const
 QVariantMap BuildStep::toMap() const
 {
     QVariantMap map(ProjectExplorer::AbstractProcessStep::toMap());
-    BBPM_QDEBUG("TODO");
+    //TODO: BBPM_QDEBUG("TODO");
     return map;
 }
 
