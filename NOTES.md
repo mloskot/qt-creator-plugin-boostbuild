@@ -1,8 +1,20 @@
 # Development notes
 
+There are several auxiliary files generated or used by the Boost.Build project manager to accompany *Jamfile*:
+
+* *.files* - caches list of files (generated, always)
+* *.includes* - list of include paths (provided by user, optional)
+
+The auxiliary files should to use extensions indicating they work with Qt Creator only:
+
+* *.files* file uses *.qtcreator.files*
+* *.includes* file uses *.qtcreator.includes*
+
 ## Open project flow
 
-Open Project dialog triggers sequence of calls: `ProjectExplorerPlugin::openProject` > `Project::fromMap` > `ProjectExplorer::Project::fromMap` which should perform:
+Open Project dialog triggers sequence of calls: 
+`ProjectExplorerPlugin::openProject` > `Project::fromMap` > `ProjectExplorer::Project::fromMap`
+which should perform:
 
 * reading or refreshing?
 * *.files* file
