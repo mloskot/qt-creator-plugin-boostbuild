@@ -38,8 +38,8 @@ Credits
 * Koehne Kai for licensing advise and support on the mailing list.
 * Tobias Hunger for answering Qt Creator API questions on the mailing list.
 * [Tomasz Siekierda](http://sierdzio.com/) for 
-  [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html) the
-  [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
+  [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html)
+  the [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
   and support through qt-creator list.
 
 Authors
