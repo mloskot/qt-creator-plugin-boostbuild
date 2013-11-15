@@ -100,8 +100,6 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     // Only do this once, at first run.
     if (oldFileList.isEmpty())
     {
-        //TODO: buildFilesList
-
         using ProjectExplorer::FileNode;
         FileNode* projectFileNode = new FileNode(project_->projectFilePath()
                                                , ProjectExplorer::ProjectFileType
@@ -190,7 +188,7 @@ void ProjectNode::removeEmptySubFolders(FolderNode* parent, FolderNode* subParen
 
 QString appendPathComponents(QStringList const& components, int const end)
 {
-    QTC_ASSERT(components.size() < end, return QString());
+    //QTC_ASSERT(end < components.size(), return QString());
 
     QString folderName;
     for (int i = 0; i < end; ++i)

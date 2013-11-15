@@ -25,7 +25,7 @@ signals:
     void readingProgress(QString const& fileName);
 
 private slots:
-    void buildFileListFinished();
+    void handleReadingFinished();
 
 private:
     void run(QFutureInterface<void>& future);

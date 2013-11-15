@@ -1,6 +1,7 @@
 #ifndef BBPROJECT_HPP_INCLUDED
 #define BBPROJECT_HPP_INCLUDED
 
+#include "bbprojectreader.hpp"
 // Qt Creator
 #include <coreplugin/idocument.h>
 #include <projectexplorer/project.h>
@@ -47,6 +48,9 @@ protected:
     // Calls the base ProjectExplorer::Project::toMap function first.
     bool fromMap(QVariantMap const& map);
 
+private slots:
+    void handleReadingFinished();
+
 private:
     void parseProject();
 
@@ -71,6 +75,7 @@ private:
 
     ProjectFile* projectFile_;
     ProjectNode* projectNode_;
+    ProjectReader projectReader_;
 
     // TODO:
     // Add watcher for Jamfile changes.

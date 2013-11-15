@@ -36,8 +36,9 @@ namespace Internal {
 Project::Project(ProjectManager* manager, QString const& fileName)
     : manager_(manager)
     , fileName_(fileName)
-    , projectFile_(new ProjectFile(this, fileName_))
+    , projectFile_(new ProjectFile(this, fileName_)) // enables projectDirectory()
     , projectNode_(new ProjectNode(this, projectFile_))
+    , projectReader_(projectDirectory(projectFile_->filePath())) // avoid virtual call
 {
     Q_ASSERT(manager_);
     Q_ASSERT(!fileName_.isEmpty());
@@ -97,6 +98,7 @@ QStringList Project::files(FilesMode fileMode) const
 {
     Q_UNUSED(fileMode);
     BBPM_QDEBUG(displayName() << "has" << files_.size() << "files");
+    //TODO: return projectReader_.files();
     return files_;
 }
 
@@ -134,8 +136,8 @@ void Project::refresh()
     filesRaw_ = Utility::readLines(filesFileName());
     files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
 
-    ProjectReader projectReader(projectPath);
-    projectReader.startReading();
+    // TODO: test
+    filesRaw_ = files_ = projectReader_.files();
 
     emit fileListChanged();
 
@@ -150,6 +152,12 @@ bool Project::fromMap(QVariantMap const& map)
 
     if (!ProjectExplorer::Project::fromMap(map))
         return false;
+
+    // Set up reading of project tree file list.
+    connect(&projectReader_, SIGNAL(readingFinished())
+           ,this, SLOT(handleReadingFinished()));
+
+    projectReader_.startReading();
 
     // NOTE:
     // Call setActiveBuildConfiguration when creating new build configurations.
@@ -187,8 +195,15 @@ bool Project::fromMap(QVariantMap const& map)
     QTC_ASSERT(hasActiveBuildSettings(), return false);
     QTC_ASSERT(activeTarget() != 0, return false);
 
-    refresh();
     return true;
+}
+
+void Project::handleReadingFinished()
+{
+    BBPM_QDEBUG("signalled");
+
+    // TODO: create .files file
+    refresh();
 }
 
 // ProjectFilesFile ////////////////////////////////////////////////////////////
