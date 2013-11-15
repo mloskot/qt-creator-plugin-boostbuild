@@ -58,7 +58,7 @@ private:
     ProjectManager* manager_;
 
     // Jamfile passed to the constructor (Jamroot, Jamfile, Jamfile.v2).
-    QString fileName_;
+    QString filePath_;
 
     // Directory name of the Jamfile.
     // Boost.Build treats each Jamfile is a separate project,
@@ -68,7 +68,7 @@ private:
     // Auxiliary file Jamfile.${JAMFILE_FILES_EXT} with list of source files.
     // Role of this file is similar to the .files file in the GenericProjectManager,
     // hence managing of this file is implemented in very similar manner.
-    QString filesFileName_;
+    QString filesFilePath_;
     QStringList files_;
     QStringList filesRaw_;
     QHash<QString, QString> entriesRaw_;

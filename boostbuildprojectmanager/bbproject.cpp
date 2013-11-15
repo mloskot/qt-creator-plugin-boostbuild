@@ -35,31 +35,36 @@ namespace Internal {
 // Project /////////////////////////////////////////////////////////////////////
 Project::Project(ProjectManager* manager, QString const& fileName)
     : manager_(manager)
-    , fileName_(fileName)
-    , projectFile_(new ProjectFile(this, fileName_)) // enables projectDirectory()
+    , filePath_(fileName)
+    , projectFile_(new ProjectFile(this, filePath_)) // enables projectDirectory()
     , projectNode_(new ProjectNode(this, projectFile_))
     , projectReader_(projectDirectory(projectFile_->filePath())) // avoid virtual call
 {
     Q_ASSERT(manager_);
-    Q_ASSERT(!fileName_.isEmpty());
+    Q_ASSERT(!filePath_.isEmpty());
 
     setProjectContext(Core::Context(Constants::PROJECT_CONTEXT));
     setProjectLanguages(Core::Context(ProjectExplorer::Constants::LANG_CXX));
 
-    QFileInfo const fileInfo(fileName_);
-    QDir const dir(fileInfo.dir());
-    QString const filesFileName(fileName_ + QLatin1String(Constants::JAMFILE_FILES_EXT));
+    QFileInfo const projectFileInfo(filePath_);
+    QDir const projectDir(projectFileInfo.dir());
+    QFileInfo const filesFileInfo(
+        projectDir, filePath_+ QLatin1String(Constants::JAMFILE_FILES_EXT));
 
-    projectName_ = fileInfo.absoluteDir().dirName();
-    filesFileName_ = QFileInfo(filesFileName).absoluteFilePath();
+    projectName_ = projectFileInfo.absoluteDir().dirName();
+    filesFilePath_ = filesFileInfo.absoluteFilePath();
 
     projectNode_->setDisplayName(projectName_);
 
     manager_->registerProject(this);
 
+    // TODO
+    //projectFileWatcher_->addPath(projectFilePath);
+    //connect(projectFileWatcher_, SIGNAL(fileChanged(QString)), this, SLOT(refresh()));
+
     BBPM_QDEBUG("created project: "
                 << displayName()
-                << " (" << fileInfo.completeBaseName() << ")"
+                << " (" << projectFileInfo.completeBaseName() << ")"
                 << " in " << projectDirectory());
 }
 
@@ -109,7 +114,7 @@ QStringList Project::files() const
 
 QString Project::filesFileName() const
 {
-    return filesFileName_;
+    return filesFilePath_;
 }
 
 bool Project::needsConfiguration() const
@@ -202,7 +207,7 @@ void Project::handleReadingFinished()
 
     // Write .files file
     QStringList const sources = projectReader_.files();
-    Core::GeneratedFile generatedFilesFile(filesFileName_);
+    Core::GeneratedFile generatedFilesFile(filesFilePath_);
     generatedFilesFile.setContents(sources.join(QLatin1String("\n")));
 
     QString errorMessage;
