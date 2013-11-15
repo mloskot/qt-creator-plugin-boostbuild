@@ -13,3 +13,18 @@ The idea is extremely simple:
 The plugin is **not** supposed to provide:
 * fully-featured parser for Jamfiles
 * any kind of GUI for editing, updating or managing configuration stored in Jamfiles
+
+Building
+--------
+
+Generally, follow the 
+[Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
+section from the [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html) guide.
+
+Specifically, I used Qt and Qt Creator built from sources in their Git repositories
+* Qt 5 in branch: stable
+* Qt Creator branch: 3.0
+
+So, I recommend to follow these guides:
+1. [Building Qt 5 from Git](http://qt-project.org/wiki/Building_Qt_5_from_Git)
+1. [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
