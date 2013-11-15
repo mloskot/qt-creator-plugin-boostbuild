@@ -1,6 +1,14 @@
 Qt Creator Plugin for Boost.Build
 =================================
 
+TL;TR
+-----
+
+A Boost.Build project manager plugin for [Qt Creator]().
+
+Overview
+--------
+
 The idea is extremely simple:
 
 * **Open** Jamfile as a project in Qt Creator
