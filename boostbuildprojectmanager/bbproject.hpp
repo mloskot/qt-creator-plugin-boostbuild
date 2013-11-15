@@ -6,6 +6,7 @@
 #include <projectexplorer/project.h>
 // Qt
 #include <QString>
+#include <QFutureInterface>
 
 namespace BoostBuildProjectManager {
 namespace Internal {

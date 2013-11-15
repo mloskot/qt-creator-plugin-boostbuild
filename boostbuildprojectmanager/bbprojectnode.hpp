@@ -48,8 +48,6 @@ public:
 
 private:
 
-    void buildFilesList(QString const& baseDir, QFutureInterface<void>& future) const;
-
     ProjectExplorer::FolderNode*
     createFolderByName(QStringList const& components, int end);
 

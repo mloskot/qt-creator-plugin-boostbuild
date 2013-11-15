@@ -9,8 +9,10 @@
 #include "bbprojectmanager.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbprojectnode.hpp"
+#include "bbprojectreader.hpp"
 #include "bbutility.hpp"
 // Qt Creator
+#include <coreplugin/progressmanager/progressmanager.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <projectexplorer/kit.h>
@@ -20,6 +22,7 @@
 #include <projectexplorer/projectnodes.h>
 #include <projectexplorer/target.h>
 #include <qtsupport/customexecutablerunconfiguration.h>
+#include <utils/QtConcurrentTools>
 // Qt
 #include <QDir>
 #include <QFileInfo>
@@ -127,9 +130,12 @@ void Project::refresh()
     // Parse project:
     // The manager does not parse Jamfile files.
     // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
-    QString const projectDir(projectDirectory());
+    QString const projectPath(projectDirectory());
     filesRaw_ = Utility::readLines(filesFileName());
-    files_ = Utility::makeAbsolutePaths(projectDir, filesRaw_);
+    files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
+
+    ProjectReader projectReader(projectPath);
+    projectReader.startReading();
 
     emit fileListChanged();
 

@@ -14,6 +14,8 @@ char const PROJECT_ID[]      = "BoostBuildProjectManager.Project";
 char const BUILDCONFIGURATION_ID[] = "BoostBuildProjectManager.BuildConfiguration";
 char const BUILDSTEP_ID[] = "BoostBuildProjectManager.BuildStep";
 
+char const TASK_PROJECT_READING[] = "BoostBuildProjectManager.Task.ProjectReading";
+
 char const BJAM_COMMAND[] = "bjam";
 char const BB2_COMMAND[] = "b2";
 

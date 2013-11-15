@@ -243,37 +243,5 @@ ProjectNode::findFolderByName(QStringList const& components, int const end) cons
     return 0;
 }
 
-void ProjectNode::buildFilesList(QString const& baseDir
-                               , QFutureInterface<void>& future) const
-{
-    QFileInfoList const fileInfoList =
-        QDir(baseDir).entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
-
-    foreach (QFileInfo const& fileInfo, fileInfoList)
-    {
-        // TODO: emit progress, allow cancellation
-        Q_UNUSED(future)
-
-        if (fileInfo.isDir())
-        {
-            if (fileInfo.isSymLink())
-                continue;
-
-            QString const filePath = fileInfo.filePath();
-            buildFilesList(filePath, future);
-
-            BBPM_QDEBUG(filePath);
-            // tree->childDirectories.append(t);
-        }
-        else
-        {
-            QString const filePath(fileInfo.absoluteFilePath());
-            BBPM_QDEBUG(filePath);
-            //m_files.contains(fileInfo.absoluteFilePath)
-            //t->fullPath = fileInfo.filePath();
-        }
-    }
-}
-
 } // namespace Internal
 } // namespace BoostBuildProjectManager
