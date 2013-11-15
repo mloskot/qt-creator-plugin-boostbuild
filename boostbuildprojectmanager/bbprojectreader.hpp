@@ -19,7 +19,6 @@ public:
     void startReading();
     QStringList files() const;
 
-
 signals:
     void readingFinished();
     void readingProgress(QString const& fileName);
