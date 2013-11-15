@@ -4,17 +4,14 @@ Qt Creator Plugin for Boost.Build
 The idea is extremely simple:
 
 * **Open** Jamfile as a project in Qt Creator
-
 * Run **Build**
-
 * **Parse** ```b2``` command output to enable jumps to file/line of compilation error 
   * It turns out, that this simple feature has grown to more beefy requirements of 
     project loading, project tree reading, build configuration and build steps juggling.
 
 The plugin is **not** supposed to provide:
 
-* fully-featured parser for Jamfiles
-  
+* fully-featured parser for Jamfiles 
 * any kind of GUI for editing, updating or managing configuration stored in Jamfiles
 
 Building
@@ -40,10 +37,12 @@ Credits
 * André Pönitz for help on qt-creator mailing list
 * Koehne Kai for licensing advise and support on the mailing list.
 * Tobias Hunger for answering Qt Creator API questions on the mailing list.
-* [Tomasz Siekierda](http://sierdzio.com/) for [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
+* [Tomasz Siekierda](http://sierdzio.com/) for 
+  [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html) the
+  [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
   and support through qt-creator list.
 
-Author
-------
+Authors
+-------
 
-* Mateusz Loskot (mateusz@loskot.net)
+* [Mateusz Loskot](http://mateusz.loskot.net) (mateusz@loskot.net)
