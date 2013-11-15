@@ -29,7 +29,10 @@ private slots:
 
 private:
     void run(QFutureInterface<void>& future);
-    void buildFilesList(QString const& baseDir, QFutureInterface<void>& future);
+
+    void buildFilesList(QString const& baseDir
+                      , QStringList const& suffixes
+                      , QFutureInterface<void>& future);
 
     QString projectPath_;
     QStringList files_;

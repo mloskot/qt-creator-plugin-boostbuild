@@ -6,6 +6,7 @@
 #include "bbprojectmanagerconstants.hpp"
 #include "bbutility.hpp"
 // Qt Creator
+#include <coreplugin/mimedatabase.h>
 #include <coreplugin/progressmanager/progressmanager.h>
 #include <utils/QtConcurrentTools>
 // Qt
@@ -56,14 +57,20 @@ void ProjectReader::run(QFutureInterface<void>& future)
 
     futureCount_ = 0;
     files_.clear();
-    buildFilesList(projectPath_, future);
+
+    // TODO: refine suffixes: all text only or specific C/C++ types
+    QStringList const suffixes = Core::MimeDatabase::suffixes();
+    buildFilesList(projectPath_, suffixes, future);
 
     future.reportFinished();
 }
 
 void ProjectReader::buildFilesList(QString const& basePath
+                                 , QStringList const& suffixes
                                  , QFutureInterface<void>& future)
 {
+    Q_ASSERT(!suffixes.isEmpty());
+
     QFileInfoList const fileInfoList =
         QDir(basePath).entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
@@ -82,18 +89,23 @@ void ProjectReader::buildFilesList(QString const& basePath
             if (fileInfo.isSymLink())
                 continue;
 
-            QString const filePath = fileInfo.filePath();
-            buildFilesList(filePath, future);
+            QString const filePath= fileInfo.filePath();
+            buildFilesList(filePath, suffixes, future);
 
-            BBPM_QDEBUG(filePath);
-            files_.append(filePath);
+            // TODO: Performance of this test?!
+            if (!files_.contains(filePath))
+                files_.append(filePath);
         }
         else
         {
-            QString const filePath(fileInfo.absoluteFilePath());
-            BBPM_QDEBUG(filePath);
-            files_.append(filePath);
+            QString const filePath = fileInfo.absoluteFilePath();
+
+            // Add only files of requested types
+            if (suffixes.contains(fileInfo.suffix()))
+                files_.append(filePath);
         }
+
+
     }
 }
 

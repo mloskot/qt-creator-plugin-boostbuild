@@ -12,9 +12,10 @@
 #include "bbprojectreader.hpp"
 #include "bbutility.hpp"
 // Qt Creator
-#include <coreplugin/progressmanager/progressmanager.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
+#include <coreplugin/generatedfile.h>
+#include <coreplugin/progressmanager/progressmanager.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/kitmanager.h>
 #include <projectexplorer/project.h>
@@ -26,6 +27,7 @@
 // Qt
 #include <QDir>
 #include <QFileInfo>
+#include <QMessageBox>
 // std
 #include <memory> // TODO: Qt's scoped ptr?
 
@@ -136,9 +138,6 @@ void Project::refresh()
     filesRaw_ = Utility::readLines(filesFileName());
     files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
 
-    // TODO: test
-    filesRaw_ = files_ = projectReader_.files();
-
     emit fileListChanged();
 
     projectNode_->refresh(oldFileList);
@@ -157,6 +156,7 @@ bool Project::fromMap(QVariantMap const& map)
     connect(&projectReader_, SIGNAL(readingFinished())
            ,this, SLOT(handleReadingFinished()));
 
+    // TODO: If .files file exists, do not generate but read it.
     projectReader_.startReading();
 
     // NOTE:
@@ -202,7 +202,18 @@ void Project::handleReadingFinished()
 {
     BBPM_QDEBUG("signalled");
 
-    // TODO: create .files file
+    // Write .files file
+    QStringList const sources = projectReader_.files();
+    Core::GeneratedFile generatedFilesFile(filesFileName_);
+    generatedFilesFile.setContents(sources.join(QLatin1String("\n")));
+
+    QString errorMessage;
+    if (!generatedFilesFile.write(&errorMessage))
+    {
+        QMessageBox::critical(0, tr("File Generation Failure"), errorMessage);
+        return;
+    }
+
     refresh();
 }
 
