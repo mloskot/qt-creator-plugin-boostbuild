@@ -28,8 +28,6 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
-// std
-#include <memory> // TODO: Qt's scoped ptr?
 
 namespace BoostBuildProjectManager {
 namespace Internal {
