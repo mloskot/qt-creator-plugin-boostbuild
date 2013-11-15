@@ -21,10 +21,19 @@ Generally, follow the
 [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
 section from the [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html) guide.
 
-Specifically, I used Qt and Qt Creator built from sources in their Git repositories
+Specifically, I used Qt and Qt Creator built from sources in their Git repositories:
 * Qt 5 in branch: stable
 * Qt Creator branch: 3.0
 
 So, I recommend to follow these guides:
 1. [Building Qt 5 from Git](http://qt-project.org/wiki/Building_Qt_5_from_Git)
 1. [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
+
+Credits
+-------
+
+* André Pönitz for help on qt-creator mailing list
+* Koehne Kai for licensing advise and support on the mailing list.
+* Tobias Hunger for answering Qt Creator API questions on the mailing list.
+* [Tomasz Siekierda](http://sierdzio.com/) for [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
+  and support through qt-creator list.
