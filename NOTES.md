@@ -2,10 +2,7 @@
 
 ## Open project flow
 
-* Open Project dialog triggers sequence of calls:
-  `ProjectExplorerPlugin::openProject` >
-  `Project::fromMap` > 
-  `ProjectExplorer::Project::fromMap`
+* Open Project dialog triggers sequence of calls: `ProjectExplorerPlugin::openProject` > `Project::fromMap` > `ProjectExplorer::Project::fromMap`
   * reading or refreshing?
     * *.files* file
       1. Does .files file exist? * No, go to 2. Yes, go to 3.
