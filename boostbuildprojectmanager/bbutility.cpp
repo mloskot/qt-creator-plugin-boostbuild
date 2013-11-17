@@ -68,6 +68,13 @@ QStringList makeAbsolutePaths(QString const& basePath, QStringList const& paths)
     return absolutePaths;
 }
 
+QStringList& makeRelativePaths(QString const& basePath, QStringList& paths)
+{
+    QDir const baseDir(basePath);
+    for (QStringList::iterator it = paths.begin(), end = paths.end(); it != end; ++it)
+        *it = baseDir.relativeFilePath(*it);
+    return paths;
+}
 QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
                                              , QSet<QString> const& files)
 {

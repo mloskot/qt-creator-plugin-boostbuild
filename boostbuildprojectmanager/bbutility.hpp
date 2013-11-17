@@ -34,6 +34,8 @@ QStringList readLines(QString const& absoluteFileName);
 // Converts the path from relative to the project to an absolute path.
 QStringList makeAbsolutePaths(QString const& basePath, QStringList const& paths);
 
+QStringList& makeRelativePaths(QString const& basePath, QStringList& paths);
+
 QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
                                              , QSet<QString> const& files);
 } // namespace Utility
