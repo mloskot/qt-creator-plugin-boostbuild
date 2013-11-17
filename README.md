@@ -32,8 +32,8 @@ section from the [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator
 
 Specifically, I used Qt and Qt Creator built from sources in their Git repositories:
 
-* Qt 5 in branch: stable
-* Qt Creator branch: 3.0
+* Qt 5 from branch: stable
+* Qt Creator from branch: 3.0
 
 So, I recommend to follow these guides:
 
