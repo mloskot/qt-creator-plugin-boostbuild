@@ -109,7 +109,12 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
                                              , ProjectExplorer::ProjectFileType
                                              , Constants::FileNotGenerated);
 
-        addFileNodes(QList<FileNode*>() << projectFileNode << filesFileNode, this);
+        FileNode* includesFileNode = new FileNode(project_->includesFilePath()
+                                             , ProjectExplorer::ProjectFileType
+                                             , Constants::FileNotGenerated);
+
+        addFileNodes(QList<FileNode*>()
+            << projectFileNode << filesFileNode << includesFileNode, this);
     }
 
     oldFileList.remove(project_->filesFilePath());

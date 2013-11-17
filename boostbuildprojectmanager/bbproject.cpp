@@ -15,6 +15,7 @@
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/generatedfile.h>
+#include <coreplugin/mimedatabase.h>
 #include <coreplugin/progressmanager/progressmanager.h>
 #include <cpptools/cppmodelmanagerinterface.h>
 #include <cpptools/cpptoolsconstants.h>
@@ -258,25 +259,33 @@ bool Project::fromMap(QVariantMap const& map)
 
 void Project::handleReadingFinished()
 {
-    // Generate .files file, all paths should be relative
     QDir const projectDir(projectDirectory());
-    QStringList sources = projectReader_.files();
-    for (QStringList::iterator it = sources.begin(), end = sources.end(); it != end; ++it)
-        *it = projectDir.relativeFilePath(*it);
-
-    Core::GeneratedFile generatedFilesFile(filesFilePath_);
-    generatedFilesFile.setContents(sources.join(QLatin1String("\n")));
-
     QString errorMessage;
-    if (generatedFilesFile.write(&errorMessage))
-    {
-        // Auxiliary files ready, complete refreshing project
-        refresh();
-    }
-    else
+
+    // Generate .files file, all paths should be relative
+    QStringList sources = projectReader_.files();
+    Utility::makeRelativePaths(projectDir.absolutePath(), sources);
+
+    Core::GeneratedFile gfFilesFile(filesFilePath());
+    gfFilesFile.setContents(sources.join(QLatin1String("\n")));
+    if (!gfFilesFile.write(&errorMessage))
     {
         QMessageBox::critical(0, tr("File Generation Failure"), errorMessage);
+        return;
     }
+
+    // Generate .includes file with all directories with headers
+    QStringList const includePaths = projectReader_.includePaths();
+    Core::GeneratedFile gfIncludesFile(includesFilePath());
+    gfIncludesFile.setContents(includePaths.join(QLatin1String("\n")));
+    if (!gfIncludesFile.write(&errorMessage))
+    {
+        QMessageBox::critical(0, tr("File Generation Failure"), errorMessage);
+        return;
+    }
+
+    // Auxiliary files ready, complete refreshing project
+    refresh();
 }
 
 // ProjectFilesFile ////////////////////////////////////////////////////////////

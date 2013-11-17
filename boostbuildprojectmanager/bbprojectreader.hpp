@@ -18,6 +18,7 @@ public:
 
     void startReading();
     QStringList files() const;
+    QStringList includePaths() const;
 
 signals:
     void readingFinished();
@@ -31,10 +32,12 @@ private:
 
     void buildFilesList(QString const& baseDir
                       , QStringList const& suffixes
+                      , QStringList const& headerFilters
                       , QFutureInterface<void>& future);
 
     QString projectPath_;
     QStringList files_;
+    QStringList includePaths_;
     QFutureWatcher<void> futureWatcher_;
     int futureCount_;
 };

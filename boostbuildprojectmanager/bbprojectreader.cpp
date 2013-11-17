@@ -57,20 +57,35 @@ void ProjectReader::run(QFutureInterface<void>& future)
 
     futureCount_ = 0;
     files_.clear();
+    includePaths_.clear();
 
     // TODO: refine suffixes: all text only or specific C/C++ types
     QStringList const suffixes = Core::MimeDatabase::suffixes();
-    buildFilesList(projectPath_, suffixes, future);
+
+    QStringList headerFilters;
+    QStringList const headerMimes
+        = QStringList() << QLatin1String("text/x-chdr") << QLatin1String("text/x-c++hdr");
+    foreach (QString const& headerMime, headerMimes)
+    {
+        Core::MimeType mime = Core::MimeDatabase::findByType(headerMime);
+        foreach (Core::MimeGlobPattern const& gp, mime.globPatterns())
+            headerFilters.append(gp.pattern());
+    }
+
+    buildFilesList(projectPath_, suffixes, headerFilters, future);
 
     future.reportFinished();
 }
 
 void ProjectReader::buildFilesList(QString const& basePath
                                  , QStringList const& suffixes
+                                 , QStringList const& headerFilters
                                  , QFutureInterface<void>& future)
 {
     Q_ASSERT(!suffixes.isEmpty());
+    Q_ASSERT(!headerFilters.isEmpty());
 
+    QDir const projectDir(projectPath_);
     QFileInfoList const fileInfoList =
         QDir(basePath).entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
@@ -89,14 +104,22 @@ void ProjectReader::buildFilesList(QString const& basePath
             if (fileInfo.isSymLink())
                 continue;
 
-            QString const filePath= fileInfo.filePath();
-            buildFilesList(filePath, suffixes, future);
+            // If any C/C++ headers in this directory, add it to include paths,
+            // used for C/C++ parsing only.
+            QDir const thisDir(fileInfo.dir());
+            if (!thisDir.entryList(headerFilters, QDir::Files).isEmpty())
+            {
+                QString const relative = projectDir.relativeFilePath(thisDir.path());
+                includePaths_.append(relative.isEmpty() ? QLatin1String(".") : relative);
+            }
+
+            // Continue looking for sources
+            buildFilesList(fileInfo.filePath(), suffixes, headerFilters, future);
         }
         else
         {
+            // Add file to sources list, only of requested types.
             QString const filePath = fileInfo.absoluteFilePath();
-
-            // Add only files of requested types
             if (suffixes.contains(fileInfo.suffix()))
             {
                 // TODO: Performance of this test?!
@@ -112,6 +135,11 @@ void ProjectReader::buildFilesList(QString const& basePath
 QStringList ProjectReader::files() const
 {
     return files_;
+}
+
+QStringList ProjectReader::includePaths() const
+{
+    return includePaths_;
 }
 
 } // namespace Internal
