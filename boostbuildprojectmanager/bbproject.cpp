@@ -154,6 +154,10 @@ void Project::refresh()
         filesRaw_ = Utility::readLines(filesFilePath());
         files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
 
+        QStringList includePaths =
+            Utility::makeAbsolutePaths(projectPath,
+                Utility::readLines(includesFilePath()));
+
         emit fileListChanged();
 
         projectNode_->refresh(oldFileList);
@@ -169,13 +173,7 @@ void Project::refresh()
             cppPart->displayName = displayName();
             cppPart->projectFile = projectFilePath();
             cppPart->includePaths += projectDirectory();
-
-            if (QFileInfo(includesFilePath_).exists())
-            {
-                cppPart->includePaths
-                    += Utility::makeAbsolutePaths(projectPath
-                    , Utility::readLines(includesFilePath()));
-            }
+            cppPart->includePaths += includePaths;
 
             cppPart->cxxVersion = CppTools::ProjectPart::CXX11;
             // TODO: waiting for Jamfile parser
