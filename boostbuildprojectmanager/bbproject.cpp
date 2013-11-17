@@ -258,8 +258,12 @@ bool Project::fromMap(QVariantMap const& map)
 
 void Project::handleReadingFinished()
 {
-    // Generate .files file
-    QStringList const sources = projectReader_.files();
+    // Generate .files file, all paths should be relative
+    QDir const projectDir(projectDirectory());
+    QStringList sources = projectReader_.files();
+    for (QStringList::iterator it = sources.begin(), end = sources.end(); it != end; ++it)
+        *it = projectDir.relativeFilePath(*it);
+
     Core::GeneratedFile generatedFilesFile(filesFilePath_);
     generatedFilesFile.setContents(sources.join(QLatin1String("\n")));
 
