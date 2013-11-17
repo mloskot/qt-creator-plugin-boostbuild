@@ -2,6 +2,7 @@
 *.pro.user*
 *.pluginspec
 *.json
+*.autosave
 
 # build directories
 *build28*
