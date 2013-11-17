@@ -91,10 +91,6 @@ void ProjectReader::buildFilesList(QString const& basePath
 
             QString const filePath= fileInfo.filePath();
             buildFilesList(filePath, suffixes, future);
-
-            // TODO: Performance of this test?!
-            if (!files_.contains(filePath))
-                files_.append(filePath);
         }
         else
         {
@@ -102,7 +98,11 @@ void ProjectReader::buildFilesList(QString const& basePath
 
             // Add only files of requested types
             if (suffixes.contains(fileInfo.suffix()))
-                files_.append(filePath);
+            {
+                // TODO: Performance of this test?!
+                if (!files_.contains(filePath))
+                    files_.append(filePath);
+            }
         }
 
 
