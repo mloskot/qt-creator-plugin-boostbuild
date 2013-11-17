@@ -113,9 +113,13 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     }
 
     oldFileList.remove(project_->filesFilePath());
+    oldFileList.remove(project_->includesFilePath());
+
     QSet<QString> newFileList = project_->files().toSet();
     newFileList.remove(project_->filesFilePath());
+    newFileList.remove(project_->includesFilePath());
 
+    // Calculate set of added and removed files
     QSet<QString> removed = oldFileList;
     removed.subtract(newFileList);
     QSet<QString> added = newFileList;
@@ -125,25 +129,29 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     typedef FilesInPaths::ConstIterator FilesInPathsIterator;
     using ProjectExplorer::FileNode;
     using ProjectExplorer::FileType;
-
     QString const baseDir = QFileInfo(path()).absolutePath();
-    FilesInPaths filesInPaths = Utility::sortFilesIntoPaths(baseDir, added);
 
+    // Process all added files
+    FilesInPaths filesInPaths = Utility::sortFilesIntoPaths(baseDir, added);
     for (FilesInPathsIterator it = filesInPaths.constBegin(),
          cend = filesInPaths.constEnd(); it != cend; ++it)
     {
+        // Create node
         QString const& filePath = it.key();
-        QStringList components;
+        QStringList parts;
         if (!filePath.isEmpty())
-            components = filePath.split(QLatin1Char('/'));
-        FolderNode *folder = findFolderByName(components, components.size());
-        if (!folder)
-            folder = createFolderByName(components, components.size());
+            parts = filePath.split(QLatin1Char('/'));
 
+        FolderNode* folder = findFolderByName(parts, parts.size());
+        if (!folder)
+            folder = createFolderByName(parts, parts.size());
+
+        // Attach content to node
         QList<FileNode*> fileNodes;
         foreach (QString const& file, it.value())
         {
-            FileType fileType = ProjectExplorer::SourceType; // ### FIXME
+            // TODO: handle various types, mime to FileType
+            FileType fileType = ProjectExplorer::SourceType;
             FileNode* fileNode = new FileNode(file, fileType, Constants::FileNotGenerated);
             fileNodes.append(fileNode);
         }
@@ -151,15 +159,17 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
         addFileNodes(fileNodes, folder);
     }
 
+    // Process all removed files
     filesInPaths = Utility::sortFilesIntoPaths(baseDir, removed);
     for (FilesInPathsIterator it = filesInPaths.constBegin(),
          cend = filesInPaths.constEnd(); it != cend; ++it)
     {
+        // Create node
         QString const& filePath = it.key();
-        QStringList components;
+        QStringList parts;
         if (!filePath.isEmpty())
-            components = filePath.split(QLatin1Char('/'));
-        FolderNode* folder = findFolderByName(components, components.size());
+            parts = filePath.split(QLatin1Char('/'));
+        FolderNode* folder = findFolderByName(parts, parts.size());
 
         QList<FileNode*> fileNodes;
         foreach (QString const& file, it.value())
@@ -172,6 +182,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
         removeFileNodes(fileNodes, folder);
     }
 
+    // Clean up
     foreach (FolderNode* fn, subFolderNodes())
         removeEmptySubFolders(this, fn);
 
@@ -188,8 +199,6 @@ void ProjectNode::removeEmptySubFolders(FolderNode* parent, FolderNode* subParen
 
 QString appendPathComponents(QStringList const& components, int const end)
 {
-    //QTC_ASSERT(end < components.size(), return QString());
-
     QString folderName;
     for (int i = 0; i < end; ++i)
     {
