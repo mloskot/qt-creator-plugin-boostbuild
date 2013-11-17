@@ -39,8 +39,11 @@ public:
     bool needsConfiguration() const;
 
     void refresh();
-    QString filesFileName() const;
+
+    QString filesFilePath() const;
     QStringList files() const;
+
+    QString includesFilePath() const;
 
 protected:
 
@@ -52,7 +55,6 @@ private slots:
     void handleReadingFinished();
 
 private:
-    void parseProject();
 
     // Corresponding project manager passed to the constructor
     ProjectManager* manager_;
@@ -72,6 +74,9 @@ private:
     QStringList files_;
     QStringList filesRaw_;
     QHash<QString, QString> entriesRaw_;
+
+    // Auxiliary file Jamfile.${JAMFILE_INCLUDES_EXT} with list of source files.
+    QString includesFilePath_;
 
     ProjectFile* projectFile_;
     ProjectNode* projectNode_;

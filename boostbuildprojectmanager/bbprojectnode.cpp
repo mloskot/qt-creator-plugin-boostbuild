@@ -105,16 +105,16 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
                                                , ProjectExplorer::ProjectFileType
                                                , Constants::FileNotGenerated);
 
-        FileNode* filesFileNode = new FileNode(project_->filesFileName()
+        FileNode* filesFileNode = new FileNode(project_->filesFilePath()
                                              , ProjectExplorer::ProjectFileType
                                              , Constants::FileNotGenerated);
 
         addFileNodes(QList<FileNode*>() << projectFileNode << filesFileNode, this);
     }
 
-    oldFileList.remove(project_->filesFileName());
+    oldFileList.remove(project_->filesFilePath());
     QSet<QString> newFileList = project_->files().toSet();
-    newFileList.remove(project_->filesFileName());
+    newFileList.remove(project_->filesFilePath());
 
     QSet<QString> removed = oldFileList;
     removed.subtract(newFileList);

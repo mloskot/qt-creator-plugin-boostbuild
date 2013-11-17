@@ -16,7 +16,10 @@
 #include <coreplugin/icore.h>
 #include <coreplugin/generatedfile.h>
 #include <coreplugin/progressmanager/progressmanager.h>
+#include <cpptools/cppmodelmanagerinterface.h>
+#include <cpptools/cpptoolsconstants.h>
 #include <projectexplorer/kit.h>
+#include <projectexplorer/kitinformation.h>
 #include <projectexplorer/kitmanager.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/projectexplorerconstants.h>
@@ -48,11 +51,11 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     QFileInfo const projectFileInfo(filePath_);
     QDir const projectDir(projectFileInfo.dir());
-    QFileInfo const filesFileInfo(
-        projectDir, filePath_+ QLatin1String(Constants::JAMFILE_FILES_EXT));
-
     projectName_ = projectFileInfo.absoluteDir().dirName();
-    filesFilePath_ = filesFileInfo.absoluteFilePath();
+    filesFilePath_ = QFileInfo(projectDir, filePath_
+        + QLatin1String(Constants::JAMFILE_FILES_EXT)).absoluteFilePath();
+    includesFilePath_ = QFileInfo(projectDir, filePath_
+        + QLatin1String(Constants::JAMFILE_INCLUDES_EXT)).absoluteFilePath();
 
     projectNode_->setDisplayName(projectName_);
 
@@ -112,9 +115,16 @@ QStringList Project::files() const
     return files(FilesMode::AllFiles);
 }
 
-QString Project::filesFileName() const
+QString Project::filesFilePath() const
 {
+    Q_ASSERT(!filesFilePath_.isEmpty());
     return filesFilePath_;
+}
+
+QString Project::includesFilePath() const
+{
+    Q_ASSERT(!includesFilePath_.isEmpty());
+    return includesFilePath_;
 }
 
 bool Project::needsConfiguration() const
@@ -131,19 +141,67 @@ bool Project::needsConfiguration() const
 
 void Project::refresh()
 {
-    QSet<QString> oldFileList;
-    oldFileList = files_.toSet();
+    if (QFileInfo(filesFilePath()).exists())
+    {
+        QSet<QString> oldFileList;
+        oldFileList = files_.toSet();
 
-    // Parse project:
-    // The manager does not parse Jamfile files.
-    // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
-    QString const projectPath(projectDirectory());
-    filesRaw_ = Utility::readLines(filesFileName());
-    files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
+        // Parse project:
+        // The manager does not parse Jamfile files.
+        // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
+        QString const projectPath(projectDirectory());
+        filesRaw_ = Utility::readLines(filesFilePath());
+        files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
 
-    emit fileListChanged();
+        emit fileListChanged();
 
-    projectNode_->refresh(oldFileList);
+        projectNode_->refresh(oldFileList);
+
+        using CppTools::CppModelManagerInterface;
+        if (CppModelManagerInterface* cppManager = CppModelManagerInterface::instance())
+        {
+            CppModelManagerInterface::ProjectInfo cppInfo = cppManager->projectInfo(this);
+            cppInfo.clearProjectParts();
+
+            CppTools::ProjectPart::Ptr cppPart(new CppTools::ProjectPart());
+            cppPart->project = this;
+            cppPart->displayName = displayName();
+            cppPart->projectFile = projectFilePath();
+            cppPart->includePaths += projectDirectory();
+
+            if (QFileInfo(includesFilePath_).exists())
+            {
+                cppPart->includePaths
+                    += Utility::makeAbsolutePaths(projectPath
+                    , Utility::readLines(includesFilePath()));
+            }
+
+            cppPart->cxxVersion = CppTools::ProjectPart::CXX11;
+            // TODO: waiting for Jamfile parser
+            //cppPart->defines +=
+
+            ProjectExplorer::Kit const* k = activeTarget()
+                ? activeTarget()->kit() : ProjectExplorer::KitManager::defaultKit();
+            if (ProjectExplorer::ToolChain* tc
+                    = ProjectExplorer::ToolChainKitInformation::toolChain(k))
+            {
+                // TODO: form GenericProjectmanager: FIXME: Can we do better?
+                QStringList cxxflags;
+                cppPart->evaluateToolchain(
+                    tc, cxxflags, cxxflags
+                  , ProjectExplorer::SysRootKitInformation::sysRoot(k));
+            }
+        }
+    }
+    else
+    {
+        // Read project tree on filesystem.
+
+        connect(&projectReader_, SIGNAL(readingFinished())
+              , this, SLOT(handleReadingFinished()));
+
+        projectReader_.startReading();
+    }
 }
 
 // This function is called at the very beginning to restore the settings
@@ -155,16 +213,10 @@ bool Project::fromMap(QVariantMap const& map)
     if (!ProjectExplorer::Project::fromMap(map))
         return false;
 
-    // Set up reading of project tree file list.
-    connect(&projectReader_, SIGNAL(readingFinished())
-           ,this, SLOT(handleReadingFinished()));
+    // TODO: Custom key/value from map
 
-    // TODO: If .files file exists, do not generate but read it.
-    projectReader_.startReading();
-
-    // NOTE:
-    // Call setActiveBuildConfiguration when creating new build configurations.
-
+    // Set up active target and build configuration
+    // NOTE: Call setActiveBuildConfiguration when creating new build configurations.
     if (!activeTarget())
     {
         // Configure project from scratch
@@ -198,26 +250,29 @@ bool Project::fromMap(QVariantMap const& map)
     QTC_ASSERT(hasActiveBuildSettings(), return false);
     QTC_ASSERT(activeTarget() != 0, return false);
 
+    // Trigger loading project tree and parsing sources
+    refresh();
+
     return true;
 }
 
 void Project::handleReadingFinished()
 {
-    BBPM_QDEBUG("signalled");
-
-    // Write .files file
+    // Generate .files file
     QStringList const sources = projectReader_.files();
     Core::GeneratedFile generatedFilesFile(filesFilePath_);
     generatedFilesFile.setContents(sources.join(QLatin1String("\n")));
 
     QString errorMessage;
-    if (!generatedFilesFile.write(&errorMessage))
+    if (generatedFilesFile.write(&errorMessage))
+    {
+        // Auxiliary files ready, complete refreshing project
+        refresh();
+    }
+    else
     {
         QMessageBox::critical(0, tr("File Generation Failure"), errorMessage);
-        return;
     }
-
-    refresh();
 }
 
 // ProjectFilesFile ////////////////////////////////////////////////////////////
