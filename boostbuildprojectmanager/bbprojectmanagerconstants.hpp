@@ -30,7 +30,9 @@ char const COMMAND_BJAM[] = "bjam";
 char const VARIANT_DEBUG[] = QT_TR_NOOP("Debug");
 char const VARIANT_RELEASE[] = QT_TR_NOOP("Release");
 
-bool const FileNotGenerated = false; // meaningful name for common boolean value
+// Set meaningful names for common boolean values
+bool const FileNotGenerated = false; // used with GeneratedFile
+bool const ReturnValueNotIgnored = false; // used with BuildStep
 
 } // namespace Constants
 } // namespace BoostBuildProjectManager
