@@ -82,6 +82,8 @@ private:
     ProjectNode* projectNode_;
     ProjectReader projectReader_;
 
+    QFuture<void> cppModelFuture_;
+
     // TODO:
     // Add watcher for Jamfile changes.
     // Add Jamfile parsing.

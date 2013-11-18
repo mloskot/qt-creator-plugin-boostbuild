@@ -162,10 +162,11 @@ void Project::refresh()
 
         projectNode_->refresh(oldFileList);
 
+        // TODO: Does it make sense to move this to separate asynchronous task?
         using CppTools::CppModelManagerInterface;
-        if (CppModelManagerInterface* cppManager = CppModelManagerInterface::instance())
+        if (CppModelManagerInterface* cppModel = CppModelManagerInterface::instance())
         {
-            CppModelManagerInterface::ProjectInfo cppInfo = cppManager->projectInfo(this);
+            CppModelManagerInterface::ProjectInfo cppInfo = cppModel->projectInfo(this);
             cppInfo.clearProjectParts();
 
             CppTools::ProjectPart::Ptr cppPart(new CppTools::ProjectPart());
@@ -190,6 +191,20 @@ void Project::refresh()
                     tc, cxxflags, cxxflags
                   , ProjectExplorer::SysRootKitInformation::sysRoot(k));
             }
+
+            CppTools::ProjectFileAdder adder(cppPart->files);
+            foreach (QString const& file, files_)
+                adder.maybeAdd(file);
+
+            cppModelFuture_.cancel();
+
+            cppInfo.appendProjectPart(cppPart);
+
+            cppModel ->updateProjectInfo(cppInfo);
+            bool const cppEnabled = !cppPart->files.isEmpty();
+            setProjectLanguage(ProjectExplorer::Constants::LANG_CXX, cppEnabled);
+
+            cppModelFuture_ = cppModel->updateProjectInfo(cppInfo);
         }
     }
     else
