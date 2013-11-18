@@ -18,7 +18,8 @@ SOURCES += \
     bbbuildinfo.cpp \
     bbbuildstep.cpp \
     bbutility.cpp \
-    bbprojectreader.cpp
+    bbprojectreader.cpp \
+    bboutputparser.cpp
 
 HEADERS += \
     bbproject.hpp \
@@ -32,7 +33,8 @@ HEADERS += \
     bbbuildinfo.hpp \
     bbbuildstep.hpp \
     bbutility.hpp \
-    bbprojectreader.hpp
+    bbprojectreader.hpp \
+    bboutputparser.hpp
 
 RESOURCES += boostbuildproject.qrc \
     boostbuildproject.qrc
