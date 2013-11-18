@@ -1,5 +1,11 @@
+//
+// Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+// Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+// Copyright (C) 2013 Openismus GmbH.
+//
 #include "bbbuildconfiguration.hpp"
 #include "bbbuildstep.hpp"
+#include "bboutputparser.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbutility.hpp"
 // Qt Creator
@@ -67,21 +73,42 @@ bool BuildStep::init()
     }
 
     ProjectExplorer::BuildConfiguration* bc = buildConfiguration();
+    if (!bc)
+        bc = target()->activeBuildConfiguration();
+    QTC_ASSERT(bc, return false);
+
+    setIgnoreReturnValue(Constants::ReturnValueNotIgnored);
+
+    // TODO: we're waiting for Jamfile parser or b2 --list-targets feature
+    //QString arguments = Utils::QtcProcess::joinArgs(buildTargets_);
+    //Utils::QtcProcess::addArgs(&arguments, additionalArguments());
+
     ProjectExplorer::ProcessParameters* pp = processParameters();
     pp->setMacroExpander(bc->macroExpander());
-    pp->setEnvironment(bc->environment());
+    {
+        // from GenericProjectManager code:
+        // Force output to english for the parsers.
+        // Do this here and not in the toolchain's addToEnvironment() to not
+        // screw up the users run environment.
+        Utils::Environment env = bc->environment();
+        env.set(QLatin1String("LC_ALL"), QLatin1String("C"));
+        pp->setEnvironment(env);
+    }
     pp->setWorkingDirectory(bc->buildDirectory().toString());
+    // TODO: Configurable to allow use of deprecated bjam
     pp->setCommand(makeCommand(bc->environment()));
     pp->setArguments(allArguments());
     pp->resolveAll();
 
-    // TODO
-    //setOutputParser(new CMakeParser());
-    //if (IOutputParser* parser = target()->kit()->createOutputParser())
-    //   appendOutputParser(parser);
-    //outputParser()->setWorkingDirectory(pp->effectiveWorkingDirectory());
+    // Create Boost.Build parser and chain with existing parsers
+    setOutputParser(new OutputParser());
+    if (ProjectExplorer::IOutputParser* parser = target()->kit()->createOutputParser())
+        appendOutputParser(parser);
+    outputParser()->setWorkingDirectory(pp->effectiveWorkingDirectory());
 
-    BBPM_QDEBUG(displayName() << ", " << bc->buildDirectory().toString());
+    BBPM_QDEBUG(displayName() << ", " << bc->buildDirectory().toString()
+                << ", " << pp->effectiveWorkingDirectory());
+
     return ProjectExplorer::AbstractProcessStep::init();
 }
 
