@@ -139,7 +139,7 @@ QString BuildStep::makeCommand(Utils::Environment const& env) const
     BBPM_QDEBUG("TODO: bjam vs b2 selection");
     Q_UNUSED(env);
 
-    return QLatin1String(Constants::BB2_COMMAND);
+    return QLatin1String(Constants::COMMAND_BB2);
 }
 
 QString BuildStep::allArguments() const
