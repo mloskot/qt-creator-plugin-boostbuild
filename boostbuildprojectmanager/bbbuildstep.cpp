@@ -101,7 +101,7 @@ bool BuildStep::init()
     pp->resolveAll();
 
     // Create Boost.Build parser and chain with existing parsers
-    setOutputParser(new OutputParser());
+    setOutputParser(new BoostBuildParser());
     if (ProjectExplorer::IOutputParser* parser = target()->kit()->createOutputParser())
         appendOutputParser(parser);
     outputParser()->setWorkingDirectory(pp->effectiveWorkingDirectory());

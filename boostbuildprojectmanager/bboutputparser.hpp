@@ -5,17 +5,18 @@
 #include <projectexplorer/ioutputparser.h>
 #include <projectexplorer/task.h>
 // Qt
+#include <QPointer>
 #include <QString>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
 
-class OutputParser : public ProjectExplorer::IOutputParser
+class BoostBuildParser : public ProjectExplorer::IOutputParser
 {
     Q_OBJECT
 
 public:
-    OutputParser();
+    BoostBuildParser();
 
     void stdOutput(QString const& line);
     void stdError(QString const& line);
@@ -24,7 +25,12 @@ protected:
     void doFlush();
 
 private:
+
+    void setToolsetParser(QString const& line);
+
     ProjectExplorer::Task lastTask_;
+    //QPointer<ProjectExplorer::IOutputParser> parser_;
+    bool parser_;
 };
 
 } // namespace Internal
