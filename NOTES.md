@@ -30,3 +30,14 @@ which should perform:
 * Configure `CppTools` and schedule C++ file sfor parsing.
     * Use paths read from *.includes* file.
 * `setActiveTarget` and `setActiveBuildConfiguration`
+
+## Parse output
+
+Some tests with http://gskinner.com/RegExr/
+
+```
+^([\w-]+)(?:\.)([\w-]+).+$
+
+^([A-Za-z0-9\-]+)(\.[A-Za-z0-9\-\+]+)
+
+```

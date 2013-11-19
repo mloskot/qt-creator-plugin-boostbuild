@@ -22,7 +22,7 @@ void BoostBuildParser::setToolsetParser(QString const& line)
     parser_ = false;
     if (!parser_)
     {
-        QRegExp rxToolset(QLatin1String("^([a-z\\-]+)\\."));
+        QRegExp rxToolset(QLatin1String("^([a-z\\-]+)(\\.)"));
         rxToolset.setMinimal(true);
         QTC_CHECK(rxToolset.isValid());
 
@@ -33,6 +33,7 @@ void BoostBuildParser::setToolsetParser(QString const& line)
 
             if (QStringRef(&toolsetName, 0, 3) == QLatin1String("gcc"))
             {
+
             }
             else if (QStringRef(&toolsetName, 0, 5) == QLatin1String("clang"))
             {
@@ -41,6 +42,8 @@ void BoostBuildParser::setToolsetParser(QString const& line)
             {
                 BBPM_QDEBUG("toolset unknown");
             }
+
+            BBPM_QDEBUG(toolsetName);
         }
     }
 }
