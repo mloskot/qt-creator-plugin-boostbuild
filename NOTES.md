@@ -35,9 +35,12 @@ which should perform:
 
 Some tests with http://gskinner.com/RegExr/
 
-```
-^([\w-]+)(?:\.)([\w-]+).+$
+### Toolset
 
-^([A-Za-z0-9\-]+)(\.[A-Za-z0-9\-\+]+)
+Try to determine toolset matching either of the following, in this order:
 
-```
+1. `warning: Configuring default toolset "gcc".` using
+  `^warning\:.+\"([\w-]+)\".*\.$`
+1. `gcc.compile.c++ bin/gcc-4.8.2/debug/hello.o` using
+   `^([\w-]+)(?:\.)([\w-]+).+$`
+
