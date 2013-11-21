@@ -228,16 +228,23 @@ bool Project::fromMap(QVariantMap const& map)
         return false;
 
     // TODO: Custom key/value from map
+    // TODO: do we need on-loading wizard similar to CMakeProjectManager?
 
-    // Set up active target and build configuration
+    // Set up active ProjectConfiguration (aka Target).
     // NOTE: Call setActiveBuildConfiguration when creating new build configurations.
     if (!activeTarget())
     {
-        // Configure project from scratch
+        // Create project configuration from scratch
 
-        // TODO: do we need on-loading wizard similar to CMakeProjectManager?
+        // TODO: Map the Kit to Boost.Build toolset option value
         ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit();
+
+        // Creates as many {Build|Run|Deploy}Configurations for as corresponding
+        // factories report as available.
+        // For example, BuildConfigurationFactory::availableBuilds => Debug and Release
+
         ProjectExplorer::Target* target= createTarget(defaultKit);
+
         addTarget(target);
     }
     else
