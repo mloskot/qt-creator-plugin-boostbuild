@@ -26,11 +26,15 @@ protected:
 
 private:
 
-    void setToolsetParser(QString const& line);
+    QString findToolset(QString const& line) const;
+    void setToolsetParser(QString const& toolsetName);
+
+    QString toolsetName_;
+    QRegExp toolsetNameReC_; // matches line with ".compile." command
+    QRegExp toolsetNameReW_; // matches line with "warning: " status
 
     ProjectExplorer::Task lastTask_;
-    //QPointer<ProjectExplorer::IOutputParser> parser_;
-    bool parser_;
+    QPointer<ProjectExplorer::IOutputParser> parser_;
 };
 
 } // namespace Internal
