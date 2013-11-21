@@ -43,8 +43,15 @@ So, I recommend to follow these guides:
 Future
 ------
 
-An unprioritised list of TODOs and potentially interesting ideas for the plugin:
+### TODO ###
+
+An unprioritised list of TODO list for the plugin:
 ... 
+
+### Ideas ###
+
+A random list of potentially interesting ideas for the plugin:
+...
 
 Authors
 -------
