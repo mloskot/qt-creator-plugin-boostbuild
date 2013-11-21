@@ -19,7 +19,10 @@ SOURCES += \
     bbbuildstep.cpp \
     bbutility.cpp \
     bbprojectreader.cpp \
-    bboutputparser.cpp
+    bboutputparser.cpp \
+    external/projectexplorer/clangparser.cpp \
+    external/projectexplorer/gccparser.cpp \
+    external/projectexplorer/ldparser.cpp
 
 HEADERS += \
     bbproject.hpp \
@@ -34,7 +37,10 @@ HEADERS += \
     bbbuildstep.hpp \
     bbutility.hpp \
     bbprojectreader.hpp \
-    bboutputparser.hpp
+    bboutputparser.hpp \
+    external/projectexplorer/clangparser.h \
+    external/projectexplorer/gccparser.h \
+    external/projectexplorer/ldparser.h
 
 RESOURCES += boostbuildproject.qrc \
     boostbuildproject.qrc
@@ -72,7 +78,7 @@ QTC_LIB_DEPENDS += \
 
 QTC_PLUGIN_DEPENDS += \
     coreplugin \
-    projectexplorer\
+    projectexplorer \
     qtsupport
 
 QTC_PLUGIN_RECOMMENDS += \
