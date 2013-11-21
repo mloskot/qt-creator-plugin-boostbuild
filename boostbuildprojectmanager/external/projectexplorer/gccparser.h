@@ -30,7 +30,7 @@
 #ifndef GCCPARSER_H
 #define GCCPARSER_H
 
-#include "ioutputparser.h"
+#include <projectexplorer/ioutputparser.h>
 
 #include <projectexplorer/task.h>
 

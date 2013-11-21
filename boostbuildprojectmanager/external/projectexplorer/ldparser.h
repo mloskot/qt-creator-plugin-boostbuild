@@ -30,7 +30,7 @@
 #ifndef LDPARSER_H
 #define LDPARSER_H
 
-#include "ioutputparser.h"
+#include <projectexplorer/ioutputparser.h>
 
 #include <QRegExp>
 

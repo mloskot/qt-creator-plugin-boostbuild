@@ -29,7 +29,7 @@
 
 #include "clangparser.h"
 #include "ldparser.h"
-#include "projectexplorerconstants.h"
+#include <projectexplorer/projectexplorerconstants.h>
 
 using namespace ProjectExplorer;
 
@@ -123,7 +123,7 @@ void ClangParser::stdError(const QString &line)
 
 // Unit tests:
 
-#ifdef WITH_TESTS
+#ifdef WITH_TESTS_NOTDISABLED
 #   include <QTest>
 
 #   include "projectexplorer.h"

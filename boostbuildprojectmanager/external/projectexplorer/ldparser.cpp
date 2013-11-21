@@ -28,8 +28,8 @@
 ****************************************************************************/
 
 #include "ldparser.h"
-#include "projectexplorerconstants.h"
-#include "task.h"
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/task.h>
 
 #include <utils/qtcassert.h>
 

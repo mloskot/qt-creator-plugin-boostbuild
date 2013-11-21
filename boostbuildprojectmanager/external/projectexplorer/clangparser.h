@@ -31,7 +31,7 @@
 #define CLANGPARSER_H
 
 #include "gccparser.h"
-#include "task.h"
+#include <projectexplorer/task.h>
 
 #include <QRegExp>
 

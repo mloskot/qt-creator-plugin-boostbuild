@@ -29,8 +29,8 @@
 
 #include "gccparser.h"
 #include "ldparser.h"
-#include "task.h"
-#include "projectexplorerconstants.h"
+#include <projectexplorer/task.h>
+#include <projectexplorer/projectexplorerconstants.h>
 
 #include <utils/qtcassert.h>
 
@@ -178,7 +178,7 @@ void GccParser::amendDescription(const QString &desc, bool monospaced)
 
 // Unit tests:
 
-#ifdef WITH_TESTS
+#ifdef WITH_TESTS_NOTDISABLED
 #   include <QTest>
 
 #   include "projectexplorer.h"
