@@ -7,7 +7,7 @@ A [Boost.Build](http://www.boost.org/boost-build2/) project manager plugin for
 Overview
 --------
 
-The idea is extremely simple:
+The idea of the Boost.Build plugin is extremely simple - three main features:
 
 * **Open** a Jamfile as a project in Qt Creator
 * **Build** a project in Qt Creator as it is configured by its Jamfile(s).
@@ -61,8 +61,11 @@ Authors
 Credits
 -------
 
-* Christian Kandeler, Tobias Hunger, Koehne Kai, André Pönitz for help on the qt-creator mailing list.
+* Christian Kandeler, Tobias Hunger, Koehne Kai, André Pönitz for great help on the qt-creator mailing list,
 * [Tomasz Siekierda](http://sierdzio.com/) for 
   [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html)
   the [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
-  and support through qt-creator list.
+  and support through qt-creator list,
+* Vladimir Prus for answering questions about Boost.Build on #boost IRC channel,
+
+lots of thanks to!
