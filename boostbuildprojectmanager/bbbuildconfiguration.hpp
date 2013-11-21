@@ -28,10 +28,14 @@ public:
     ProjectExplorer::NamedWidget* createConfigWidget();
 
     BuildType buildType() const;
+    void setBuildType(BuildType buildType);
 
 protected:
     BuildConfiguration(ProjectExplorer::Target* parent, BuildConfiguration* source);
     BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id);
+
+private:
+    BuildType buildType_;
 };
 
 class BuildConfigurationFactory : public ProjectExplorer::IBuildConfigurationFactory

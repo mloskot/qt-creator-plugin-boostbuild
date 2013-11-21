@@ -26,6 +26,7 @@ namespace Internal {
 BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
     : ProjectExplorer::BuildConfiguration(
           parent, Core::Id(Constants::BUILDCONFIGURATION_ID))
+    , buildType_(Unknown)
 {
     BBPM_QDEBUG("TODO");
 }
@@ -52,8 +53,12 @@ ProjectExplorer::NamedWidget *BuildConfiguration::createConfigWidget()
 
 BuildConfiguration::BuildType BuildConfiguration::buildType() const
 {
-    BBPM_QDEBUG("TODO: Should I return something different from Unknown?");
-    return Unknown;
+    return buildType_;
+}
+
+void BuildConfiguration::setBuildType(BuildType buildType)
+{
+    buildType_ = buildType;
 }
 
 BuildConfigurationFactory::BuildConfigurationFactory(QObject* parent)
@@ -115,10 +120,12 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
 
     BBPM_QDEBUG(info->displayName);
 
+    BuildInfo const* bi = static_cast<BuildInfo const*>(info);
     BuildConfiguration* bc = new BuildConfiguration(parent);
-    bc->setDisplayName(info->displayName);
-    bc->setDefaultDisplayName(info->displayName);
-    bc->setBuildDirectory(info->buildDirectory);
+    bc->setBuildType(bi->buildVariant());
+    bc->setDisplayName(bi->displayName);
+    bc->setDefaultDisplayName(bi->displayName);
+    bc->setBuildDirectory(bi->buildDirectory);
 
     // TODO: check Jamfile/Jamroot exists
     // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
@@ -129,7 +136,6 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     {
         BuildStep* step = new BuildStep(buildSteps);
         step->setStepType(BuildStep::StepType::Build);
-        // TODO: make BuildStep interfere this: setBuildType
         if (bc->buildType() == BuildConfiguration::Release)
             step->setArguments(QLatin1String("variant=release"));
         else
@@ -143,7 +149,6 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     {
         BuildStep* step = new BuildStep(cleanSteps);
         step->setStepType(BuildStep::StepType::Clean);
-        // TODO: make BuildStep interfere this: setBuildType
         if (bc->buildType() == BuildConfiguration::Release)
             step->setArguments(QLatin1String("variant=release"));
         else
