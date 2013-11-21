@@ -44,10 +44,7 @@ public:
     QString makeCommand(Utils::Environment const& env) const;
 
     QString allArguments() const;
-
-    struct StepType { enum Enum { Build, Clean }; };
-
-    void setStepType(StepType::Enum type);
+    void appendArgument(QString const& arg);
 
 public slots:
     void setArguments(QString const& list);
@@ -62,7 +59,6 @@ protected:
 private:
     QList<ProjectExplorer::Task> tasks_;
     QStringList arguments_;
-    StepType::Enum stepType_;
 };
 
 // Factory used to create instances of BuildStep.

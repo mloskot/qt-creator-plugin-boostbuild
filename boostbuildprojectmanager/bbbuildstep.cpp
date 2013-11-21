@@ -34,7 +34,6 @@ namespace Internal {
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Core::Id(Constants::BUILDSTEP_ID))
-    , stepType_(StepType::Build)
 {
 }
 
@@ -42,13 +41,11 @@ BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, BuildStep* bs)
     : AbstractProcessStep(bsl, bs)
     , tasks_(bs->tasks_)
     , arguments_(bs->arguments_)
-    , stepType_(bs->stepType_)
 {
 }
 
 BuildStep::BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id)
     : AbstractProcessStep(bsl, id)
-    , stepType_(StepType::Build)
 {
 }
 
@@ -174,6 +171,12 @@ QString BuildStep::allArguments() const
     return Utils::QtcProcess::joinArgs(arguments_);
 }
 
+void BuildStep::appendArgument(QString const& arg)
+{
+    // TODO: find duplicates?
+    arguments_.append(arg);
+}
+
 void BuildStep::setArguments(QString const& args)
 {
     Utils::QtcProcess::SplitError err;
@@ -183,19 +186,6 @@ void BuildStep::setArguments(QString const& args)
         arguments_ = argsList;
         emit argumentsChanged(args);
     }
-}
-
-void BuildStep::setStepType(StepType::Enum type)
-{
-    stepType_ = type;
-    /*
-    if (stepType_ == StepType::Debug)
-        arguments_.append(QLatin1String("variant=debug"));
-    else if (stepType_ == StepType::Release)
-        arguments_.append(QLatin1String("variant=release"));
-    else
-        Q_ASSERT(!"invalid step type");
-        */
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
@@ -237,12 +227,22 @@ BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const 
     if (!canCreate(parent, id))
         return 0;
 
+    ProjectExplorer::Target* target = parent->target();
+    QTC_ASSERT(target, return 0);
+    BuildConfiguration* bc
+        = qobject_cast<BuildConfiguration*>(target->activeBuildConfiguration());
+    QTC_ASSERT(bc, return 0);
+
     BuildStep* step = new BuildStep(parent);
+
+    if (bc->buildType() == BuildConfiguration::BuildType::Release)
+        step->appendArgument(QLatin1String("variant=release"));
+    else if (bc->buildType() == BuildConfiguration::BuildType::Debug)
+        step->appendArgument(QLatin1String("variant=debug"));
+
     if (parent->id() == ProjectExplorer::Constants::BUILDSTEPS_CLEAN)
-    {
-        step->setStepType(BuildStep::StepType::Clean);
-        step->setArguments(QLatin1String("--clean"));
-    }
+        step->appendArgument(QLatin1String("--clean"));
+
     return step;
 }
 
