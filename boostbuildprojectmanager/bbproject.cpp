@@ -137,7 +137,7 @@ bool Project::needsConfiguration() const
     // - targets listing
     // CMakeProjectManager seems to request configuration in fromMap()
 
-    return false;
+    return targets().isEmpty(); // based on QMakeProjectManager
 }
 
 void Project::refresh()
