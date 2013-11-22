@@ -35,6 +35,7 @@ public:
     // Indicates if "Configure Project" panel should be opened on project loading.
     // This step may be used to select a kit, build directory, and others.
     // See QmakeProjectManager as an example.
+    bool supportsNoTargetPanel() const;
     bool needsConfiguration() const;
 
     void refresh();

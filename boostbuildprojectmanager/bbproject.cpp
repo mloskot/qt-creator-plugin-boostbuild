@@ -128,6 +128,12 @@ QString Project::includesFilePath() const
     return includesFilePath_;
 }
 
+bool Project::supportsNoTargetPanel() const
+{
+    // see QMakeProjectManager
+    return true;
+}
+
 bool Project::needsConfiguration() const
 {
     // TODO:
@@ -137,7 +143,7 @@ bool Project::needsConfiguration() const
     // - targets listing
     // CMakeProjectManager seems to request configuration in fromMap()
 
-    return targets().isEmpty(); // based on QMakeProjectManager
+    return targets().isEmpty(); // see QMakeProjectManager
 }
 
 void Project::refresh()
@@ -232,6 +238,8 @@ bool Project::fromMap(QVariantMap const& map)
 
     // Set up active ProjectConfiguration (aka Target).
     // NOTE: Call setActiveBuildConfiguration when creating new build configurations.
+#if 0
+    // TODO: Rethink this as setting default target disables Configure Project panel
     if (!activeTarget())
     {
         // Create project configuration from scratch
@@ -252,6 +260,7 @@ bool Project::fromMap(QVariantMap const& map)
         // Configure project from settings sorced from .user file
         BBPM_QDEBUG(displayName() << "has user file");
     }
+#endif
 
     // Sanity check (taken from GenericProjectManager):
     // We need both a BuildConfiguration and a RunConfiguration!
@@ -268,8 +277,10 @@ bool Project::fromMap(QVariantMap const& map)
                         new QtSupport::CustomExecutableRunConfiguration(t));
     }
 
+#if 0
     QTC_ASSERT(hasActiveBuildSettings(), return false);
     QTC_ASSERT(activeTarget() != 0, return false);
+#endif
 
     // Trigger loading project tree and parsing sources
     refresh();
