@@ -28,14 +28,10 @@ public:
     ProjectExplorer::NamedWidget* createConfigWidget();
 
     BuildType buildType() const;
-    void setBuildType(BuildType buildType);
 
 protected:
     BuildConfiguration(ProjectExplorer::Target* parent, BuildConfiguration* source);
     BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id);
-
-private:
-    BuildType buildType_;
 };
 
 class BuildConfigurationFactory : public ProjectExplorer::IBuildConfigurationFactory
@@ -58,13 +54,15 @@ public:
     create(ProjectExplorer::Target* parent
          , ProjectExplorer::BuildInfo const* info) const;
 
-    bool canClone(ProjectExplorer::Target const* parent
-                , ProjectExplorer::BuildConfiguration* source) const;
+    bool
+    canClone(ProjectExplorer::Target const* parent
+           , ProjectExplorer::BuildConfiguration* source) const;
 
     BuildConfiguration*
     clone(ProjectExplorer::Target* parent, ProjectExplorer::BuildConfiguration* source);
 
-    bool canRestore(ProjectExplorer::Target const* parent, QVariantMap const& map) const;
+    bool
+    canRestore(ProjectExplorer::Target const* parent, QVariantMap const& map) const;
 
     BuildConfiguration*
     restore(ProjectExplorer::Target *parent, QVariantMap const& map);
@@ -72,11 +70,13 @@ public:
 private:
     bool canHandle(ProjectExplorer::Target const* target) const;
 
-    BuildInfo* createBuildInfo(ProjectExplorer::Kit const* k
-                             , QString const& projectPath
-                             , BuildConfiguration::BuildType buildVariant) const;
+    BuildInfo*
+    createBuildInfo(ProjectExplorer::Kit const* k
+                  , QString const& projectPath
+                  , BuildConfiguration::BuildType type) const;
 
-    Utils::FileName defaultBuildDirectory(QString const& projectPath) const;
+    Utils::FileName
+    defaultBuildDirectory(QString const& projectPath) const;
 };
 
 } // namespace Internal

@@ -9,6 +9,7 @@
 #include "bbprojectmanagerconstants.hpp"
 #include "bbutility.hpp"
 // Qt Creator
+#include <extensionsystem/pluginmanager.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildstep.h>
 #include <projectexplorer/buildsteplist.h>
@@ -188,9 +189,35 @@ void BuildStep::setArguments(QString const& args)
     }
 }
 
+ProjectExplorer::BuildConfiguration::BuildType
+BuildStep::buildType() const
+{
+    return arguments_.contains(QLatin1String("variant=release"))
+            ? BuildConfiguration::Release
+            : BuildConfiguration::Debug;
+}
+
+void
+BuildStep::setBuildType(ProjectExplorer::BuildConfiguration::BuildType type)
+{
+    // TODO: Move literals to constants
+    QString arg(QLatin1String("variant="));
+    if (type == BuildConfiguration::Release)
+        arg += QLatin1String("release");
+    else
+        arg += QLatin1String("debug");
+
+    appendArgument(arg);
+}
+
 BuildStepFactory::BuildStepFactory(QObject* parent)
     : IBuildStepFactory(parent)
 {
+}
+
+/*static*/ BuildStepFactory* BuildStepFactory::getObject()
+{
+    return ExtensionSystem::PluginManager::getObject<BuildStepFactory>();
 }
 
 QList<Core::Id>
@@ -220,6 +247,13 @@ bool BuildStepFactory::canCreate(ProjectExplorer::BuildStepList* parent
     return canHandle(parent) && Core::Id(Constants::BUILDSTEP_ID) == id;
 }
 
+BuildStep*
+BuildStepFactory::create(ProjectExplorer::BuildStepList* parent)
+{
+    ProjectExplorer::BuildStep* step = create(parent, Constants::BUILDSTEP_ID);
+    return qobject_cast<BuildStep*>(step);
+}
+
 ProjectExplorer::BuildStep*
 BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const id)
 {
@@ -227,18 +261,7 @@ BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const 
     if (!canCreate(parent, id))
         return 0;
 
-    ProjectExplorer::Target* target = parent->target();
-    QTC_ASSERT(target, return 0);
-    BuildConfiguration* bc
-        = qobject_cast<BuildConfiguration*>(target->activeBuildConfiguration());
-    QTC_ASSERT(bc, return 0);
-
     BuildStep* step = new BuildStep(parent);
-
-    if (bc->buildType() == BuildConfiguration::BuildType::Release)
-        step->appendArgument(QLatin1String("variant=release"));
-    else if (bc->buildType() == BuildConfiguration::BuildType::Debug)
-        step->appendArgument(QLatin1String("variant=debug"));
 
     if (parent->id() == ProjectExplorer::Constants::BUILDSTEPS_CLEAN)
         step->appendArgument(QLatin1String("--clean"));

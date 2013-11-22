@@ -19,10 +19,7 @@ public:
 
     // Boost.Build variant={debug|release}
     // By default, the debug variant is set.
-    BuildConfiguration::BuildType buildVariant;
-
-    // Sets buildVariant, displayName and related values.
-    void setBuildVariant(BuildConfiguration::BuildType buildVariant);
+    BuildConfiguration::BuildType buildType;
 };
 
 } // namespace Internal

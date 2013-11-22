@@ -3,6 +3,7 @@
 
 // Qt Creator
 #include <projectexplorer/abstractprocessstep.h>
+#include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildstep.h>
 #include <projectexplorer/task.h>
 // Qt
@@ -34,17 +35,27 @@ public:
     BuildStep(ProjectExplorer::BuildStepList* bsl);
 
     bool init();
+
     void run(QFutureInterface<bool>& interface);
+
     ProjectExplorer::BuildStepConfigWidget* createConfigWidget();
+
     bool immutable() const;
 
     QVariantMap toMap() const;
+
     bool fromMap(QVariantMap const& map);
 
     QString makeCommand(Utils::Environment const& env) const;
 
     QString allArguments() const;
+
     void appendArgument(QString const& arg);
+
+    ProjectExplorer::BuildConfiguration::BuildType
+    buildType() const;
+
+    void setBuildType(ProjectExplorer::BuildConfiguration::BuildType type);
 
 public slots:
     void setArguments(QString const& list);
@@ -69,23 +80,40 @@ class BuildStepFactory : public ProjectExplorer::IBuildStepFactory
 public:
     BuildStepFactory(QObject* parent = 0);
 
-    QList<Core::Id> availableCreationIds(ProjectExplorer::BuildStepList* bc) const;
-    QString displayNameForId(const Core::Id id) const;
+    static BuildStepFactory* getObject();
 
-    bool canCreate(ProjectExplorer::BuildStepList* parent, Core::Id const id) const;
+    QList<Core::Id>
+    availableCreationIds(ProjectExplorer::BuildStepList* bc) const;
+
+    QString
+    displayNameForId(const Core::Id id) const;
+
+    bool
+    canCreate(ProjectExplorer::BuildStepList* parent, Core::Id const id) const;
+
+    BuildStep*
+    create(ProjectExplorer::BuildStepList* parent);
+
     ProjectExplorer::BuildStep*
     create(ProjectExplorer::BuildStepList* parent, Core::Id const id);
 
-    bool canClone(ProjectExplorer::BuildStepList *parent
-                , ProjectExplorer::BuildStep *source) const;
+    bool
+    canClone(ProjectExplorer::BuildStepList *parent
+           , ProjectExplorer::BuildStep *source) const;
+
     ProjectExplorer::BuildStep*
     clone(ProjectExplorer::BuildStepList* parent, ProjectExplorer::BuildStep* source);
 
-    bool canRestore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map) const;
+    bool
+    canRestore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map) const;
+
     ProjectExplorer::BuildStep*
     restore(ProjectExplorer::BuildStepList* parent, QVariantMap const& map);
 
-    bool canHandle(ProjectExplorer::BuildStepList* parent) const;
+private:
+
+    bool
+    canHandle(ProjectExplorer::BuildStepList* parent) const;
 };
 
 class BuildStepConfigWidget : public ProjectExplorer::BuildStepConfigWidget

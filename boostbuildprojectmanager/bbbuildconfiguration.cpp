@@ -26,7 +26,6 @@ namespace Internal {
 BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
     : ProjectExplorer::BuildConfiguration(
           parent, Core::Id(Constants::BUILDCONFIGURATION_ID))
-    , buildType_(Unknown)
 {
     BBPM_QDEBUG("TODO");
 }
@@ -39,26 +38,38 @@ BuildConfiguration::BuildConfiguration(
     BBPM_QDEBUG("TODO");
 }
 
-BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id)
+BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent
+                                     , Core::Id const id)
     : ProjectExplorer::BuildConfiguration(parent, id)
 {
     BBPM_QDEBUG("TODO");
 }
 
-ProjectExplorer::NamedWidget *BuildConfiguration::createConfigWidget()
+ProjectExplorer::NamedWidget*
+BuildConfiguration::createConfigWidget()
 {
     BBPM_QDEBUG("TODO");
     return 0; //new BuildSettingsWidget(this);
 }
 
-BuildConfiguration::BuildType BuildConfiguration::buildType() const
+BuildConfiguration::BuildType
+BuildConfiguration::buildType() const
 {
-    return buildType_;
-}
+    BuildType type = Unknown;
 
-void BuildConfiguration::setBuildType(BuildType buildType)
-{
-    buildType_ = buildType;
+    ProjectExplorer::BuildStepList* buildStepList
+        = stepList(Core::Id(ProjectExplorer::Constants::BUILDSTEPS_BUILD));
+    Q_ASSERT(buildStepList);
+    foreach (ProjectExplorer::BuildStep* bs, buildStepList->steps())
+    {
+        if (BuildStep* bbStep = qobject_cast<BuildStep*>(bs))
+        {
+            type = bbStep->buildType();
+            break;
+        }
+    }
+
+    return type;
 }
 
 BuildConfigurationFactory::BuildConfigurationFactory(QObject* parent)
@@ -66,12 +77,14 @@ BuildConfigurationFactory::BuildConfigurationFactory(QObject* parent)
 {
 }
 
-int BuildConfigurationFactory::priority(ProjectExplorer::Target const* parent) const
+int
+BuildConfigurationFactory::priority(ProjectExplorer::Target const* parent) const
 {
     return canHandle(parent) ? 0 : -1;
 }
 
-int BuildConfigurationFactory::priority(
+int
+BuildConfigurationFactory::priority(
     ProjectExplorer::Kit const* k
   , QString const& projectPath) const
 {
@@ -97,7 +110,8 @@ BuildConfigurationFactory::availableBuilds(ProjectExplorer::Target const* parent
     return result;
 }
 
-QList<ProjectExplorer::BuildInfo*> BuildConfigurationFactory::availableSetups(
+QList<ProjectExplorer::BuildInfo*>
+BuildConfigurationFactory::availableSetups(
     ProjectExplorer::Kit const* k
   , QString const& projectPath) const
 {
@@ -109,7 +123,8 @@ QList<ProjectExplorer::BuildInfo*> BuildConfigurationFactory::availableSetups(
     return result;
 }
 
-ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
+ProjectExplorer::BuildConfiguration*
+BuildConfigurationFactory::create(
     ProjectExplorer::Target* parent
   , ProjectExplorer::BuildInfo const* info) const
 {
@@ -122,7 +137,6 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
 
     BuildInfo const* bi = static_cast<BuildInfo const*>(info);
     BuildConfiguration* bc = new BuildConfiguration(parent);
-    bc->setBuildType(bi->buildVariant());
     bc->setDisplayName(bi->displayName);
     bc->setDefaultDisplayName(bi->displayName);
     bc->setBuildDirectory(bi->buildDirectory);
@@ -130,16 +144,16 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     // TODO: check Jamfile/Jamroot exists
     // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
 
+    BuildStepFactory* stepFactory = BuildStepFactory::getObject();
+    QTC_ASSERT(stepFactory, return 0);
+
     // Build steps
     if (ProjectExplorer::BuildStepList* buildSteps =
             bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD))
     {
-        BuildStep* step = new BuildStep(buildSteps);
-        step->setStepType(BuildStep::StepType::Build);
-        if (bc->buildType() == BuildConfiguration::Release)
-            step->setArguments(QLatin1String("variant=release"));
-        else
-            step->setArguments(QLatin1String("variant=debug"));
+        BuildStep* step = stepFactory->create(buildSteps);
+        QTC_ASSERT(step, return 0);
+        step->setBuildType(bi->buildType);
         buildSteps->insertStep(0, step);
     }
 
@@ -147,13 +161,9 @@ ProjectExplorer::BuildConfiguration* BuildConfigurationFactory::create(
     if (ProjectExplorer::BuildStepList* cleanSteps =
             bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN))
     {
-        BuildStep* step = new BuildStep(cleanSteps);
-        step->setStepType(BuildStep::StepType::Clean);
-        if (bc->buildType() == BuildConfiguration::Release)
-            step->setArguments(QLatin1String("variant=release"));
-        else
-            step->setArguments(QLatin1String("variant=debug"));
-        step->setArguments(QLatin1String("--clean"));
+        BuildStep* step = stepFactory->create(cleanSteps);
+        QTC_ASSERT(step, return 0);
+        step->setBuildType(bi->buildType);
         cleanSteps->insertStep(0, step);
     }
 
@@ -188,8 +198,9 @@ BuildConfigurationFactory::clone(ProjectExplorer::Target* parent
     return copy;
 }
 
-bool BuildConfigurationFactory::canRestore(ProjectExplorer::Target const* parent
-                                         , QVariantMap const& map) const
+bool
+BuildConfigurationFactory::canRestore(ProjectExplorer::Target const* parent
+                                    , QVariantMap const& map) const
 {
     Q_ASSERT(parent);
 
@@ -213,7 +224,8 @@ BuildConfigurationFactory::restore(ProjectExplorer::Target *parent
     return 0;
 }
 
-bool BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) const
+bool
+BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) const
 {
     QTC_ASSERT(t, return false);
 
@@ -222,16 +234,21 @@ bool BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) cons
             : false;
 }
 
-BuildInfo* BuildConfigurationFactory::createBuildInfo(
+BuildInfo*
+BuildConfigurationFactory::createBuildInfo(
     ProjectExplorer::Kit const* k
   , QString const& projectPath
-  , BuildConfiguration::BuildType buildVariant) const
+  , BuildConfiguration::BuildType type) const
 {
     Q_ASSERT(k);
 
     BuildInfo* info = new BuildInfo(this);
-    info->setBuildVariant(buildVariant);
     info->typeName = tr("Build");
+    if (type == BuildConfiguration::Release)
+        info->displayName = tr("Release");
+    else
+        info->displayName = tr("Debug");
+    info->buildType = type;
     info->buildDirectory = defaultBuildDirectory(projectPath);
     info->kitId = k->id();
     info->supportsShadowBuild = true;
