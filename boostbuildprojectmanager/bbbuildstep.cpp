@@ -93,7 +93,6 @@ bool BuildStep::init()
         pp->setEnvironment(env);
     }
     pp->setWorkingDirectory(bc->buildDirectory().toString());
-    // TODO: Configurable to allow use of deprecated bjam
     pp->setCommand(makeCommand(bc->environment()));
     pp->setArguments(allArguments());
     pp->resolveAll();
