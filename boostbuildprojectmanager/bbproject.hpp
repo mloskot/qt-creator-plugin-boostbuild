@@ -13,7 +13,6 @@ namespace BoostBuildProjectManager {
 namespace Internal {
 
 class ProjectFile;
-class ProjectFilesFile;
 class ProjectManager;
 class ProjectNode;
 
@@ -87,30 +86,6 @@ private:
     // TODO:
     // Add watcher for Jamfile changes.
     // Add Jamfile parsing.
-};
-
-// Manages a project files stored in .files file.
-class ProjectFilesFile : public Core::IDocument
-{
-    Q_OBJECT
-
-public:
-    ProjectFilesFile(Project* parent, QString const& fileName);
-
-    bool save(QString* errorString, QString const& fileName, bool autoSave);
-
-    QString defaultPath() const;
-    QString suggestedFileName() const;
-    QString mimeType() const;
-
-    bool isModified() const;
-    bool isSaveAsAllowed() const;
-
-    ReloadBehavior reloadBehavior(ChangeTrigger state, ChangeType type) const;
-    bool reload(QString* errorString, ReloadFlag flag, ChangeType type);
-
-private:
-    Project* project_;
 };
 
 } // namespace Internal
