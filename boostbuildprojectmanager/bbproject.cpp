@@ -163,6 +163,7 @@ void Project::refresh()
         projectNode_->refresh(oldFileList);
 
         // TODO: Does it make sense to move this to separate asynchronous task?
+        // TODO: extract updateCppCodeModel
         using CppTools::CppModelManagerInterface;
         if (CppModelManagerInterface* cppModel = CppModelManagerInterface::instance())
         {
