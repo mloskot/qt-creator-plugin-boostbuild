@@ -24,8 +24,8 @@ namespace BoostBuildProjectManager {
 namespace Internal {
 
 BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
-    : ProjectExplorer::BuildConfiguration(
-          parent, Core::Id(Constants::BUILDCONFIGURATION_ID))
+    : ProjectExplorer::BuildConfiguration(parent
+        , Core::Id(Constants::BUILDCONFIGURATION_ID))
 {
     BBPM_QDEBUG("TODO");
 }
@@ -38,8 +38,7 @@ BuildConfiguration::BuildConfiguration(
     BBPM_QDEBUG("TODO");
 }
 
-BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent
-                                     , Core::Id const id)
+BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id)
     : ProjectExplorer::BuildConfiguration(parent, id)
 {
     BBPM_QDEBUG("TODO");
@@ -48,8 +47,7 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent
 ProjectExplorer::NamedWidget*
 BuildConfiguration::createConfigWidget()
 {
-    BBPM_QDEBUG("TODO");
-    return 0; //new BuildSettingsWidget(this);
+    return 0; // new BuildSettingsWidget(this);
 }
 
 BuildConfiguration::BuildType
@@ -84,9 +82,8 @@ BuildConfigurationFactory::priority(ProjectExplorer::Target const* parent) const
 }
 
 int
-BuildConfigurationFactory::priority(
-    ProjectExplorer::Kit const* k
-  , QString const& projectPath) const
+BuildConfigurationFactory::priority(ProjectExplorer::Kit const* k
+    , QString const& projectPath) const
 {
     BBPM_QDEBUG(k->displayName() << ", " << projectPath);
 
@@ -111,9 +108,8 @@ BuildConfigurationFactory::availableBuilds(ProjectExplorer::Target const* parent
 }
 
 QList<ProjectExplorer::BuildInfo*>
-BuildConfigurationFactory::availableSetups(
-    ProjectExplorer::Kit const* k
-  , QString const& projectPath) const
+BuildConfigurationFactory::availableSetups(ProjectExplorer::Kit const* k
+    , QString const& projectPath) const
 {
     BBPM_QDEBUG(projectPath);
 
@@ -124,9 +120,8 @@ BuildConfigurationFactory::availableSetups(
 }
 
 ProjectExplorer::BuildConfiguration*
-BuildConfigurationFactory::create(
-    ProjectExplorer::Target* parent
-  , ProjectExplorer::BuildInfo const* info) const
+BuildConfigurationFactory::create(ProjectExplorer::Target* parent
+    , ProjectExplorer::BuildInfo const* info) const
 {
     QTC_ASSERT(parent, return 0);
     QTC_ASSERT(info->factory() == this, return 0);
@@ -148,8 +143,8 @@ BuildConfigurationFactory::create(
     QTC_ASSERT(stepFactory, return 0);
 
     // Build steps
-    if (ProjectExplorer::BuildStepList* buildSteps =
-            bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD))
+    if (ProjectExplorer::BuildStepList* buildSteps
+            = bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD))
     {
         BuildStep* step = stepFactory->create(buildSteps);
         QTC_ASSERT(step, return 0);
@@ -158,8 +153,8 @@ BuildConfigurationFactory::create(
     }
 
     // Clean steps
-    if (ProjectExplorer::BuildStepList* cleanSteps =
-            bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN))
+    if (ProjectExplorer::BuildStepList* cleanSteps
+            = bc->stepList(ProjectExplorer::Constants::BUILDSTEPS_CLEAN))
     {
         BuildStep* step = stepFactory->create(cleanSteps);
         QTC_ASSERT(step, return 0);
@@ -172,7 +167,7 @@ BuildConfigurationFactory::create(
 
 bool
 BuildConfigurationFactory::canClone(ProjectExplorer::Target const* parent
-       , ProjectExplorer::BuildConfiguration* source) const
+    , ProjectExplorer::BuildConfiguration* source) const
 {
     Q_ASSERT(parent);
     Q_ASSERT(source);
@@ -184,7 +179,7 @@ BuildConfigurationFactory::canClone(ProjectExplorer::Target const* parent
 
 BuildConfiguration*
 BuildConfigurationFactory::clone(ProjectExplorer::Target* parent
-                               , ProjectExplorer::BuildConfiguration* source)
+    , ProjectExplorer::BuildConfiguration* source)
 {
     Q_ASSERT(parent);
     Q_ASSERT(source);
@@ -211,7 +206,7 @@ BuildConfigurationFactory::canRestore(ProjectExplorer::Target const* parent
 
 BuildConfiguration*
 BuildConfigurationFactory::restore(ProjectExplorer::Target *parent
-                                 , QVariantMap const& map)
+    , QVariantMap const& map)
 {
     Q_ASSERT(parent);
 
@@ -235,10 +230,9 @@ BuildConfigurationFactory::canHandle(ProjectExplorer::Target const* t) const
 }
 
 BuildInfo*
-BuildConfigurationFactory::createBuildInfo(
-    ProjectExplorer::Kit const* k
-  , QString const& projectPath
-  , BuildConfiguration::BuildType type) const
+BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
+    , QString const& projectPath
+    , BuildConfiguration::BuildType type) const
 {
     Q_ASSERT(k);
 
