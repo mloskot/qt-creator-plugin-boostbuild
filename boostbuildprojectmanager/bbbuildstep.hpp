@@ -127,17 +127,12 @@ public:
     QString summaryText() const;
 
 private slots:
-    // TODO:
-    //void itemChanged(QListWidgetItem* item);
-    //void makeLineEditTextEdited();
-    //void makeArgumentsLineEditTextEdited();
-    //void updateMakeOverrrideLabel();
+
     void updateDetails();
 
 private:
     void setSummaryText(const QString &text);
 
-    Internal::Ui::BuildStep* ui_;
     ProjectExplorer::BuildConfiguration* bc_;
     BuildStep* step_;
     QString summary_;

@@ -318,7 +318,7 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
     fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     setLayout(fl);
 
-        arguments_ = new QLineEdit(this);
+    arguments_ = new QLineEdit(this);
     fl->addRow(tr("Arguments:"), arguments_);
     arguments_->setText(step_->allArguments());
 
@@ -368,7 +368,8 @@ void BuildStepConfigWidget::updateDetails()
         = ProjectExplorer::ToolChainKitInformation::toolChain(step_->target()->kit());
     if (!tc)
     {
-        setSummaryText(tr("<b>Make:</b> %1")
+        setSummaryText(tr("<b>%1:</b> %2")
+            .arg(QLatin1String(Constants::BOOSTBUILD))
             .arg(ProjectExplorer::ToolChainKitInformation::msgNoToolChainInTarget()));
         return;
     }
@@ -386,7 +387,8 @@ void BuildStepConfigWidget::updateDetails()
 
     if (params.commandMissing())
     {
-        setSummaryText(tr("<b>Boost.Build:</b> %1 not found in the environment.")
+        setSummaryText(tr("<b>%1:</b> %2 not found in the environment.")
+            .arg(QLatin1String(Constants::BOOSTBUILD))
             .arg(params.command())); // Override display text
     }
     else
