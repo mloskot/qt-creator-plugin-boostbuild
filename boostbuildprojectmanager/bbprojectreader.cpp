@@ -104,6 +104,14 @@ void ProjectReader::buildFilesList(QString const& basePath
             if (fileInfo.isSymLink())
                 continue;
 
+            // TODO: pass names to filter as arg
+            // "Since Boost.Build almost always generates tergets under the "bin"
+            // directiry" (see Boost.Build architecture doc),
+            // this as well as "bin.v2" and other variations
+            // should be skipped as not a part of project tree
+            if (fileInfo.baseName() == QLatin1String("bin"))
+                continue;
+
             // If any C/C++ headers in this directory, add it to include paths,
             // used for C/C++ parsing only.
             QDir const thisDir(fileInfo.dir());
