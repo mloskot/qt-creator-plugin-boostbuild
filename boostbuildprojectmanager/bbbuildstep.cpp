@@ -313,13 +313,12 @@ bool BuildStepFactory::canHandle(ProjectExplorer::BuildStepList* parent) const
 BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
     : step_(step)
 {
-    BBPM_QDEBUG("TODO");
     QFormLayout *fl = new QFormLayout(this);
     fl->setMargin(0);
     fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     setLayout(fl);
 
-    arguments_ = new QLineEdit(this);
+        arguments_ = new QLineEdit(this);
     fl->addRow(tr("Arguments:"), arguments_);
     arguments_->setText(step_->allArguments());
 
@@ -349,6 +348,15 @@ QString BuildStepConfigWidget::summaryText() const
     return summary_;
 }
 
+void BuildStepConfigWidget::setSummaryText(QString const& text)
+{
+    if (text != summary_)
+    {
+        summary_ = text;
+        emit updateSummary();
+    }
+}
+
 void BuildStepConfigWidget::updateDetails()
 {
     ProjectExplorer::BuildConfiguration* bc = step_->buildConfiguration();
@@ -356,31 +364,36 @@ void BuildStepConfigWidget::updateDetails()
         bc = step_->target()->activeBuildConfiguration();
     Q_ASSERT(bc);
 
-    ProjectExplorer::ToolChain* tc =
-            ProjectExplorer::ToolChainKitInformation::toolChain(step_->target()->kit());
-
-    if (tc)
+    ProjectExplorer::ToolChain* tc
+        = ProjectExplorer::ToolChainKitInformation::toolChain(step_->target()->kit());
+    if (!tc)
     {
-        // TODO
-        //QString arguments = Utils::QtcProcess::joinArgs(step_->m_buildTargets);
-        //Utils::QtcProcess::addArgs(&arguments, step_->additionalArguments());
+        setSummaryText(tr("<b>Make:</b> %1")
+            .arg(ProjectExplorer::ToolChainKitInformation::msgNoToolChainInTarget()));
+        return;
+    }
 
-        ProjectExplorer::ProcessParameters params;
-        params.setMacroExpander(bc->macroExpander());
-        params.setEnvironment(bc->environment());
-        params.setWorkingDirectory(bc->buildDirectory().toString());
-        params.setCommand(step_->makeCommand(bc->environment()));
-        params.setArguments(step_->allArguments());
-        summary_ = params.summary(displayName());
+    // TODO
+    //QString arguments = Utils::QtcProcess::joinArgs(step_->m_buildTargets);
+    //Utils::QtcProcess::addArgs(&arguments, step_->additionalArguments());
+
+    ProjectExplorer::ProcessParameters params;
+    params.setMacroExpander(bc->macroExpander());
+    params.setEnvironment(bc->environment());
+    params.setWorkingDirectory(bc->buildDirectory().toString());
+    params.setCommand(step_->makeCommand(bc->environment()));
+    params.setArguments(step_->allArguments());
+
+    if (params.commandMissing())
+    {
+        setSummaryText(tr("<b>Boost.Build:</b> %1 not found in the environment.")
+            .arg(params.command())); // Override display text
     }
     else
     {
-        summary_ = QLatin1String("<b>")
-            + ProjectExplorer::ToolChainKitInformation::msgNoToolChainInTarget()
-            + QLatin1String("</b>");
+        setSummaryText(params.summaryInWorkdir(displayName()));
     }
 
-    emit updateSummary();
 }
 
 } // namespace Internal

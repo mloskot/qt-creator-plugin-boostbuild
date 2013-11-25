@@ -121,7 +121,7 @@ class BuildStepConfigWidget : public ProjectExplorer::BuildStepConfigWidget
     Q_OBJECT
 
 public:
-    BuildStepConfigWidget(BuildStep* buildStep);
+    explicit BuildStepConfigWidget(BuildStep* buildStep);
     ~BuildStepConfigWidget();
     QString displayName() const;
     QString summaryText() const;
@@ -135,7 +135,10 @@ private slots:
     void updateDetails();
 
 private:
-    //Ui::GenericMakeStep* m_ui;
+    void setSummaryText(const QString &text);
+
+    Internal::Ui::BuildStep* ui_;
+    ProjectExplorer::BuildConfiguration* bc_;
     BuildStep* step_;
     QString summary_;
     QLineEdit* arguments_;

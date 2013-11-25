@@ -13,9 +13,12 @@
 #include <projectexplorer/project.h>
 #include <projectexplorer/namedwidget.h>
 #include <projectexplorer/target.h>
+#include <utils/pathchooser.h>
 #include <utils/qtcassert.h>
 // Qt
 #include <QFileInfo>
+#include <QFormLayout>
+#include <QInputDialog>
 #include <QString>
 // std
 #include <memory>
@@ -47,7 +50,7 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id
 ProjectExplorer::NamedWidget*
 BuildConfiguration::createConfigWidget()
 {
-    return 0; // new BuildSettingsWidget(this);
+    return new BuildSettingsWidget(this);
 }
 
 BuildConfiguration::BuildType
@@ -259,6 +262,40 @@ BuildConfigurationFactory::defaultBuildDirectory(QString const& projectPath) con
 
     return Utils::FileName::fromString(
         ProjectExplorer::Project::projectDirectory(projectPath));
+}
+
+BuildSettingsWidget::BuildSettingsWidget(BuildConfiguration* bc)
+    : bc_(bc)
+    , pathChooser_(0)
+{
+    setDisplayName(tr("Boost.Build Manager"));
+
+    QFormLayout* fl = new QFormLayout(this);
+    fl->setContentsMargins(0, -1, 0, -1);
+    fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+
+    // Build directory
+    pathChooser_ = new Utils::PathChooser(this);
+    pathChooser_->setEnabled(true);
+    pathChooser_->setBaseDirectory(bc_->target()->project()->projectDirectory());
+    pathChooser_->setEnvironment(bc_->environment());
+    pathChooser_->setPath(bc_->rawBuildDirectory().toString());
+    fl->addRow(tr("Build directory:"), pathChooser_);
+
+    connect(pathChooser_, SIGNAL(changed(QString)), this, SLOT(buildDirectoryChanged()));
+    connect(bc, SIGNAL(environmentChanged()), this, SLOT(environmentHasChanged()));
+}
+
+void BuildSettingsWidget::buildDirectoryChanged()
+{
+    Q_ASSERT(bc_);
+    bc_->setBuildDirectory(Utils::FileName::fromString(pathChooser_->rawPath()));
+}
+
+void BuildSettingsWidget::environmentHasChanged()
+{
+    Q_ASSERT(pathChooser_);
+    pathChooser_->setEnvironment(bc_->environment());
 }
 
 } // namespace Internal

@@ -3,18 +3,21 @@
 
 // Qt Creator
 #include <projectexplorer/buildconfiguration.h>
+#include <projectexplorer/namedwidget.h>
 // Qt
 #include <QList>
 #include <QString>
 
-namespace ProjectExplorer {
-class NamedWidget;
+namespace Utils {
+class FileName;
+class PathChooser;
 }
 
 namespace BoostBuildProjectManager {
 namespace Internal {
 
 class BuildInfo;
+class BuildSettingsWidget;
 
 class BuildConfiguration : public ProjectExplorer::BuildConfiguration
 {
@@ -32,6 +35,8 @@ public:
 protected:
     BuildConfiguration(ProjectExplorer::Target* parent, BuildConfiguration* source);
     BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id);
+
+    friend class BuildSettingsWidget;
 };
 
 class BuildConfigurationFactory : public ProjectExplorer::IBuildConfigurationFactory
@@ -77,6 +82,22 @@ private:
 
     Utils::FileName
     defaultBuildDirectory(QString const& projectPath) const;
+};
+
+class BuildSettingsWidget : public ProjectExplorer::NamedWidget
+{
+    Q_OBJECT
+
+public:
+    BuildSettingsWidget(BuildConfiguration* bc);
+
+private slots:
+    void buildDirectoryChanged();
+    void environmentHasChanged();
+
+private:
+    BuildConfiguration* bc_;
+    Utils::PathChooser* pathChooser_;
 };
 
 } // namespace Internal
