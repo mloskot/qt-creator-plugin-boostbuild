@@ -55,8 +55,8 @@ bool BuildStep::init()
     setDefaultDisplayName(QLatin1String(Constants::BOOSTBUILD));
 
     tasks_.clear();
-    ProjectExplorer::ToolChain* tc =
-        ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit());
+    ProjectExplorer::ToolChain* tc
+        = ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit());
     if (!tc)
     {
         BBPM_QDEBUG("Qt Creator needs compiler");
@@ -70,9 +70,7 @@ bool BuildStep::init()
         return !tasks_.empty(); // otherwise the tasks will not get reported
     }
 
-    ProjectExplorer::BuildConfiguration* bc = buildConfiguration();
-    if (!bc)
-        bc = target()->activeBuildConfiguration();
+    BuildConfiguration* bc = thisBuildConfiguration();
     QTC_ASSERT(bc, return false);
 
     setIgnoreReturnValue(Constants::ReturnValueNotIgnored);
@@ -92,7 +90,7 @@ bool BuildStep::init()
         env.set(QLatin1String("LC_ALL"), QLatin1String("C"));
         pp->setEnvironment(env);
     }
-    pp->setWorkingDirectory(bc->buildDirectory().toString());
+    pp->setWorkingDirectory(bc->workingDirectory().toString());
     pp->setCommand(makeCommand(bc->environment()));
     pp->setArguments(allArguments());
     pp->resolveAll();
@@ -133,6 +131,26 @@ void BuildStep::run(QFutureInterface<bool>& fi)
     }
 }
 
+BuildConfiguration* BuildStep::thisBuildConfiguration() const
+{
+    BuildConfiguration* bc = 0;
+    if (ProjectExplorer::BuildConfiguration* bcBase = buildConfiguration())
+    {
+        bc = qobject_cast<BuildConfiguration*>(bcBase);
+    }
+    else
+    {
+        // TODO: Do we need to do anything with this case?
+        // From QmakeProjectManager:
+        // That means the step is in the deploylist, so we listen to the active build
+        // config changed signal and react...
+
+        bcBase = target()->activeBuildConfiguration();
+        bc = qobject_cast<BuildConfiguration*>(bcBase);
+    }
+    return bc;
+}
+
 ProjectExplorer::BuildStepConfigWidget* BuildStep::createConfigWidget()
 {
     return new BuildStepConfigWidget(this);
@@ -166,18 +184,33 @@ QString BuildStep::makeCommand(Utils::Environment const& env) const
     return QLatin1String(Constants::COMMAND_BB2);
 }
 
-QString BuildStep::allArguments() const
+QString BuildStep::additionalArguments() const
 {
     return Utils::QtcProcess::joinArgs(arguments_);
 }
 
-void BuildStep::appendArgument(QString const& arg)
+QString BuildStep::allArguments() const
 {
-    // TODO: find duplicates?
+    QStringList args(arguments_);
+
+    // Collect implicit arguments not specified by user directly as option=value pair
+    if (ProjectExplorer::BuildConfiguration* bc = buildConfiguration())
+    {
+        QString const builddir(bc->buildDirectory().toString());
+        if (!builddir.isEmpty())
+            args.append(QLatin1String("--build-dir=") + builddir);
+    }
+
+    return Utils::QtcProcess::joinArgs(args);
+}
+
+void BuildStep::appendAdditionalArgument(QString const& arg)
+{
+    // TODO: use map or find duplicates?
     arguments_.append(arg);
 }
 
-void BuildStep::setArguments(QString const& args)
+void BuildStep::setAdditionalArguments(QString const& args)
 {
     Utils::QtcProcess::SplitError err;
     QStringList argsList = Utils::QtcProcess::splitArgs(args, false, &err);
@@ -191,6 +224,7 @@ void BuildStep::setArguments(QString const& args)
 ProjectExplorer::BuildConfiguration::BuildType
 BuildStep::buildType() const
 {
+    // FIXME: what is user inputs "variant = release" or mixed-case value?
     return arguments_.contains(QLatin1String("variant=release"))
             ? BuildConfiguration::Release
             : BuildConfiguration::Debug;
@@ -206,7 +240,7 @@ BuildStep::setBuildType(ProjectExplorer::BuildConfiguration::BuildType type)
     else
         arg += QLatin1String("debug");
 
-    appendArgument(arg);
+    appendAdditionalArgument(arg);
 }
 
 BuildStepFactory::BuildStepFactory(QObject* parent)
@@ -263,7 +297,7 @@ BuildStepFactory::create(ProjectExplorer::BuildStepList* parent, Core::Id const 
     BuildStep* step = new BuildStep(parent);
 
     if (parent->id() == ProjectExplorer::Constants::BUILDSTEPS_CLEAN)
-        step->appendArgument(QLatin1String("--clean"));
+        step->appendAdditionalArgument(QLatin1String("--clean"));
 
     return step;
 }
@@ -320,7 +354,7 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
 
     arguments_ = new QLineEdit(this);
     fl->addRow(tr("Arguments:"), arguments_);
-    arguments_->setText(step_->allArguments());
+    arguments_->setText(step_->additionalArguments());
 
     updateDetails();
 
@@ -330,6 +364,12 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
           , this, SLOT(updateDetails()));
     connect(step_->project(), SIGNAL(environmentChanged())
           , this, SLOT(updateDetails()));
+
+    if (BuildConfiguration* bc = step_->thisBuildConfiguration())
+    {
+        connect(bc, SIGNAL(buildDirectoryChanged())
+              , this, SLOT(updateDetails()));
+    }
 }
 
 BuildStepConfigWidget::~BuildStepConfigWidget()
@@ -344,25 +384,20 @@ QString BuildStepConfigWidget::displayName() const
 
 QString BuildStepConfigWidget::summaryText() const
 {
-    return summary_;
+    return summaryText_;
 }
 
 void BuildStepConfigWidget::setSummaryText(QString const& text)
 {
-    if (text != summary_)
+    if (text != summaryText_)
     {
-        summary_ = text;
+        summaryText_ = text;
         emit updateSummary();
     }
 }
 
 void BuildStepConfigWidget::updateDetails()
 {
-    ProjectExplorer::BuildConfiguration* bc = step_->buildConfiguration();
-    if (!bc)
-        bc = step_->target()->activeBuildConfiguration();
-    Q_ASSERT(bc);
-
     ProjectExplorer::ToolChain* tc
         = ProjectExplorer::ToolChainKitInformation::toolChain(step_->target()->kit());
     if (!tc)
@@ -373,14 +408,13 @@ void BuildStepConfigWidget::updateDetails()
         return;
     }
 
-    // TODO
-    //QString arguments = Utils::QtcProcess::joinArgs(step_->m_buildTargets);
-    //Utils::QtcProcess::addArgs(&arguments, step_->additionalArguments());
+    BuildConfiguration* bc = step_->thisBuildConfiguration();
+    QTC_ASSERT(bc, return;);
 
     ProjectExplorer::ProcessParameters params;
     params.setMacroExpander(bc->macroExpander());
     params.setEnvironment(bc->environment());
-    params.setWorkingDirectory(bc->buildDirectory().toString());
+    params.setWorkingDirectory(bc->workingDirectory().toString());
     params.setCommand(step_->makeCommand(bc->environment()));
     params.setArguments(step_->allArguments());
 
@@ -392,7 +426,7 @@ void BuildStepConfigWidget::updateDetails()
     }
     else
     {
-        setSummaryText(params.summaryInWorkdir(displayName()));
+        setSummaryText(params.summary(displayName()));
     }
 
 }

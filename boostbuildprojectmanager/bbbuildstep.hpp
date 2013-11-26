@@ -23,6 +23,8 @@ class Environment;
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+class BuildConfiguration;
+
 // TODO: see doc in AutogenStep
 class BuildStep : public ProjectExplorer::AbstractProcessStep
 {
@@ -32,7 +34,7 @@ class BuildStep : public ProjectExplorer::AbstractProcessStep
 
 public:
 
-    BuildStep(ProjectExplorer::BuildStepList* bsl);
+    explicit BuildStep(ProjectExplorer::BuildStepList* bsl);
 
     bool init();
 
@@ -48,9 +50,11 @@ public:
 
     QString makeCommand(Utils::Environment const& env) const;
 
+    QString additionalArguments() const;
+
     QString allArguments() const;
 
-    void appendArgument(QString const& arg);
+    void appendAdditionalArgument(QString const& arg);
 
     ProjectExplorer::BuildConfiguration::BuildType
     buildType() const;
@@ -58,7 +62,7 @@ public:
     void setBuildType(ProjectExplorer::BuildConfiguration::BuildType type);
 
 public slots:
-    void setArguments(QString const& list);
+    void setAdditionalArguments(QString const& list);
 
 signals:
     void argumentsChanged(QString const& list);
@@ -68,6 +72,8 @@ protected:
     BuildStep(ProjectExplorer::BuildStepList* bsl, Core::Id const id);
 
 private:
+    BuildConfiguration* thisBuildConfiguration() const;
+
     QList<ProjectExplorer::Task> tasks_;
     QStringList arguments_;
 };
@@ -135,7 +141,7 @@ private:
 
     ProjectExplorer::BuildConfiguration* bc_;
     BuildStep* step_;
-    QString summary_;
+    QString summaryText_;
     QLineEdit* arguments_;
 };
 

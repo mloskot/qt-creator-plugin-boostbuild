@@ -1,3 +1,7 @@
+//
+// Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+// Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+//
 #include "bbbuildconfiguration.hpp"
 #include "bbbuildinfo.hpp"
 #include "bbbuildstep.hpp"
@@ -14,6 +18,7 @@
 #include <projectexplorer/namedwidget.h>
 #include <projectexplorer/target.h>
 #include <utils/pathchooser.h>
+#include <utils/fileutils.h>
 #include <utils/qtcassert.h>
 // Qt
 #include <QFileInfo>
@@ -30,6 +35,9 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
     : ProjectExplorer::BuildConfiguration(parent
         , Core::Id(Constants::BUILDCONFIGURATION_ID))
 {
+    workingDirectory_
+        = Utils::FileName::fromString(parent->project()->projectDirectory());
+
     BBPM_QDEBUG("TODO");
 }
 
@@ -38,12 +46,18 @@ BuildConfiguration::BuildConfiguration(
   , BuildConfiguration* source)
     : ProjectExplorer::BuildConfiguration(parent, source)
 {
+    if (BuildConfiguration* bc = qobject_cast<BuildConfiguration*>(source))
+        workingDirectory_ = bc->workingDirectory();
+
     BBPM_QDEBUG("TODO");
 }
 
 BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id)
     : ProjectExplorer::BuildConfiguration(parent, id)
 {
+    workingDirectory_
+        = Utils::FileName::fromString(parent->project()->projectDirectory());
+
     BBPM_QDEBUG("TODO");
 }
 
@@ -71,6 +85,28 @@ BuildConfiguration::buildType() const
     }
 
     return type;
+}
+
+Utils::FileName BuildConfiguration::workingDirectory() const
+{
+    Q_ASSERT(!workingDirectory_.isEmpty());
+    return workingDirectory_;
+}
+
+void BuildConfiguration::setWorkingDirectory(Utils::FileName const& dir)
+{
+    Q_ASSERT(!dir.isEmpty());
+    workingDirectory_ = dir;
+    emitWorkingDirectoryChanged();
+}
+
+void BuildConfiguration::emitWorkingDirectoryChanged()
+{
+    if (workingDirectory() != lastEmmitedWorkingDirectory_)
+    {
+        lastEmmitedWorkingDirectory_= workingDirectory();
+        emit workingDirectoryChanged();
+    }
 }
 
 BuildConfigurationFactory::BuildConfigurationFactory(QObject* parent)
@@ -107,6 +143,7 @@ BuildConfigurationFactory::availableBuilds(ProjectExplorer::Target const* parent
 
     QList<ProjectExplorer::BuildInfo*> result;
     result << createBuildInfo(parent->kit(), projectPath, BuildConfiguration::Debug);
+    result << createBuildInfo(parent->kit(), projectPath, BuildConfiguration::Release);
     return result;
 }
 
@@ -130,17 +167,16 @@ BuildConfigurationFactory::create(ProjectExplorer::Target* parent
     QTC_ASSERT(info->factory() == this, return 0);
     QTC_ASSERT(info->kitId == parent->kit()->id(), return 0);
     QTC_ASSERT(!info->displayName.isEmpty(), return 0);
-
     BBPM_QDEBUG(info->displayName);
+    // TODO: check Jamfile/Jamroot exists
+    // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
 
     BuildInfo const* bi = static_cast<BuildInfo const*>(info);
     BuildConfiguration* bc = new BuildConfiguration(parent);
     bc->setDisplayName(bi->displayName);
     bc->setDefaultDisplayName(bi->displayName);
     bc->setBuildDirectory(bi->buildDirectory);
-
-    // TODO: check Jamfile/Jamroot exists
-    // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
+    bc->setWorkingDirectory(bi->workingDirectory);
 
     BuildStepFactory* stepFactory = BuildStepFactory::getObject();
     QTC_ASSERT(stepFactory, return 0);
@@ -198,7 +234,7 @@ BuildConfigurationFactory::clone(ProjectExplorer::Target* parent
 
 bool
 BuildConfigurationFactory::canRestore(ProjectExplorer::Target const* parent
-                                    , QVariantMap const& map) const
+    , QVariantMap const& map) const
 {
     Q_ASSERT(parent);
 
@@ -247,8 +283,10 @@ BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
         info->displayName = tr("Debug");
     info->buildType = type;
     info->buildDirectory = defaultBuildDirectory(projectPath);
+    info->workingDirectory = defaultWorkingDirectory(projectPath);
     info->kitId = k->id();
-    info->supportsShadowBuild = true;
+    info->supportsShadowBuild = true; // TODO
+
     // TODO: use bjam vs use b2 command
 
     BBPM_QDEBUG(info->typeName << " in " << projectPath);
@@ -260,13 +298,27 @@ BuildConfigurationFactory::defaultBuildDirectory(QString const& projectPath) con
 {
     BBPM_QDEBUG(projectPath);
 
+    // ${BOOST}/tools/build/v2/doc/src/architecture.xml
+    // Since Boost.Build almost always generates targets under the "bin"
+
+    Utils::FileName fileName = Utils::FileName::fromString(
+        ProjectExplorer::Project::projectDirectory(projectPath));
+    fileName.appendPath(QLatin1String("bin"));
+    return fileName;
+}
+
+Utils::FileName
+BuildConfigurationFactory::defaultWorkingDirectory(QString const& projectPath) const
+{
+    BBPM_QDEBUG(projectPath);
+
     return Utils::FileName::fromString(
         ProjectExplorer::Project::projectDirectory(projectPath));
 }
 
 BuildSettingsWidget::BuildSettingsWidget(BuildConfiguration* bc)
     : bc_(bc)
-    , pathChooser_(0)
+    , buildPathChooser_(0)
 {
     setDisplayName(tr("Boost.Build Manager"));
 
@@ -274,28 +326,50 @@ BuildSettingsWidget::BuildSettingsWidget(BuildConfiguration* bc)
     fl->setContentsMargins(0, -1, 0, -1);
     fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
-    // Build directory
-    pathChooser_ = new Utils::PathChooser(this);
-    pathChooser_->setEnabled(true);
-    pathChooser_->setBaseDirectory(bc_->target()->project()->projectDirectory());
-    pathChooser_->setEnvironment(bc_->environment());
-    pathChooser_->setPath(bc_->rawBuildDirectory().toString());
-    fl->addRow(tr("Build directory:"), pathChooser_);
+    QString const projectPath(bc_->target()->project()->projectDirectory());
 
-    connect(pathChooser_, SIGNAL(changed(QString)), this, SLOT(buildDirectoryChanged()));
-    connect(bc, SIGNAL(environmentChanged()), this, SLOT(environmentHasChanged()));
+    // Working directory
+    workPathChooser_ = new Utils::PathChooser(this);
+    workPathChooser_->setEnabled(true);
+    workPathChooser_->setEnvironment(bc_->environment());
+    workPathChooser_->setBaseDirectory(projectPath);
+    workPathChooser_->setPath(bc_->workingDirectory().toString());
+    fl->addRow(tr("Run Boost.Build in:"), workPathChooser_);
+
+    // Build directory
+    buildPathChooser_ = new Utils::PathChooser(this);
+    buildPathChooser_->setEnabled(true);
+    buildPathChooser_->setEnvironment(bc_->environment());
+    buildPathChooser_->setBaseDirectory(projectPath);
+    buildPathChooser_->setPath(bc_->rawBuildDirectory().toString());
+    fl->addRow(tr("Set --build-dir to:"), buildPathChooser_);
+
+    connect(workPathChooser_, SIGNAL(changed(QString))
+          , this, SLOT(workingDirectoryChanged()));
+
+    connect(buildPathChooser_, SIGNAL(changed(QString))
+          , this, SLOT(buildDirectoryChanged()));
+
+    connect(bc, SIGNAL(environmentChanged())
+          , this, SLOT(environmentHasChanged()));
 }
 
 void BuildSettingsWidget::buildDirectoryChanged()
 {
-    Q_ASSERT(bc_);
-    bc_->setBuildDirectory(Utils::FileName::fromString(pathChooser_->rawPath()));
+    QTC_ASSERT(bc_, return);
+    bc_->setBuildDirectory(Utils::FileName::fromString(buildPathChooser_->rawPath()));
+}
+
+void BuildSettingsWidget::workingDirectoryChanged()
+{
+    QTC_ASSERT(bc_, return);
+    bc_->setWorkingDirectory(Utils::FileName::fromString(workPathChooser_->rawPath()));
 }
 
 void BuildSettingsWidget::environmentHasChanged()
 {
-    Q_ASSERT(pathChooser_);
-    pathChooser_->setEnvironment(bc_->environment());
+    Q_ASSERT(buildPathChooser_);
+    buildPathChooser_->setEnvironment(bc_->environment());
 }
 
 } // namespace Internal

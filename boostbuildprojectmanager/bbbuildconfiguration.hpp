@@ -4,6 +4,7 @@
 // Qt Creator
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/namedwidget.h>
+#include <utils/fileutils.h>
 // Qt
 #include <QList>
 #include <QString>
@@ -32,11 +33,24 @@ public:
 
     BuildType buildType() const;
 
+    Utils::FileName workingDirectory() const;
+    void setWorkingDirectory(Utils::FileName const& dir);
+
+signals:
+    void workingDirectoryChanged();
+
 protected:
     BuildConfiguration(ProjectExplorer::Target* parent, BuildConfiguration* source);
     BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id);
 
     friend class BuildSettingsWidget;
+
+private slots:
+    void emitWorkingDirectoryChanged();
+
+private:
+    Utils::FileName workingDirectory_;
+    Utils::FileName lastEmmitedWorkingDirectory_;
 };
 
 class BuildConfigurationFactory : public ProjectExplorer::IBuildConfigurationFactory
@@ -82,6 +96,9 @@ private:
 
     Utils::FileName
     defaultBuildDirectory(QString const& projectPath) const;
+
+    Utils::FileName
+    defaultWorkingDirectory(QString const& projectPath) const;
 };
 
 class BuildSettingsWidget : public ProjectExplorer::NamedWidget
@@ -92,12 +109,14 @@ public:
     BuildSettingsWidget(BuildConfiguration* bc);
 
 private slots:
-    void buildDirectoryChanged();
     void environmentHasChanged();
+    void buildDirectoryChanged();
+    void workingDirectoryChanged();
 
 private:
     BuildConfiguration* bc_;
-    Utils::PathChooser* pathChooser_;
+    Utils::PathChooser* workPathChooser_;
+    Utils::PathChooser* buildPathChooser_;
 };
 
 } // namespace Internal
