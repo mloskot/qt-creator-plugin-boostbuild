@@ -28,23 +28,6 @@ and currently, it does **not** provide:
 * parsing capabilities for Boost.Build ```Jamroot``` or ```Jamfile.v2``` files
 * any kind of GUI for updating or managing configuration stored in Jamfiles
 
-Building
-------------------------------------------------------------------------------
-
-Generally, follow the 
-[Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
-section from the [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html) guide.
-
-Specifically, I used Qt and Qt Creator built from sources in their Git repositories:
-
-* Qt 5 from branch: stable
-* Qt Creator from branch: 3.0
-
-So, I recommend to follow these guides:
-
-1. [Building Qt 5 from Git](http://qt-project.org/wiki/Building_Qt_5_from_Git)
-1. [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
-
 Authors
 ------------------------------------------------------------------------------
 
@@ -61,6 +44,25 @@ Credits
 * Vladimir Prus for answering questions about Boost.Build on #boost IRC channel,
 
 lots of thanks to!
+
+Installation
+------------------------------------------------------------------------------
+
+You need to build the plugin from sources.
+
+Generally, follow the 
+[Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
+section from the [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html) guide.
+
+Specifically, I used Qt and Qt Creator built from sources in their Git repositories:
+
+* Qt 5 from branch: stable
+* Qt Creator from branch: 3.0
+
+So, I recommend to follow these guides:
+
+1. [Building Qt 5 from Git](http://qt-project.org/wiki/Building_Qt_5_from_Git)
+1. [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
 
 FAQ
 ------------------------------------------------------------------------------
