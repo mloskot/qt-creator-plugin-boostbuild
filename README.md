@@ -7,21 +7,26 @@ A [Boost.Build](http://www.boost.org/boost-build2/) project manager plugin for
 Overview
 ------------------------------------------------------------------------------
 
-The idea of the Boost.Build plugin is extremely simple - three main features:
+The idea of the Boost.Build plugin is extremely simple - use Qt Creator as
+a basic GUI shell to interact with the Boost.Build command.
 
-* **Open** a Jamfile as a project in Qt Creator
-* **Build** a project in Qt Creator as it is configured by its Jamfile(s).
-* **Parse** the Boost.Build command output to enable navigation to error or warning locations.
+Three main features:
 
-It turns out, that in order to achieve the three features above, a project manager for
-Qt Creator needs to fulfill more beefy requirements of opening a project,
-reading project directory structure, creating nodes of project explorer tree,
-creating build configurations, creating build steps for build configurations and so on.
+* **Open** ```Jamroot``` or ```Jamfile.v2``` as a project in Qt Creator.
+* **Build** project in Qt Creator as it is configured by its Jamfile(s).
+* **Parse** Boost.Build command output to enable navigation to error or warning locations.
 
-Regardless the Qt Creator requirements, the plugin is **not** supposed to provide:
+It turns out, that in order to achieve the three basic features above,
+a project manager plugin for Qt Creator needs to implement a few beefy features like:
+opening a project, reading project directory structure, creating nodes of project 
+explorer tree, creating build, run, deploy configurations and
+corresponding build, run, deploy steps and more.
 
-* fully-featured parser for Jamfiles 
-* any kind of GUI for editing, updating or managing configuration stored in Jamfiles
+So, the Boost.Build plugin implements as little as necessary,
+and currently, it does **not** provide:
+
+* parsing capabilities for Boost.Build ```Jamroot``` or ```Jamfile.v2``` files
+* any kind of GUI for updating or managing configuration stored in Jamfiles
 
 Building
 ------------------------------------------------------------------------------
@@ -60,17 +65,62 @@ lots of thanks to!
 FAQ
 ------------------------------------------------------------------------------
 
+### Why Boost.Build plugin for Qt Creator?
+
+Qt Creator is a fantastic and powerful IDE which is surprisingly easy to extend.
+
+Yet, apparently, it is much quicker to hack fairly usable Boost.Build support for Qt Creator
+than develop [Boost.CMake](https://svn.boost.org/trac/boost/wiki/CMake) and wait until
+it is approved by the Boost project.
+
+### Is it part of Qt Creator?
+
+No.
+
+### Will it become part of Qt Creator?
+
+No plans, no demand, no man power.
+
+### What version of Qt Creator is supported?
+
+See the [Building](#Building) section.
+
+### How to install the plugin?
+
+[Build](#Building) it.
+
+### What is the roadmap?
+
+None, apart form plan to roll the project forward fixing bugs and adding features
+as they appear useful or necessary in order to make work with Boost.Build-based
+a bit more accessible and efficient.
+
+See [Future[(#Future) section for some feature ideas.
+
+### How can I contribute?
+
+[Fork the repo](https://help.github.com/articles/fork-a-repo).
+
+### Have you tested it on Windows?
+
+No.
+
+### Have you tested it on Mac OS X?
+
+No.
+
 Future
 ------------------------------------------------------------------------------
 
 An unprioritised TODO lis for the plugin:
 
+* Allow to specify ```b2``` command location not in ```PATH```.
 * Collect and resolve include paths as specified in all Jamfiles in project tree.
 * Add support for parallel tree with header files, like Boost itself.
   Currently, in order to resolve includes from ```$BOOSTROOT``` for projects in ```$BOOSTROOT/libs```
   user needs to manually add ```$BOOSTROOT``` to ```*.qtcreator.includes``` file.
 * Collect preprocessor defines from all project Jamfiles.
-* Look for user-config.jam to determine some
+* Look for user-config.jam to determine some useful settings, projects that may be referenced, include paths.
 * Boost.Build Jamfile parser to enable fully-featured project management capacity by
   * use b2 for [reporting include paths for a project](http://lists.boost.org/boost-build/2013/11/27173.php),
     targets, preprocessor defines and build configuration settings.
