@@ -338,9 +338,8 @@ BuildStepConfigWidget::~BuildStepConfigWidget()
 
 QString BuildStepConfigWidget::displayName() const
 {
-    // TODO: return step_->displayName();
     return tr(Constants::BOOSTBUILD
-            , "BoostBuildProjectManager::BuildStepConfigWidget display name.");
+            , "BoostBuildProjectManager::BuildStep display name.");
 }
 
 QString BuildStepConfigWidget::summaryText() const
