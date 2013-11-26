@@ -1,11 +1,11 @@
 Qt Creator Plugin for Boost.Build
-=================================
+==============================================================================
 
 A [Boost.Build](http://www.boost.org/boost-build2/) project manager plugin for 
 [Qt Creator](http://qt-project.org/wiki/Category:Tools::QtCreator).
 
 Overview
---------
+------------------------------------------------------------------------------
 
 The idea of the Boost.Build plugin is extremely simple - three main features:
 
@@ -24,7 +24,7 @@ Regardless the Qt Creator requirements, the plugin is **not** supposed to provid
 * any kind of GUI for editing, updating or managing configuration stored in Jamfiles
 
 Building
---------
+------------------------------------------------------------------------------
 
 Generally, follow the 
 [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
@@ -41,12 +41,12 @@ So, I recommend to follow these guides:
 1. [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
 
 Authors
--------
+------------------------------------------------------------------------------
 
 * [Mateusz Loskot](http://mateusz.loskot.net) (mateusz@loskot.net)
 
 Credits
--------
+------------------------------------------------------------------------------
 
 * Christian Kandeler, Tobias Hunger, Koehne Kai, André Pönitz for great help on the qt-creator mailing list,
 * [Tomasz Siekierda](http://sierdzio.com/) for 
@@ -57,8 +57,11 @@ Credits
 
 lots of thanks to!
 
+FAQ
+------------------------------------------------------------------------------
+
 Future
-------
+------------------------------------------------------------------------------
 
 An unprioritised TODO lis for the plugin:
 
