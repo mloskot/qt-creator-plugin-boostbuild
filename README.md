@@ -82,7 +82,14 @@ FAQ
 
 ### Why Boost.Build plugin for Qt Creator?
 
-Qt Creator is a fantastic and powerful IDE which is surprisingly easy to extend.
+I always wanted to learn Qt programming.
+
+When my son Hugo was born, I went on two weeks paternity leave and, somewhat inspired by the 
+[Seven by Seven](http://pragprog.com/categories/7in7) idea, I decided to do an experiment:
+*can I learn a new programming skills or work on an open source project having only 
+a few 15-30 minutes short breaks over a day at my disposal?* 
+
+Qt Creator is a fantastic and powerful IDE which is surprisingly easy and pleasent to extend.
 
 Yet, apparently, it is much quicker to hack fairly usable Boost.Build support for
 Qt Creator than develop [Boost.CMake](https://svn.boost.org/trac/boost/wiki/CMake)
