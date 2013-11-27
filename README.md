@@ -83,11 +83,15 @@ No.
 
 ### Will it become part of Qt Creator?
 
-No plans, no demand, no man power.
+No demand, no man power, no plans.
 
 ### What version of Qt Creator is supported?
 
-See the [Building](#Building) section.
+I use Qt Creator 3.0 or later.
+It should work with earlier versions too.
+Please, drop me a line if you've tested it with Qt Creator 2.8 or earlier.
+
+See also the [Installation](#Installation) section.
 
 ### How to install the plugin?
 
@@ -119,6 +123,7 @@ Future
 An unprioritised TODO lis for the plugin:
 
 * Allow to specify ```b2``` command location not in ```PATH```.
+* Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
 * Collect and resolve include paths as specified in all Jamfiles in project tree.
 * Add support for parallel tree with header files, like Boost itself.
   Currently, in order to resolve includes from ```$BOOSTROOT``` for projects in ```$BOOSTROOT/libs```
