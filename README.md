@@ -39,8 +39,8 @@ Credits
 * Christian Kandeler, Tobias Hunger, Koehne Kai, André Pönitz for great help
   on the qt-creator mailing list,
 * [Tomasz Siekierda](http://sierdzio.com/) for 
-  [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html)
-  the [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
+  [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html) the
+  [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
   and support through qt-creator list,
 * Vladimir Prus for answering questions about Boost.Build on #boost IRC channel,
 
