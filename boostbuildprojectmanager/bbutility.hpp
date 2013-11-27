@@ -13,13 +13,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define BBPM_QDEBUG(msg) \
-    qDebug().nospace() \
+    qDebug() \
         << "[" << BoostBuildProjectManager::Constants::BOOSTBUILD << "] " \
         << "(" << __PRETTY_FUNCTION__ << ")"; \
     qDebug().nospace() << "\t" << msg
 
 #else
-
+nospace
 #define BBPM_QDEBUG(msg)
 
 #endif // _DEBUG
