@@ -36,7 +36,8 @@ Authors
 Credits
 ------------------------------------------------------------------------------
 
-* Christian Kandeler, Tobias Hunger, Koehne Kai, André Pönitz for great help on the qt-creator mailing list,
+* Christian Kandeler, Tobias Hunger, Koehne Kai, André Pönitz for great help
+  on the qt-creator mailing list,
 * [Tomasz Siekierda](http://sierdzio.com/) for 
   [writing](http://lists.qt-project.org/pipermail/qt-creator/2013-October/002859.html)
   the [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
@@ -62,7 +63,9 @@ You need to build the plugin from sources.
 
 Generally, follow the 
 [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html)
-section from the [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html) guide.
+section from the
+[Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html)
+guide.
 
 Specifically, I used Qt and Qt Creator built from sources in their Git repositories:
 
@@ -81,9 +84,9 @@ FAQ
 
 Qt Creator is a fantastic and powerful IDE which is surprisingly easy to extend.
 
-Yet, apparently, it is much quicker to hack fairly usable Boost.Build support for Qt Creator
-than develop [Boost.CMake](https://svn.boost.org/trac/boost/wiki/CMake) and wait until
-it is approved by the Boost project.
+Yet, apparently, it is much quicker to hack fairly usable Boost.Build support for
+Qt Creator than develop [Boost.CMake](https://svn.boost.org/trac/boost/wiki/CMake)
+and wait until it is approved by the Boost project.
 
 ### Is it part of Qt Creator?
 
@@ -115,7 +118,8 @@ See [Future[(#Future) section for some feature ideas.
 
 ### How can I contribute?
 
-[Fork the repo](https://help.github.com/articles/fork-a-repo).
+[Fork the repo](https://help.github.com/articles/fork-a-repo) and make the plugin better!
+
 
 ### Have you tested it on Windows?
 
@@ -131,20 +135,25 @@ Future
 An unprioritised TODO lis for the plugin:
 
 * Allow to specify ```b2``` command location not in ```PATH```.
-* Add **File Selection** dialog (see ```GenericProjectManager```) to get rid of hard-wired files scanning.
+* Add **File Selection** dialog (see ```GenericProjectManager```) to get rid of hard-wired
+  files scanning.
 * Add ```DeployConfiguration``` and ```RunConfiguration``` targets, if really needed.
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
     * See TODO item about ```user-config.jam``` lookup.
 * Collect and resolve include paths as specified in all Jamfiles in project tree.
 * Add support for parallel tree with header files, like Boost itself.
-  Currently, in order to resolve includes from ```$BOOSTROOT``` for projects in ```$BOOSTROOT/libs```
-  user needs to manually add ```$BOOSTROOT``` to ```*.qtcreator.includes``` file.
+  Currently, in order to resolve includes from ```$BOOSTROOT``` for projects
+  in ```$BOOSTROOT/libs``` user needs to manually add ```$BOOSTROOT```
+  to ```*.qtcreator.includes``` file.
 * Collect preprocessor defines from all project Jamfiles.
-* Look for ```user-config.jam``` to determine some useful settings, projects that may be referenced, include paths.
+* Look for ```user-config.jam``` to determine some useful settings, projects that may be
+  referenced, include paths.
     * Default toolset and use it for Kit selection/validation? See separate TODO item.
 * Boost.Build Jamfile parser to enable fully-featured project management capacity by
-    * use b2 for [reporting include paths for a project](http://lists.boost.org/boost-build/2013/11/27173.php),
+    * use b2 for
+      [reporting include paths for a project](http://lists.boost.org/boost-build/2013/11/27173.php),
       targets, preprocessor defines and build configuration settings.
-    * extracting parser from [tools/build/v2/engine](https://github.com/boostorg/build/tree/master/v2/engine)
+    * extracting parser from
+      [tools/build/v2/engine](https://github.com/boostorg/build/tree/master/v2/engine)
       as reusable library
     * making some love with [Boost.Spirit](http://boost.org/libs/spirit)
