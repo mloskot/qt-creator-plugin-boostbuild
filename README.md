@@ -52,7 +52,7 @@ Features
 
 What the Boost.Build plugin can do for me?
 
-'''TODO'''
+*TODO*
 
 
 Installation
@@ -131,6 +131,7 @@ Future
 An unprioritised TODO lis for the plugin:
 
 * Allow to specify ```b2``` command location not in ```PATH```.
+* Add ```DeployConfiguration``` and ```RunConfiguration``` targets, if really needed.
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
   * See TODO item about ```user-config.jam``` lookup.
 * Collect and resolve include paths as specified in all Jamfiles in project tree.
