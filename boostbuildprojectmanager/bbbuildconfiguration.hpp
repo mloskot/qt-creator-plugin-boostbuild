@@ -8,6 +8,7 @@
 // Qt
 #include <QList>
 #include <QString>
+#include <QVariantMap>
 
 namespace Utils {
 class FileName;
@@ -29,6 +30,8 @@ class BuildConfiguration : public ProjectExplorer::BuildConfiguration
 public:
     explicit BuildConfiguration(ProjectExplorer::Target* parent);
 
+    QVariantMap toMap() const;
+
     ProjectExplorer::NamedWidget* createConfigWidget();
 
     BuildType buildType() const;
@@ -42,6 +45,8 @@ signals:
 protected:
     BuildConfiguration(ProjectExplorer::Target* parent, BuildConfiguration* source);
     BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id);
+
+    bool fromMap(QVariantMap const& map);
 
     friend class BuildSettingsWidget;
 

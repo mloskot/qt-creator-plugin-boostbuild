@@ -34,7 +34,7 @@ void ProjectReader::startReading()
 
     QFuture<void> task = QtConcurrent::run(&ProjectReader::run, this);
     futureWatcher_.setFuture(task);
-    Core::ProgressManager::addTask(task, tr("Reading"), Constants::TASK_PROJECT_READING);
+    Core::ProgressManager::addTask(task, tr("Reading"), Constants::PROJECT_READER_TASK_ID);
 }
 
 void ProjectReader::handleReadingFinished()

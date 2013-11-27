@@ -61,6 +61,24 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id
     BBPM_QDEBUG("TODO");
 }
 
+QVariantMap BuildConfiguration::toMap() const
+{
+    QVariantMap map(ProjectExplorer::BuildConfiguration::toMap());
+    map.insert(QLatin1String(Constants::BC_KEY_WORKDIR), workingDirectory_.toString());
+    return map;
+}
+
+bool BuildConfiguration::fromMap(QVariantMap const& map)
+{
+    if (!ProjectExplorer::BuildConfiguration::fromMap(map))
+        return false;
+
+    QString dir = map.value(QLatin1String(Constants::BC_KEY_WORKDIR)).toString();
+    setWorkingDirectory(Utils::FileName::fromString(dir));
+
+    return true;
+}
+
 ProjectExplorer::NamedWidget*
 BuildConfiguration::createConfigWidget()
 {
@@ -95,8 +113,20 @@ Utils::FileName BuildConfiguration::workingDirectory() const
 
 void BuildConfiguration::setWorkingDirectory(Utils::FileName const& dir)
 {
-    Q_ASSERT(!dir.isEmpty());
-    workingDirectory_ = dir;
+    if (dir.isEmpty())
+    {
+        if (ProjectExplorer::Target* t = target())
+        {
+            workingDirectory_
+                = Utils::FileName::fromString(t->project()->projectDirectory());
+        }
+    }
+    else
+    {
+        workingDirectory_ = dir;
+    }
+
+    Q_ASSERT(!workingDirectory_.isEmpty());
     emitWorkingDirectoryChanged();
 }
 

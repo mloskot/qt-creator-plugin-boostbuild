@@ -164,16 +164,16 @@ bool BuildStep::immutable() const
 QVariantMap BuildStep::toMap() const
 {
     QVariantMap map(ProjectExplorer::AbstractProcessStep::toMap());
-    //TODO: BBPM_QDEBUG("TODO");
+    map.insert(QLatin1String(Constants::BS_KEY_ARGUMENTS), additionalArguments());
     return map;
 }
 
 bool BuildStep::fromMap(QVariantMap const& map)
 {
-    BBPM_QDEBUG("TODO");
-    // TODO: see CMakeProjectManager
-    // TODO: additionalArguments = map.value(QLatin1String(BOOSTBUILD_ADDITIONAL_ARGUMENTS_KEY)).toString();
-    return ProjectExplorer::BuildStep::fromMap(map);
+    QString const args(map.value(QLatin1String(Constants::BS_KEY_ARGUMENTS)).toString());
+    setAdditionalArguments(args);
+
+    return ProjectExplorer::AbstractProcessStep::fromMap(map);
 }
 
 QString BuildStep::makeCommand(Utils::Environment const& env) const
@@ -359,7 +359,7 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
     updateDetails();
 
     connect(arguments_, SIGNAL(textChanged(QString))
-          , step, SLOT(setArguments(QString)));
+          , step, SLOT(setAdditionalArguments(QString)));
     connect(step, SIGNAL(argumentsChanged(QString))
           , this, SLOT(updateDetails()));
     connect(step_->project(), SIGNAL(environmentChanged())
