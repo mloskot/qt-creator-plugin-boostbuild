@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QFormLayout>
 #include <QInputDialog>
+#include <QScopedPointer>
 #include <QString>
 // std
 #include <memory>
@@ -281,9 +282,9 @@ BuildConfigurationFactory::restore(ProjectExplorer::Target *parent
 
     if (canRestore(parent, map))
     {
-        std::unique_ptr<BuildConfiguration> bc(new BuildConfiguration(parent));
+        QScopedPointer<BuildConfiguration> bc(new BuildConfiguration(parent));
         if (bc->fromMap(map))
-            return bc.release();
+            return bc.take();
     }
     return 0;
 }

@@ -26,6 +26,7 @@
 // Qt
 #include <QFormLayout>
 #include <QLineEdit>
+#include <QScopedPointer>
 #include <QString>
 // std
 #include <memory>
@@ -331,9 +332,9 @@ BuildStepFactory::restore(ProjectExplorer::BuildStepList* parent
 
     if (canRestore(parent, map))
     {
-        std::unique_ptr<BuildStep> bs(new BuildStep(parent));
+        QScopedPointer<BuildStep> bs(new BuildStep(parent));
         if (bs->fromMap(map))
-            return bs.release();
+            return bs.take();
     }
     return 0;
 }
