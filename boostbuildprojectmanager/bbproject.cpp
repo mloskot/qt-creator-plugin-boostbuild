@@ -105,9 +105,8 @@ ProjectExplorer::ProjectNode* Project::rootProjectNode() const
 
 QStringList Project::files(FilesMode fileMode) const
 {
-    Q_UNUSED(fileMode);
+    Q_UNUSED(fileMode); // TODO?
     BBPM_QDEBUG(displayName() << "has" << files_.size() << "files");
-    //TODO: return projectReader_.files();
     return files_;
 }
 
@@ -228,7 +227,6 @@ bool Project::fromMap(QVariantMap const& map)
     if (!ProjectExplorer::Project::fromMap(map))
         return false;
 
-    // TODO: Custom key/value from map
     // TODO: do we need on-loading wizard similar to CMakeProjectManager?
 
     // Set up active ProjectConfiguration (aka Target).
@@ -244,9 +242,7 @@ bool Project::fromMap(QVariantMap const& map)
         // Creates as many {Build|Run|Deploy}Configurations for as corresponding
         // factories report as available.
         // For example, BuildConfigurationFactory::availableBuilds => Debug and Release
-
         ProjectExplorer::Target* target= createTarget(defaultKit);
-
         addTarget(target);
     }
     else
