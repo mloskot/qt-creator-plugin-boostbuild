@@ -105,8 +105,9 @@ ProjectExplorer::ProjectNode* Project::rootProjectNode() const
 
 QStringList Project::files(FilesMode fileMode) const
 {
-    Q_UNUSED(fileMode); // TODO?
-    BBPM_QDEBUG(displayName() << "has" << files_.size() << "files");
+    // TODO: handle ExcludeGeneratedFiles, but what files exactly?
+    //       *.qtcreator.files, *.qtcreator.includes and *.user?
+    Q_UNUSED(fileMode);
     return files_;
 }
 

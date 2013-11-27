@@ -38,8 +38,6 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
 {
     workingDirectory_
         = Utils::FileName::fromString(parent->project()->projectDirectory());
-
-    BBPM_QDEBUG("TODO");
 }
 
 BuildConfiguration::BuildConfiguration(
