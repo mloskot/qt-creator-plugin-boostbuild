@@ -142,8 +142,8 @@ An unprioritised TODO lis for the plugin:
 * Look for ```user-config.jam``` to determine some useful settings, projects that may be referenced, include paths.
   * Default toolset and use it for Kit selection/validation? See separate TODO item.
 * Boost.Build Jamfile parser to enable fully-featured project management capacity by
-  * use b2 for [reporting include paths for a project](http://lists.boost.org/boost-build/2013/11/27173.php),
-    targets, preprocessor defines and build configuration settings.
-  * extracting parser from [tools/build/v2/engine](https://github.com/boostorg/build/tree/master/v2/engine)
-    as reusable library
-  * making some love with [Boost.Spirit](http://boost.org/libs/spirit)
+    * use b2 for [reporting include paths for a project](http://lists.boost.org/boost-build/2013/11/27173.php),
+      targets, preprocessor defines and build configuration settings.
+    * extracting parser from [tools/build/v2/engine](https://github.com/boostorg/build/tree/master/v2/engine)
+      as reusable library
+    * making some love with [Boost.Spirit](http://boost.org/libs/spirit)
