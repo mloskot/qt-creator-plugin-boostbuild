@@ -30,8 +30,8 @@ private:
     void setToolsetParser(QString const& toolsetName);
 
     QString toolsetName_;
-    QRegExp toolsetNameReC_; // matches line with ".compile." command
-    QRegExp toolsetNameReW_; // matches line with "warning: " status
+    QRegExp toolsetNameReCommand_; // matches line with ".compile." command
+    QRegExp toolsetNameReWarning_; // matches line with "warning: " status
 
     ProjectExplorer::Task lastTask_;
     QPointer<ProjectExplorer::IOutputParser> parser_;

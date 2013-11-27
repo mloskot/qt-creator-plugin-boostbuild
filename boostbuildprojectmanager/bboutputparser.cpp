@@ -21,22 +21,22 @@ char const* const RxToolsetFromWarning = "^warning\\:.+toolset.+\\\"([\\w-]+)\\\
 }
 
 BoostBuildParser::BoostBuildParser()
-    : toolsetNameReC_(QLatin1String(RxToolsetFromCommand))
-    , toolsetNameReW_(QLatin1String(RxToolsetFromWarning))
+    : toolsetNameReCommand_(QLatin1String(RxToolsetFromCommand))
+    , toolsetNameReWarning_(QLatin1String(RxToolsetFromWarning))
 {
-    toolsetNameReC_.setMinimal(true);
-    toolsetNameReW_.setMinimal(true);
-    QTC_CHECK(toolsetNameReC_.isValid());
-    QTC_CHECK(toolsetNameReW_.isValid());
+    toolsetNameReCommand_.setMinimal(true);
+    toolsetNameReWarning_.setMinimal(true);
+    QTC_CHECK(toolsetNameReCommand_.isValid());
+    QTC_CHECK(toolsetNameReWarning_.isValid());
 }
 
 QString BoostBuildParser::findToolset(QString const& line) const
 {
     QString name;
-    if (toolsetNameReW_.indexIn(line) > -1)
-        name = toolsetNameReW_.cap(1);
-    else if (toolsetNameReC_.indexIn(line) > -1)
-        name = toolsetNameReC_.cap(1);
+    if (toolsetNameReWarning_.indexIn(line) > -1)
+        name = toolsetNameReWarning_.cap(1);
+    else if (toolsetNameReCommand_.indexIn(line) > -1)
+        name = toolsetNameReCommand_.cap(1);
     return name;
 }
 
