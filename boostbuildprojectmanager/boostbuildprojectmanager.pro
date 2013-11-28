@@ -9,23 +9,28 @@ CONFIG(debug, release|debug):DEFINES += _DEBUG
 CONFIG += c++11
 
 SOURCES += \
+    bbbuildconfiguration.cpp \
+    bbbuildinfo.cpp \
+    bbbuildstep.cpp \
+    bbopenprojectwizard.cpp \
+    bboutputparser.cpp \
     bbproject.cpp \
     bbprojectfile.cpp \
     bbprojectmanager.cpp \
     bbprojectmanagerplugin.cpp \
     bbprojectnode.cpp \
-    bbbuildconfiguration.cpp \
-    bbbuildinfo.cpp \
-    bbbuildstep.cpp \
-    bbutility.cpp \
     bbprojectreader.cpp \
-    bboutputparser.cpp \
+    bbutility.cpp \
     external/projectexplorer/clangparser.cpp \
     external/projectexplorer/gccparser.cpp \
-    external/projectexplorer/ldparser.cpp \
-    bbopenprojectwizard.cpp
+    external/projectexplorer/ldparser.cpp
 
 HEADERS += \
+    bbbuildconfiguration.hpp \
+    bbbuildinfo.hpp \
+    bbbuildstep.hpp \
+    bbopenprojectwizard.hpp \
+    bboutputparser.hpp \
     bbproject.hpp \
     bbprojectfile.hpp \
     bbprojectmanager.hpp \
@@ -33,18 +38,13 @@ HEADERS += \
     bbprojectmanagerconstants.hpp \
     bbprojectmanagerplugin.hpp \
     bbprojectnode.hpp \
-    bbbuildconfiguration.hpp \
-    bbbuildinfo.hpp \
-    bbbuildstep.hpp \
-    bbutility.hpp \
     bbprojectreader.hpp \
-    bboutputparser.hpp \
+    bbutility.hpp \
     external/projectexplorer/clangparser.h \
     external/projectexplorer/gccparser.h \
-    external/projectexplorer/ldparser.h \
-    bbopenprojectwizard.hpp
+    external/projectexplorer/ldparser.h
 
-RESOURCES += boostbuildproject.qrc \
+RESOURCES += \
     boostbuildproject.qrc
 
 OTHER_FILES += \
