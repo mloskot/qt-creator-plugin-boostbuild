@@ -1,5 +1,5 @@
-#ifndef BBBUILDSTEP_HPP_INCLUDED
-#define BBBUILDSTEP_HPP_INCLUDED
+#ifndef BBBUILDSTEP_HPP
+#define BBBUILDSTEP_HPP
 
 // Qt Creator
 #include <projectexplorer/abstractprocessstep.h>
@@ -148,5 +148,5 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBBUILDSTEP_HPP_INCLUDED
+#endif // BBBUILDSTEP_HPP
 

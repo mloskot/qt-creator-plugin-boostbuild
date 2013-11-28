@@ -1,5 +1,5 @@
-#ifndef BBBUILDINFO_HPP_INCLUDED
-#define BBBUILDINFO_HPP_INCLUDED
+#ifndef BBBUILDINFO_HPP
+#define BBBUILDINFO_HPP
 
 #include "bbbuildconfiguration.hpp"
 // Qt Creator
@@ -30,4 +30,4 @@ public:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBBUILDINFO_HPP_INCLUDED
+#endif // BBBUILDINFO_HPP

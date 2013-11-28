@@ -1,5 +1,5 @@
-#ifndef BBUTILITY_HPP_INCLUDED
-#define BBUTILITY_HPP_INCLUDED
+#ifndef BBUTILITY_HPP
+#define BBUTILITY_HPP
 #ifdef _DEBUG
 
 #include "bbprojectmanagerconstants.hpp"
@@ -41,4 +41,4 @@ QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
 } // namespace Utility
 } // namespace BoostBuildProjectManager
 
-#endif // BBUTILITY_HPP_INCLUDED
+#endif // BBUTILITY_HPP

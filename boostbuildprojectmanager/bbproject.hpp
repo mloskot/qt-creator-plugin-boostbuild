@@ -1,5 +1,5 @@
-#ifndef BBPROJECT_HPP_INCLUDED
-#define BBPROJECT_HPP_INCLUDED
+#ifndef BBPROJECT_HPP
+#define BBPROJECT_HPP
 
 #include "bbprojectreader.hpp"
 // Qt Creator
@@ -88,4 +88,4 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBPROJECT_HPP_INCLUDED
+#endif // BBPROJECT_HPP

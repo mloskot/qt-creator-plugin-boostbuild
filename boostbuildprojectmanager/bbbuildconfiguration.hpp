@@ -1,5 +1,5 @@
-#ifndef BBBUILDCONFIGURATION_HPP_INCLUDED
-#define BBBUILDCONFIGURATION_HPP_INCLUDED
+#ifndef BBBUILDCONFIGURATION_HPP
+#define BBBUILDCONFIGURATION_HPP
 
 // Qt Creator
 #include <projectexplorer/buildconfiguration.h>
@@ -127,4 +127,4 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBBUILDCONFIGURATION_HPP_INCLUDED
+#endif // BBBUILDCONFIGURATION_HPP

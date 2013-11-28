@@ -1,5 +1,5 @@
-#ifndef BBPROJECTFILE_HPP_INCLUDED
-#define BBPROJECTFILE_HPP_INCLUDED
+#ifndef BBPROJECTFILE_HPP
+#define BBPROJECTFILE_HPP
 
 #include <coreplugin/idocument.h>
 
@@ -33,4 +33,4 @@ private:
 } // namespace Internal
 } // namespace AutotoolsProjectManager
 
-#endif // BBPROJECTFILE_HPP_INCLUDED
+#endif // BBPROJECTFILE_HPP

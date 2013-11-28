@@ -1,5 +1,5 @@
-#ifndef BBOUTPUTPARSER_H_INCLUDED
-#define BBOUTPUTPARSER_H_INCLUDED
+#ifndef BBOUTPUTPARSER_HPP
+#define BBOUTPUTPARSER_HPP
 
 // Qt Creator
 #include <projectexplorer/ioutputparser.h>
@@ -40,4 +40,4 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBOUTPUTPARSER_H_INCLUDED
+#endif // BBOUTPUTPARSER_HPP
