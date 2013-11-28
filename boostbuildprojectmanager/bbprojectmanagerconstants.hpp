@@ -1,5 +1,5 @@
-#ifndef BBPROJECTMANAGERCONSTANTS_HPP_INCLUDED
-#define BBPROJECTMANAGERCONSTANTS_HPP_INCLUDED
+#ifndef BBPROJECTMANAGERCONSTANTS_HPP
+#define BBPROJECTMANAGERCONSTANTS_HPP
 
 #include <qglobal.h>
 
@@ -40,4 +40,4 @@ bool const ReturnValueNotIgnored = false;
 } // namespace Constants
 } // namespace BoostBuildProjectManager
 
-#endif // BBPROJECTMANAGERCONSTANTS_HPP_INCLUDED
+#endif // BBPROJECTMANAGERCONSTANTS_HPP

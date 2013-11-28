@@ -1,5 +1,5 @@
-#ifndef BBPROJECTTREELOADER_HPP_INCLUDED
-#define BBPROJECTTREELOADER_HPP_INCLUDED
+#ifndef BBPROJECTTREELOADER_HPP
+#define BBPROJECTTREELOADER_HPP
 
 // Qt
 #include <QFutureInterface>
@@ -45,4 +45,4 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBPROJECTTREELOADER_HPP_INCLUDED
+#endif // BBPROJECTTREELOADER_HPP

@@ -1,5 +1,5 @@
-#ifndef BBPROJECTMANAGER_HPP_INCLUDED
-#define BBPROJECTMANAGER_HPP_INCLUDED
+#ifndef BBPROJECTMANAGER_HPP
+#define BBPROJECTMANAGER_HPP
 
 // Qt Creator
 #include <projectexplorer/iprojectmanager.h>
@@ -40,4 +40,4 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBPROJECTMANAGER_HPP_INCLUDED
+#endif // BBPROJECTMANAGER_HPP

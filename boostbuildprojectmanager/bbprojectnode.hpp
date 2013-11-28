@@ -1,5 +1,5 @@
-#ifndef BBPROJECTNODE_HPP_INCLUDED
-#define BBPROJECTNODE_HPP_INCLUDED
+#ifndef BBPROJECTNODE_HPP
+#define BBPROJECTNODE_HPP
 
 // Qt Creator
 #include <projectexplorer/projectnodes.h>
@@ -63,4 +63,4 @@ private:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBPROJECTNODE_HPP_INCLUDED
+#endif // BBPROJECTNODE_HPP

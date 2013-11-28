@@ -1,5 +1,5 @@
-#ifndef BBPROJECTMANAGERPLUGIN_HPP_INCLUDED
-#define BBPROJECTMANAGERPLUGIN_HPP_INCLUDED
+#ifndef BBPROJECTMANAGERPLUGIN_HPP
+#define BBPROJECTMANAGERPLUGIN_HPP
 
 #include "bbprojectmanager_global.hpp"
 
@@ -34,4 +34,4 @@ public:
 } // namespace Internal
 } // namespace BoostBuildProjectManager
 
-#endif // BBPROJECTMANAGERPLUGIN_HPP_INCLUDED
+#endif // BBPROJECTMANAGERPLUGIN_HPP
