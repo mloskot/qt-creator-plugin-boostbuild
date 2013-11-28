@@ -36,7 +36,6 @@
 namespace BoostBuildProjectManager {
 namespace Internal {
 
-// Project /////////////////////////////////////////////////////////////////////
 Project::Project(ProjectManager* manager, QString const& fileName)
     : manager_(manager)
     , filePath_(fileName)
