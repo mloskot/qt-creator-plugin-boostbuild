@@ -9,8 +9,10 @@ namespace Constants {
 char const BOOSTBUILD[] = "Boost.Build";
 
 char const PROJECT_CONTEXT[] = "BoostBuildProjectManager.ProjectContext";
-char const PROJECT_ID[]      = "BoostBuildProjectManager.Project";
+char const PROJECT_ID[] = "BoostBuildProjectManager.Project";
+char const PROJECT_WIZARD_ID[] = "BoostBuildProjectManager.Project.Wizard";
 char const PROJECT_READER_TASK_ID[] = "BoostBuildProjectManager.ProjectReader.Task";
+
 char const BUILDCONFIGURATION_ID[] = "BoostBuildProjectManager.BuildConfiguration";
 char const BUILDSTEP_ID[] = "BoostBuildProjectManager.BuildStep";
 

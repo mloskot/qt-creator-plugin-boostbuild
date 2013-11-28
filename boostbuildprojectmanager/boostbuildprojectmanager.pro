@@ -22,7 +22,8 @@ SOURCES += \
     bboutputparser.cpp \
     external/projectexplorer/clangparser.cpp \
     external/projectexplorer/gccparser.cpp \
-    external/projectexplorer/ldparser.cpp
+    external/projectexplorer/ldparser.cpp \
+    bbopenprojectwizard.cpp
 
 HEADERS += \
     bbproject.hpp \
@@ -40,7 +41,8 @@ HEADERS += \
     bboutputparser.hpp \
     external/projectexplorer/clangparser.h \
     external/projectexplorer/gccparser.h \
-    external/projectexplorer/ldparser.h
+    external/projectexplorer/ldparser.h \
+    bbopenprojectwizard.hpp
 
 RESOURCES += boostbuildproject.qrc \
     boostbuildproject.qrc
