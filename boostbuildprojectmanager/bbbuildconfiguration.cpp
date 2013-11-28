@@ -201,7 +201,7 @@ BuildConfigurationFactory::create(ProjectExplorer::Target* parent
     // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
 
     BuildInfo const* bi = static_cast<BuildInfo const*>(info);
-    BuildConfiguration* bc = new BuildConfiguration(parent);
+    QScopedPointer<BuildConfiguration> bc(new BuildConfiguration(parent));
     bc->setDisplayName(bi->displayName);
     bc->setDefaultDisplayName(bi->displayName);
     bc->setBuildDirectory(bi->buildDirectory);
@@ -230,7 +230,7 @@ BuildConfigurationFactory::create(ProjectExplorer::Target* parent
         cleanSteps->insertStep(0, step);
     }
 
-    return bc;
+    return bc.take();
 }
 
 bool
