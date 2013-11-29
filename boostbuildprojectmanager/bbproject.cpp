@@ -58,7 +58,7 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     includesFilePath_ = QFileInfo(projectDir
         , filePath_ + QLatin1String(Constants::JAMFILE_INCLUDES_EXT)).absoluteFilePath();
 
-    projectNode_->setDisplayName(projectName_);
+    projectNode_->setDisplayName(displayName());
 
     manager_->registerProject(this);
 
@@ -159,11 +159,19 @@ QString Project::defaultWorkingDirectory(QString const& top)
     return ProjectExplorer::Project::projectDirectory(top);
 }
 
+QVariantMap Project::toMap() const
+{
+    QVariantMap map(ProjectExplorer::Project::toMap());
+    map.insert(QLatin1String(Constants::P_KEY_PROJECTNAME), projectName_);
+    return map;
+}
+
 // This function is called at the very beginning to restore the settings
 // from .user file, if there is any with previous settings stored.
 bool Project::fromMap(QVariantMap const& map)
 {
     BBPM_QDEBUG(displayName());
+    QTC_ASSERT(projectNode_, return false);
 
     if (!ProjectExplorer::Project::fromMap(map))
         return false;
@@ -197,8 +205,13 @@ bool Project::fromMap(QVariantMap const& map)
     else
     {
         // Configure project from settings sorced from .user file
+        projectName_ = map.value(QLatin1String(Constants::P_KEY_PROJECTNAME)).toString();
+
         BBPM_QDEBUG(displayName() << "has user file");
     }
+
+    // TODO: create projectNameChanged signal
+    projectNode_->setDisplayName(displayName());
 
     // Sanity check (taken from GenericProjectManager):
     // We need both a BuildConfiguration and a RunConfiguration!

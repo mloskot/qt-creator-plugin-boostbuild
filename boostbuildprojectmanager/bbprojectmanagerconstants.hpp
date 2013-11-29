@@ -17,6 +17,7 @@ char const BUILDCONFIGURATION_ID[] = "BoostBuildProjectManager.BuildConfiguratio
 char const BUILDSTEP_ID[] = "BoostBuildProjectManager.BuildStep";
 
 // Keys for class map registry
+char const P_KEY_PROJECTNAME[] = "BoostBuildProjectManager.Project.ProjectName";
 char const BC_KEY_WORKDIR[] = "BoostBuildProjectManager.BuildConfiguration.WorkingDirectory";
 char const BS_KEY_CLEAN[] = "BoostBuildProjectManager.BuildStep.Clean";
 char const BS_KEY_ARGUMENTS[] = "BoostBuildProjectManager.BuildStep.AdditionalArguments";

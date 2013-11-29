@@ -48,6 +48,8 @@ public:
 
 protected:
 
+     QVariantMap toMap() const;
+
     // Deserializes all project data from the map object
     // Calls the base ProjectExplorer::Project::fromMap function first.
     bool fromMap(QVariantMap const& map);
