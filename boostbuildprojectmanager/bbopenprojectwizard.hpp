@@ -26,6 +26,9 @@ class PathChooser;
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+// TODO: Make the wizard use Core::BaseFileWizard features with Summary
+//       page at the end based on ProjectWizardPage
+
 class Project;
 class PathsSelectionWizardPage;
 class FilesSelectionWizardPage;
