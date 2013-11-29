@@ -77,6 +77,7 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizard* wizard)
 
     QLineEdit* pathLine = new QLineEdit(this);
     pathLine->setReadOnly(true);
+    pathLine->setDisabled(true);
     pathLine->setText(wizard_->projectPath());
     fl->addRow(pathLine);
 
@@ -90,11 +91,13 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizard* wizard)
 
     QLineEdit* workingLine = new QLineEdit(this);
     workingLine->setReadOnly(true);
+    workingLine->setDisabled(true);
     workingLine->setText(Project::defaultWorkingDirectory(wizard_->projectPath()));
     fl->addRow(tr("Working directory:"), workingLine);
 
     QLineEdit* buildLine = new QLineEdit(this);
     buildLine->setReadOnly(true);
+    buildLine->setDisabled(true);
     buildLine->setText(Project::defaultBuildDirectory(wizard_->projectPath()));
     fl->addRow(tr("Build directory:"), buildLine);
 
