@@ -5,6 +5,7 @@
 // Qt Creator
 #include <coreplugin/idocument.h>
 #include <projectexplorer/project.h>
+#include <utils/fileutils.h>
 // Qt
 #include <QString>
 #include <QFutureInterface>
@@ -41,6 +42,10 @@ public:
 
     QString includesFilePath() const;
 
+    static QString defaultProjectName(QString const& fileName);
+    static QString defaultBuildDirectory(QString const& top);
+    static QString defaultWorkingDirectory(QString const& top);
+
 protected:
 
     // Deserializes all project data from the map object
@@ -55,13 +60,13 @@ private:
     // Corresponding project manager passed to the constructor
     ProjectManager* manager_;
 
-    // Jamfile passed to the constructor (Jamroot, Jamfile, Jamfile.v2).
-    QString filePath_;
-
-    // Directory name of the Jamfile.
+    // By default, name of directory with Jamfile.
     // Boost.Build treats each Jamfile is a separate project,
     // where hierarchy of Jamfiles makes hierarchy of projects.
     QString projectName_;
+
+    // Jamfile passed to the constructor (Jamroot, Jamfile, Jamfile.v2).
+    QString filePath_;
 
     // Auxiliary file Jamfile.${JAMFILE_FILES_EXT} with list of source files.
     // Role of this file is similar to the .files file in the GenericProjectManager,

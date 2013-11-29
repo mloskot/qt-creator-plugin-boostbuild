@@ -35,6 +35,10 @@ char const COMMAND_BJAM[] = "bjam";
 char const VARIANT_DEBUG[] = QT_TR_NOOP("Debug");
 char const VARIANT_RELEASE[] = QT_TR_NOOP("Release");
 
+// ${BOOST}/tools/build/v2/doc/src/architecture.xml
+// Since Boost.Build almost always generates targets under the "bin"
+char const BUILD_DIR_NAME[] = "bin";
+
 // Meaningful names for common boolean values
 bool const FileNotGenerated = false;
 bool const ReturnValueNotIgnored = false;

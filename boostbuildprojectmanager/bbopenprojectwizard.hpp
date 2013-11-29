@@ -26,6 +26,8 @@ class PathChooser;
 namespace BoostBuildProjectManager {
 namespace Internal {
 
+class Project;
+class PathsSelectionWizardPage;
 class FilesSelectionWizardPage;
 
 class OpenProjectWizard : public Utils::Wizard
@@ -33,15 +35,18 @@ class OpenProjectWizard : public Utils::Wizard
     Q_OBJECT
 
 public:
-    OpenProjectWizard(QWidget* parent = 0);
+    OpenProjectWizard(QString const& name, QString const& path, QWidget* parent = 0);
 
-    QString path() const;
-    void setPath(QString const& path);
+    QString projectName() const;
+    QString defaultProjectName() const;
+    QString projectPath() const;
+
     QStringList selectedFiles() const;
     QStringList selectedPaths() const;
 
-    QString projectName() const;
-
+private:
+    QString name_;
+    QString path_;
     PathsSelectionWizardPage* pathsPage_;
     FilesSelectionWizardPage* filesPage_;
 };
@@ -53,13 +58,15 @@ class PathsSelectionWizardPage : public QWizardPage
 public:
     explicit PathsSelectionWizardPage(OpenProjectWizard* wizard);
 
+    QString projectName() const;
+    void setProjectName(QString const& name);
+
 private:
     OpenProjectWizard* wizard_;
-    QLineEdit* name_;
-    Utils::PathChooser* workPathChooser_;
-    Utils::PathChooser* buildPathChooser_;
+    QLineEdit* nameLineEdit_;
 };
 
+#if 0
 class FilesSelectionWizardPage : public QWizardPage
 {
     Q_OBJECT
@@ -98,6 +105,7 @@ private:
     QLabel* label_;
     bool finished_;
 };
+#endif
 
 } // namespace Internal
 } // namespace BoostBuildProjectManager

@@ -91,6 +91,9 @@ public:
     BuildConfiguration*
     restore(ProjectExplorer::Target *parent, QVariantMap const& map);
 
+    static Utils::FileName defaultBuildDirectory(QString const& top);
+    static Utils::FileName defaultWorkingDirectory(QString const& top);
+
 private:
     bool canHandle(ProjectExplorer::Target const* target) const;
 
@@ -98,12 +101,6 @@ private:
     createBuildInfo(ProjectExplorer::Kit const* k
                   , QString const& projectPath
                   , BuildConfiguration::BuildType type) const;
-
-    Utils::FileName
-    defaultBuildDirectory(QString const& projectPath) const;
-
-    Utils::FileName
-    defaultWorkingDirectory(QString const& projectPath) const;
 };
 
 class BuildSettingsWidget : public ProjectExplorer::NamedWidget

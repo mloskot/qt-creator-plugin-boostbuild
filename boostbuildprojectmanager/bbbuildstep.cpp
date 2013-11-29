@@ -354,8 +354,8 @@ BuildStepConfigWidget::BuildStepConfigWidget(BuildStep* step)
     setLayout(fl);
 
     arguments_ = new QLineEdit(this);
-    fl->addRow(tr("Arguments:"), arguments_);
     arguments_->setText(step_->additionalArguments());
+    fl->addRow(tr("Arguments:"), arguments_);
 
     updateDetails();
 

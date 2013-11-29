@@ -5,6 +5,7 @@
 #include "bbbuildconfiguration.hpp"
 #include "bbbuildinfo.hpp"
 #include "bbbuildstep.hpp"
+#include "bbproject.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbutility.hpp"
 // Qt Creator
@@ -36,8 +37,9 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
     : ProjectExplorer::BuildConfiguration(parent
         , Core::Id(Constants::BUILDCONFIGURATION_ID))
 {
-    workingDirectory_
-        = Utils::FileName::fromString(parent->project()->projectDirectory());
+    ProjectExplorer::Project const* p = parent->project();
+    Q_ASSERT(p);
+    setWorkingDirectory(Utils::FileName::fromString(p->projectDirectory()));
 }
 
 BuildConfiguration::BuildConfiguration(
@@ -46,18 +48,15 @@ BuildConfiguration::BuildConfiguration(
     : ProjectExplorer::BuildConfiguration(parent, source)
 {
     if (BuildConfiguration* bc = qobject_cast<BuildConfiguration*>(source))
-        workingDirectory_ = bc->workingDirectory();
-
-    BBPM_QDEBUG("TODO");
+        setWorkingDirectory(bc->workingDirectory());
 }
 
 BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id const id)
     : ProjectExplorer::BuildConfiguration(parent, id)
 {
-    workingDirectory_
-        = Utils::FileName::fromString(parent->project()->projectDirectory());
-
-    BBPM_QDEBUG("TODO");
+    ProjectExplorer::Project const* p = parent->project();
+    Q_ASSERT(p);
+    setWorkingDirectory(Utils::FileName::fromString(p->projectDirectory()));
 }
 
 QVariantMap BuildConfiguration::toMap() const
@@ -116,8 +115,9 @@ void BuildConfiguration::setWorkingDirectory(Utils::FileName const& dir)
     {
         if (ProjectExplorer::Target* t = target())
         {
-            workingDirectory_
-                = Utils::FileName::fromString(t->project()->projectDirectory());
+            QString const dwd
+                = Project::defaultWorkingDirectory(t->project()->projectDirectory());
+            workingDirectory_ = Utils::FileName::fromString(dwd);
         }
     }
     else
@@ -199,6 +199,9 @@ BuildConfigurationFactory::create(ProjectExplorer::Target* parent
     BBPM_QDEBUG(info->displayName);
     // TODO: check Jamfile/Jamroot exists
     // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
+
+    Project* project = qobject_cast<Project*>(parent->project());
+    QTC_ASSERT(project, return 0);
 
     BuildInfo const* bi = static_cast<BuildInfo const*>(info);
     QScopedPointer<BuildConfiguration> bc(new BuildConfiguration(parent));
@@ -305,11 +308,11 @@ BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
     Q_ASSERT(k);
 
     BuildInfo* info = new BuildInfo(this);
-    info->typeName = tr("Build");
     if (type == BuildConfiguration::Release)
         info->displayName = tr("Release");
     else
         info->displayName = tr("Debug");
+    info->typeName = tr("Build (%1)").arg(info->displayName);
     info->buildType = type;
     info->buildDirectory = defaultBuildDirectory(projectPath);
     info->workingDirectory = defaultWorkingDirectory(projectPath);
@@ -322,27 +325,16 @@ BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
     return info;
 }
 
-Utils::FileName
-BuildConfigurationFactory::defaultBuildDirectory(QString const& projectPath) const
+/*static*/ Utils::FileName
+BuildConfigurationFactory::defaultBuildDirectory(QString const& top)
 {
-    BBPM_QDEBUG(projectPath);
-
-    // ${BOOST}/tools/build/v2/doc/src/architecture.xml
-    // Since Boost.Build almost always generates targets under the "bin"
-
-    Utils::FileName fileName = Utils::FileName::fromString(
-        ProjectExplorer::Project::projectDirectory(projectPath));
-    fileName.appendPath(QLatin1String("bin"));
-    return fileName;
+    return Utils::FileName::fromString(Project::defaultBuildDirectory(top));
 }
 
-Utils::FileName
-BuildConfigurationFactory::defaultWorkingDirectory(QString const& projectPath) const
+/*static*/ Utils::FileName
+BuildConfigurationFactory::defaultWorkingDirectory(QString const& top)
 {
-    BBPM_QDEBUG(projectPath);
-
-    return Utils::FileName::fromString(
-        ProjectExplorer::Project::projectDirectory(projectPath));
+    return Utils::FileName::fromString(Project::defaultWorkingDirectory(top));
 }
 
 BuildSettingsWidget::BuildSettingsWidget(BuildConfiguration* bc)
