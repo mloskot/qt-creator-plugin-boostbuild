@@ -319,8 +319,6 @@ BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
     info->kitId = k->id();
     info->supportsShadowBuild = true; // TODO
 
-    // TODO: use bjam vs use b2 command
-
     BBPM_QDEBUG(info->typeName << " in " << projectPath);
     return info;
 }
