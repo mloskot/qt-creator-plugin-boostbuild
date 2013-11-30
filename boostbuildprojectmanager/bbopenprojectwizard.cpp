@@ -27,6 +27,11 @@ namespace Internal {
 OpenProjectWizard::OpenProjectWizard()
     : projectOpened_(false)
 {
+    setDisplayName(tr("Open %1 Project").arg(BBPM_C(BOOSTBUILD)));
+    setId(BBPM_C(PROJECT_WIZARD_ID));
+    setWizardKind(ProjectWizard); // affects dir vs file path and sub-projects handling
+
+    // TODO: do we need categories or flags?
 }
 
 bool
@@ -91,7 +96,7 @@ OpenProjectWizardDialog::OpenProjectWizardDialog(QWidget* parent, QString const&
     , extraValues_(extraValues)
     , path_(path)
 {
-    setWindowTitle(tr("Open %1 Project").arg(QLatin1String(Constants::BOOSTBUILD)));
+    setWindowTitle(tr("Open %1 Project").arg(BBPM_C(BOOSTBUILD)));
 
     pathsPage_ = new PathsSelectionWizardPage(this);
     pathsPage_->setTitle(tr("Project Name and Paths"));
