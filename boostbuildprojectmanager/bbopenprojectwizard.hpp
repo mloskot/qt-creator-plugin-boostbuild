@@ -26,19 +26,57 @@ class PathChooser;
 namespace BoostBuildProjectManager {
 namespace Internal {
 
-// TODO: Make the wizard use Core::BaseFileWizard features with Summary
-//       page at the end based on ProjectWizardPage
-
 class Project;
 class PathsSelectionWizardPage;
 class FilesSelectionWizardPage;
 
-class OpenProjectWizard : public Utils::Wizard
+//////////////////////////////////////////////////////////////////////////////////////////
+// NOTE: The Boost.Build wizard is based on Core::BaseFileWizard which seems to be
+// dedicated to build "New Project" wizards. So, the plugin uses the base class in
+// unconventional, matching its features to Boost.Build wizard needs, like:
+// - no parent QWidget is used
+// - platform name is set from default Kit display name, usually it's "Desktop"
+// - extra values QVariantMap may carry custom data
+// CAUTION: This wizard may stop building or start failing in run-time,
+// if Qt Creator changes the base class significantly.
+class OpenProjectWizard : public Core::BaseFileWizard
 {
     Q_OBJECT
 
 public:
-    OpenProjectWizard(QString const& name, QString const& path, QWidget* parent = 0);
+    OpenProjectWizard();
+
+    bool
+    run(QString const& path, QString const& platform, QVariantMap const& extraValues);
+
+    QVariantMap outputValues() const { return outputValues_; }
+
+protected:
+
+    QWizard*
+    createWizardDialog(QWidget* parent
+        , Core::WizardDialogParameters const& parameters) const;
+
+    Core::GeneratedFiles
+    generateFiles(QWizard const* baseWizard, QString* errorMessage) const;
+
+    bool
+    postGenerateFiles(QWizard const* wizard
+        , Core::GeneratedFiles const& files, QString* errorMessage);
+
+private:
+    QVariantMap outputValues_;
+    bool projectOpened_;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+class OpenProjectWizardDialog : public Utils::Wizard
+{
+    Q_OBJECT
+
+public:
+    OpenProjectWizardDialog(QWidget* parent, QString const& path
+        , QVariantMap const& extraValues, QVariantMap& outputValues);
 
     QString projectName() const;
     QString defaultProjectName() const;
@@ -47,29 +85,35 @@ public:
     QStringList selectedFiles() const;
     QStringList selectedPaths() const;
 
+public slots:
+    void setProjectName(QString const& name);
+
 private:
-    QString name_;
+    QVariantMap& outputValues_;
+    QVariantMap extraValues_;
     QString path_;
     PathsSelectionWizardPage* pathsPage_;
     FilesSelectionWizardPage* filesPage_;
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////
 class PathsSelectionWizardPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    explicit PathsSelectionWizardPage(OpenProjectWizard* wizard);
+    explicit PathsSelectionWizardPage(OpenProjectWizardDialog* wizard);
 
     QString projectName() const;
     void setProjectName(QString const& name);
 
 private:
-    OpenProjectWizard* wizard_;
+    OpenProjectWizardDialog* wizard_;
     QLineEdit* nameLineEdit_;
 };
 
 #if 0
+//////////////////////////////////////////////////////////////////////////////////////////
 class FilesSelectionWizardPage : public QWizardPage
 {
     Q_OBJECT

@@ -59,6 +59,8 @@ private slots:
 
 private:
 
+    void setProjectName(QString const& name);
+
     // Corresponding project manager passed to the constructor
     ProjectManager* manager_;
 

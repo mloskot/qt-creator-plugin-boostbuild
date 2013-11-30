@@ -148,7 +148,7 @@ QString Project::defaultProjectName(QString const& fileName)
 QString Project::defaultBuildDirectory(QString const& top)
 {
     Utils::FileName fn(Utils::FileName::fromString(defaultWorkingDirectory(top)));
-    fn.appendPath(QLatin1String(Constants::BUILD_DIR_NAME));
+    fn.appendPath(BBPM_C(BUILD_DIR_NAME));
     return fn.toString();
 }
 
@@ -157,6 +157,16 @@ QString Project::defaultWorkingDirectory(QString const& top)
 {
     // Accepts both, project file or project directory, as top.
     return ProjectExplorer::Project::projectDirectory(top);
+}
+
+void Project::setProjectName(QString const& name)
+{
+    if (projectName_ != name)
+    {
+        projectName_ = name;
+        projectNode_->setDisplayName(projectName_);
+        // TODO: signal?
+    }
 }
 
 QVariantMap Project::toMap() const
@@ -185,14 +195,20 @@ bool Project::fromMap(QVariantMap const& map)
     {
         // Create project configuration from scratch
 
-        OpenProjectWizard opw(displayName(), projectFilePath());
-        if (opw.exec() != QDialog::Accepted)
-            return false;
-        projectName_ = opw.projectName();
-
         // TODO: Map the Kit to Boost.Build toolset option value
         ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit();
         Q_ASSERT(defaultKit);
+
+        QVariantMap extraValues(map);
+        if (!extraValues.contains(BBPM_C(P_KEY_PROJECTNAME)))
+            extraValues.insert(BBPM_C(P_KEY_PROJECTNAME), projectName_);
+
+        OpenProjectWizard wizard;
+        if (!wizard.run(projectFilePath(), defaultKit->displayName(), extraValues))
+            return false;
+
+        QVariantMap outputValues = wizard.outputValues();
+        setProjectName(outputValues.value(BBPM_C(P_KEY_PROJECTNAME)).toString());
 
         // Creates as many {Build|Run|Deploy}Configurations for as corresponding
         // factories report as available.
@@ -205,13 +221,10 @@ bool Project::fromMap(QVariantMap const& map)
     else
     {
         // Configure project from settings sorced from .user file
-        projectName_ = map.value(QLatin1String(Constants::P_KEY_PROJECTNAME)).toString();
+        setProjectName(map.value(BBPM_C(P_KEY_PROJECTNAME)).toString());
 
         BBPM_QDEBUG(displayName() << "has user file");
     }
-
-    // TODO: create projectNameChanged signal
-    projectNode_->setDisplayName(displayName());
 
     // Sanity check (taken from GenericProjectManager):
     // We need both a BuildConfiguration and a RunConfiguration!
