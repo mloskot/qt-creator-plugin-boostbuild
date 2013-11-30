@@ -44,10 +44,9 @@ class OpenProjectWizard : public Core::BaseFileWizard
     Q_OBJECT
 
 public:
-    OpenProjectWizard();
+    OpenProjectWizard(Project const* const project);
 
-    bool
-    run(QString const& path, QString const& platform, QVariantMap const& extraValues);
+    bool run(QString const& platform, QVariantMap const& extraValues);
 
     QVariantMap outputValues() const { return outputValues_; }
 
@@ -65,6 +64,7 @@ protected:
         , Core::GeneratedFiles const& files, QString* errorMessage);
 
 private:
+    Project const* const project_;
     QVariantMap outputValues_;
     bool projectOpened_;
 };
@@ -75,12 +75,13 @@ class OpenProjectWizardDialog : public Utils::Wizard
     Q_OBJECT
 
 public:
-    OpenProjectWizardDialog(QWidget* parent, QString const& path
+    OpenProjectWizardDialog(QWidget* parent, QString const& projectFile
         , QVariantMap const& extraValues, QVariantMap& outputValues);
 
+    QString path() const;
+    QString projectFile() const;
     QString projectName() const;
     QString defaultProjectName() const;
-    QString projectPath() const;
 
     QStringList selectedFiles() const;
     QStringList selectedPaths() const;
@@ -91,7 +92,7 @@ public slots:
 private:
     QVariantMap& outputValues_;
     QVariantMap extraValues_;
-    QString path_;
+    QString projectFile_;
     PathsSelectionWizardPage* pathsPage_;
     FilesSelectionWizardPage* filesPage_;
 };
@@ -111,48 +112,6 @@ private:
     OpenProjectWizardDialog* wizard_;
     QLineEdit* nameLineEdit_;
 };
-
-#if 0
-//////////////////////////////////////////////////////////////////////////////////////////
-class FilesSelectionWizardPage : public QWizardPage
-{
-    Q_OBJECT
-
-public:
-    explicit FilesSelectionWizardPage(OpenProjectWizard* wizard);
-
-    bool isComplete() const;
-    void initializePage();
-    void cleanupPage();
-    QStringList selectedFiles() const;
-    QStringList selectedPaths() const;
-
-private slots:
-    void applyFilter();
-    void parsingProgress(const QString &text);
-    void parsingFinished();
-
-private:
-    void createHideFileFilterControls(QVBoxLayout* layout);
-    void createShowFileFilterControls(QVBoxLayout* layout);
-    void createApplyButton(QVBoxLayout *layout);
-
-    OpenProjectWizardDialog* openProjectWizardDialog_;
-    //TODO: SelectableFilesModel* model_;
-
-    QLabel* hideFilesFilterLabel_;
-    QLineEdit* hideFilesfilterLineEdit_;
-
-    QLabel* showFilesFilterLabel_;
-    QLineEdit* showFilesfilterLineEdit_;
-
-    QPushButton* applyFilterButton_;
-
-    QTreeView* view_;
-    QLabel* label_;
-    bool finished_;
-};
-#endif
 
 } // namespace Internal
 } // namespace BoostBuildProjectManager

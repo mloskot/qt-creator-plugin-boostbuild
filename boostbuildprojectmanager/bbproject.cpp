@@ -28,6 +28,7 @@
 #include <projectexplorer/projectnodes.h>
 #include <projectexplorer/target.h>
 #include <qtsupport/customexecutablerunconfiguration.h>
+#include <utils/fileutils.h>
 #include <utils/QtConcurrentTools>
 // Qt
 #include <QDir>
@@ -203,8 +204,8 @@ bool Project::fromMap(QVariantMap const& map)
         if (!extraValues.contains(BBPM_C(P_KEY_PROJECTNAME)))
             extraValues.insert(BBPM_C(P_KEY_PROJECTNAME), projectName_);
 
-        OpenProjectWizard wizard;
-        if (!wizard.run(projectFilePath(), defaultKit->displayName(), extraValues))
+        OpenProjectWizard wizard(this);
+        if (!wizard.run(defaultKit->displayName(), extraValues))
             return false;
 
         QVariantMap outputValues = wizard.outputValues();
