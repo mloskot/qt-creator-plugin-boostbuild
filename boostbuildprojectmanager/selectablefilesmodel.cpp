@@ -1,5 +1,10 @@
 /****************************************************************************
 **
+** Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+**
+** This file, as part of Qt Creator Plugin for Boost.Build,
+** was modified to accommodate OpenProjectWizard requirements.
+**
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -27,8 +32,8 @@
 **
 ****************************************************************************/
 
-#include "selectablefilesmodel.h"
-#include "genericprojectconstants.h"
+#include "selectablefilesmodel.hpp"
+#include "bbprojectmanagerconstants.hpp"
 
 #include <coreplugin/fileiconprovider.h>
 #include <coreplugin/icore.h>
@@ -42,12 +47,14 @@
 #include <QTreeView>
 #include <QDir>
 
-namespace GenericProjectManager {
+namespace BoostBuildProjectManager {
 namespace Internal {
 
 SelectableFilesModel::SelectableFilesModel(const QString &baseDir, QObject *parent)
     : QAbstractItemModel(parent), m_root(0), m_baseDir(baseDir), m_allFiles(true)
 {
+    Q_ASSERT(QFileInfo(m_baseDir).isDir());
+
     // Dummy tree
     m_root = new Tree;
     m_root->name = QLatin1String("/");
@@ -669,6 +676,6 @@ void SelectableFilesDialog::applyFilter()
 }
 
 } // namespace Internal
-} // namespace GenericProjectManager
+} // namespace BoostBuildProjectManager
 
 

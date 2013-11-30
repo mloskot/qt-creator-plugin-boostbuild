@@ -1,5 +1,10 @@
 /****************************************************************************
 **
+** Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+**
+** This file, as part of Qt Creator Plugin for Boost.Build,
+** was modified to accommodate OpenProjectWizard requirements.
+**
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -27,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef FILESSELECTIONWIZARDPAGE_H
-#define FILESSELECTIONWIZARDPAGE_H
+#ifndef FILESSELECTIONWIZARDPAGE_HPP
+#define FILESSELECTIONWIZARDPAGE_HPP
 
 #include <QWizardPage>
 
@@ -39,18 +44,20 @@ class QTreeView;
 class QLineEdit;
 QT_END_NAMESPACE
 
-namespace GenericProjectManager {
+namespace BoostBuildProjectManager {
 namespace Internal {
 
-class GenericProjectWizardDialog;
+class OpenProjectWizardDialog;
 class SelectableFilesModel;
 
+// TODO: Submit feature request to Qt Creator to make the FileSelectionWizardPage
+//       a reusable component.
 class FilesSelectionWizardPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    FilesSelectionWizardPage(GenericProjectWizardDialog *genericProjectWizard, QWidget *parent = 0);
+    FilesSelectionWizardPage(OpenProjectWizardDialog *openProjectWizard, QWidget *parent = 0);
     bool isComplete() const;
     void initializePage();
     void cleanupPage();
@@ -67,7 +74,7 @@ private:
     void createShowFileFilterControls(QVBoxLayout *layout);
     void createApplyButton(QVBoxLayout *layout);
 
-    GenericProjectWizardDialog *m_genericProjectWizardDialog;
+    OpenProjectWizardDialog *m_openProjectWizardDialog;
     SelectableFilesModel *m_model;
 
     QLabel *m_hideFilesFilterLabel;
@@ -84,6 +91,6 @@ private:
 };
 
 } // namespace Internal
-} // namespace GenericProjectManager
+} // namespace BoostBuildProjectManager
 
-#endif // FILESSELECTIONWIZARDPAGE_H
+#endif // FILESSELECTIONWIZARDPAGE_HPP

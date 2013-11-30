@@ -1,5 +1,10 @@
 /****************************************************************************
 **
+** Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+**
+** This file, as part of Qt Creator Plugin for Boost.Build,
+** was modified to accommodate OpenProjectWizard requirements.
+**
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -27,11 +32,11 @@
 **
 ****************************************************************************/
 
-#include "filesselectionwizardpage.h"
+#include "filesselectionwizardpage.hpp"
 
-#include "genericprojectwizard.h"
-#include "genericprojectconstants.h"
-#include "selectablefilesmodel.h"
+#include "bbopenprojectwizard.hpp"
+#include "bbprojectmanagerconstants.hpp"
+#include "selectablefilesmodel.hpp"
 
 #include <coreplugin/mimedatabase.h>
 #include <coreplugin/icore.h>
@@ -40,11 +45,11 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-namespace GenericProjectManager {
+namespace BoostBuildProjectManager {
 namespace Internal {
 
-FilesSelectionWizardPage::FilesSelectionWizardPage(GenericProjectWizardDialog *genericProjectWizard, QWidget *parent)
-    : QWizardPage(parent), m_genericProjectWizardDialog(genericProjectWizard), m_model(0), m_finished(false)
+FilesSelectionWizardPage::FilesSelectionWizardPage(OpenProjectWizardDialog *openProjectWizard, QWidget *parent)
+    : QWizardPage(parent), m_openProjectWizardDialog(openProjectWizard), m_model(0), m_finished(false)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
@@ -117,7 +122,7 @@ void FilesSelectionWizardPage::initializePage()
 {
     m_view->setModel(0);
     delete m_model;
-    m_model = new SelectableFilesModel(m_genericProjectWizardDialog->path(), this);
+    m_model = new SelectableFilesModel(m_openProjectWizardDialog->path(), this);
     connect(m_model, SIGNAL(parsingProgress(QString)),
             this, SLOT(parsingProgress(QString)));
     connect(m_model, SIGNAL(parsingFinished()),
@@ -164,7 +169,7 @@ void FilesSelectionWizardPage::parsingFinished()
     emit completeChanged();
     applyFilter();
     // work around qt
-    m_genericProjectWizardDialog->setTitleFormat(m_genericProjectWizardDialog->titleFormat());
+    m_openProjectWizardDialog->setTitleFormat(m_openProjectWizardDialog->titleFormat());
 }
 
 bool FilesSelectionWizardPage::isComplete() const
@@ -194,4 +199,4 @@ void FilesSelectionWizardPage::applyFilter()
 }
 
 } // namespace Internal
-} // namespace GenericProjectManager
+} // namespace BoostBuildProjectManager

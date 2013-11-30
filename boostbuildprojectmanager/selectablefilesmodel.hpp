@@ -1,5 +1,10 @@
 /****************************************************************************
 **
+** Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+**
+** This file, as part of Qt Creator Plugin for Boost.Build,
+** was modified to accommodate OpenProjectWizard requirements.
+**
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -27,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef SELECTABLEFILESMODEL_H
-#define SELECTABLEFILESMODEL_H
+#ifndef SELECTABLEFILESMODEL_HPP
+#define SELECTABLEFILESMODEL_HPP
 
 #include <QAbstractItemModel>
 #include <QSet>
@@ -42,7 +47,7 @@ QT_BEGIN_NAMESPACE
 class QVBoxLayout;
 QT_END_NAMESPACE
 
-namespace GenericProjectManager {
+namespace BoostBuildProjectManager {
 namespace Internal {
 
 struct Tree
@@ -178,7 +183,7 @@ private:
 };
 
 } // namespace Internal
-} // namespace GenericProjectManager
+} // namespace BoostBuildProjectManager
 
-#endif // SELECTABLEFILESMODEL_H
+#endif // SELECTABLEFILESMODEL_HPP
 
