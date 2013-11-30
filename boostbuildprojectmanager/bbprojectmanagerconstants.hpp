@@ -25,7 +25,7 @@ char const BS_KEY_ARGUMENTS[] = "BoostBuildProjectManager.BuildStep.AdditionalAr
 // MIME types and file patterns
 char const MIMETYPE_PROJECT[] = "text/x-boostbuild-project";
 char const MIMETYPE_JAMFILE[] = "application/vnd.boostbuild.v2";
-char const MIMETYPE_JAMFILE_FILES[]   = "application/vnd.qtcreator.boostbuild.files";
+char const MIMETYPE_JAMFILE_FILES[] = "application/vnd.qtcreator.boostbuild.files";
 char const JAMFILE_FILES_EXT[] = ".qtcreator.files";
 char const JAMFILE_INCLUDES_EXT[] = ".qtcreator.includes";
 
@@ -39,6 +39,12 @@ char const VARIANT_RELEASE[] = QT_TR_NOOP("Release");
 // ${BOOST}/tools/build/v2/doc/src/architecture.xml
 // Since Boost.Build almost always generates targets under the "bin"
 char const BUILD_DIR_NAME[] = "bin";
+
+// FileSelectionWizardPage
+char const HIDE_FILE_FILTER_SETTING[] = "BoostBuildProjectManager/FileFilter";
+char const HIDE_FILE_FILTER_DEFAULT[] = "Makefile*; *.o; *.obj; *~; *.files; *.config; *.creator; *.user; *.includes; *.autosave";
+char const SHOW_FILE_FILTER_SETTING[] = "BoostBuildProjectManager/ShowFileFilter";
+char const SHOW_FILE_FILTER_DEFAULT[] = "*.c; *.cc; *.cpp; *.cp; *.cxx; *.c++; *.h; *.hh; *.hpp; *.hxx;";
 
 // Meaningful names for common boolean values
 bool const FileNotGenerated = false;
