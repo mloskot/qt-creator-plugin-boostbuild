@@ -21,6 +21,8 @@ SOURCES += \
     bbprojectnode.cpp \
     bbprojectreader.cpp \
     bbutility.cpp \
+    filesselectionwizardpage.cpp \
+    selectablefilesmodel.cpp \
     external/projectexplorer/clangparser.cpp \
     external/projectexplorer/gccparser.cpp \
     external/projectexplorer/ldparser.cpp
@@ -40,6 +42,8 @@ HEADERS += \
     bbprojectnode.hpp \
     bbprojectreader.hpp \
     bbutility.hpp \
+    filesselectionwizardpage.hpp \
+    selectablefilesmodel.hpp \
     external/projectexplorer/clangparser.h \
     external/projectexplorer/gccparser.h \
     external/projectexplorer/ldparser.h
