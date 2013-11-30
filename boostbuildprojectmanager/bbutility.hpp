@@ -24,6 +24,8 @@ nospace
 
 #endif // _DEBUG
 
+#define BBPM_C(CONSTANT) QLatin1String(BoostBuildProjectManager::Constants::CONSTANT)
+
 //////////////////////////////////////////////////////////////////////////////////////////
 namespace BoostBuildProjectManager {
 namespace Utility {
