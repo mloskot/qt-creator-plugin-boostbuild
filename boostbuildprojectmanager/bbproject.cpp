@@ -55,9 +55,9 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     QDir const projectDir(projectFileInfo.dir());
     projectName_ = defaultProjectName(filePath_);
     filesFilePath_ = QFileInfo(projectDir
-        , filePath_ + QLatin1String(Constants::JAMFILE_FILES_EXT)).absoluteFilePath();
+        , filePath_ + QLatin1String(Constants::EXT_JAMFILE_FILES)).absoluteFilePath();
     includesFilePath_ = QFileInfo(projectDir
-        , filePath_ + QLatin1String(Constants::JAMFILE_INCLUDES_EXT)).absoluteFilePath();
+        , filePath_ + QLatin1String(Constants::EXT_JAMFILE_INCLUDES)).absoluteFilePath();
 
     projectNode_->setDisplayName(displayName());
 
@@ -238,8 +238,7 @@ bool Project::fromMap(QVariantMap const& map)
             continue;
         }
         if (!t->activeRunConfiguration())
-            t->addRunConfiguration(
-                        new QtSupport::CustomExecutableRunConfiguration(t));
+            t->addRunConfiguration(new QtSupport::CustomExecutableRunConfiguration(t));
     }
 
     QTC_ASSERT(hasActiveBuildSettings(), return false);

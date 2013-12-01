@@ -26,8 +26,9 @@ char const BS_KEY_ARGUMENTS[] = "BoostBuildProjectManager.BuildStep.AdditionalAr
 char const MIMETYPE_PROJECT[] = "text/x-boostbuild-project";
 char const MIMETYPE_JAMFILE[] = "application/vnd.boostbuild.v2";
 char const MIMETYPE_JAMFILE_FILES[] = "application/vnd.qtcreator.boostbuild.files";
-char const JAMFILE_FILES_EXT[] = ".qtcreator.files";
-char const JAMFILE_INCLUDES_EXT[] = ".qtcreator.includes";
+const char MIMETYPE_JAMFILE_INCLUDES[] = "application/vnd.qtcreator.boostbuild.includes";
+char const EXT_JAMFILE_FILES[] = ".qtcreator.files";
+char const EXT_JAMFILE_INCLUDES[] = ".qtcreator.includes";
 
 // Command and options
 char const COMMAND_BB2[] = "b2";
