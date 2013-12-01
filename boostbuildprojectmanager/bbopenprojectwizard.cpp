@@ -54,6 +54,7 @@ bool OpenProjectWizard::run(QString const& platform, QVariantMap const& extraVal
 
     projectOpened_ = false;
     outputValues_.clear();
+
     runWizard(project_->projectFilePath(), 0, platform, extraValuesCopy);
 
     Q_ASSERT(projectOpened_ == !outputValues_.isEmpty());
@@ -79,17 +80,53 @@ Core::GeneratedFiles
 OpenProjectWizard::generateFiles(QWizard const* wizard, QString* errorMessage) const
 {
     Q_UNUSED(errorMessage)
+    Q_ASSERT(project_);
 
     OpenProjectWizardDialog const* openWizard
         = qobject_cast<OpenProjectWizardDialog const*>(wizard);
 
-
     QDir const projectDir(openWizard->path());
-    QString const projectName(openWizard->projectName());
 
+    // Set up MIME filters for C/C++ headers
+    QStringList headerFilters;
+    QStringList const headerMimeTypes = QStringList()
+        << QLatin1String("text/x-chdr") << QLatin1String("text/x-c++hdr");
+    foreach (QString const& headerMime, headerMimeTypes)
+    {
+        Core::MimeType mime = Core::MimeDatabase::findByType(headerMime);
+        foreach (Core::MimeGlobPattern const& gp, mime.globPatterns())
+            headerFilters.append(gp.pattern());
+    }
+
+    // Generate list of include paths.
+    // If any C/C++ headers in any directory from paths, add it to include paths,
+    // used for C/C++ parsing only.
+    QStringList includePaths;
+    QStringList const paths = openWizard->selectedPaths();
+    foreach (QString const& path, paths)
+    {
+        QFileInfo const fileInfo(path);
+        QDir const thisDir(fileInfo.absoluteFilePath());
+        if (!thisDir.entryList(headerFilters, QDir::Files).isEmpty())
+        {
+            QString const relative = projectDir.relativeFilePath(thisDir.path());
+            includePaths.append(relative.isEmpty() ? QLatin1String(".") : relative);
+        }
+    }
+
+    // Generate list of sources
+    QStringList sources = openWizard->selectedFiles();
+    Utility::makeRelativePaths(projectDir.absolutePath(), sources);
+
+    Core::GeneratedFile generatedFilesFile(project_->filesFilePath());
+    generatedFilesFile.setContents(sources.join(QLatin1String("\n")));
+
+    Core::GeneratedFile generatedIncludesFile(project_->includesFilePath());
+    generatedIncludesFile.setContents(includePaths.join(QLatin1String("\n")));
 
     Core::GeneratedFiles files;
-    // TODO
+    files.append(generatedFilesFile);
+    files.append(generatedIncludesFile);
     return files;
 }
 
@@ -185,6 +222,8 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizardDialog* wiza
     fl->addRow(pathLine);
 
     nameLineEdit_ = new QLineEdit(this);
+    connect(nameLineEdit_, &QLineEdit::textChanged
+          , wizard_, &OpenProjectWizardDialog::setProjectName);
     nameLineEdit_->setText(wizard_->defaultProjectName());
     fl->addRow(tr("Project name:"), nameLineEdit_);
 
@@ -215,9 +254,6 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizardDialog* wiza
     infoLabel->setWordWrap(true);
     infoLabel->setText(info);
     fl->addRow(infoLabel);
-
-    connect(nameLineEdit_, &QLineEdit::textChanged
-          , wizard_, &OpenProjectWizardDialog::setProjectName);
 }
 
 QString PathsSelectionWizardPage::projectName() const
