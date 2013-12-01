@@ -1,13 +1,13 @@
 #ifndef BBPROJECT_HPP
 #define BBPROJECT_HPP
 
-#include "bbprojectreader.hpp"
 // Qt Creator
 #include <coreplugin/idocument.h>
 #include <projectexplorer/project.h>
 #include <utils/fileutils.h>
 // Qt
 #include <QString>
+#include <QFuture>
 #include <QFutureInterface>
 
 namespace BoostBuildProjectManager {
@@ -54,9 +54,6 @@ protected:
     // Calls the base ProjectExplorer::Project::fromMap function first.
     bool fromMap(QVariantMap const& map);
 
-private slots:
-    void handleReadingFinished();
-
 private:
 
     void setProjectName(QString const& name);
@@ -85,7 +82,6 @@ private:
 
     ProjectFile* projectFile_;
     ProjectNode* projectNode_;
-    ProjectReader projectReader_;
 
     QFuture<void> cppModelFuture_;
 

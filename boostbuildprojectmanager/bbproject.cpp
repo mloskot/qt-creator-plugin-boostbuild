@@ -10,7 +10,6 @@
 #include "bbprojectmanager.hpp"
 #include "bbprojectmanagerconstants.hpp"
 #include "bbprojectnode.hpp"
-#include "bbprojectreader.hpp"
 #include "bbutility.hpp"
 // Qt Creator
 #include <coreplugin/icontext.h>
@@ -43,7 +42,6 @@ Project::Project(ProjectManager* manager, QString const& fileName)
     , filePath_(fileName)
     , projectFile_(new ProjectFile(this, filePath_)) // enables projectDirectory()
     , projectNode_(new ProjectNode(this, projectFile_))
-    , projectReader_(projectDirectory(projectFile_->filePath())) // avoid virtual call
 {
     Q_ASSERT(manager_);
     Q_ASSERT(!filePath_.isEmpty());
@@ -187,22 +185,16 @@ bool Project::fromMap(QVariantMap const& map)
     if (!ProjectExplorer::Project::fromMap(map))
         return false;
 
-    // TODO: do we need on-loading wizard similar to CMakeProjectManager?
+    QVariantMap extraValues(map);
+    if (!extraValues.contains(BBPM_C(P_KEY_PROJECTNAME)))
+        extraValues.insert(BBPM_C(P_KEY_PROJECTNAME), projectName_);
+    setProjectName(map.value(BBPM_C(P_KEY_PROJECTNAME)).toString());
 
-    // Set up active ProjectConfiguration (aka Target).
-    // NOTE: Call setActiveBuildConfiguration when creating new build configurations.
-
-    if (!activeTarget())
+    // Check required auxiliary files, run wizard of necessary
+    if (!QFileInfo(filesFilePath()).exists() || !QFileInfo(includesFilePath()).exists())
     {
-        // Create project configuration from scratch
-
-        // TODO: Map the Kit to Boost.Build toolset option value
         ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit();
         Q_ASSERT(defaultKit);
-
-        QVariantMap extraValues(map);
-        if (!extraValues.contains(BBPM_C(P_KEY_PROJECTNAME)))
-            extraValues.insert(BBPM_C(P_KEY_PROJECTNAME), projectName_);
 
         OpenProjectWizard wizard(this);
         if (!wizard.run(defaultKit->displayName(), extraValues))
@@ -210,6 +202,17 @@ bool Project::fromMap(QVariantMap const& map)
 
         QVariantMap outputValues = wizard.outputValues();
         setProjectName(outputValues.value(BBPM_C(P_KEY_PROJECTNAME)).toString());
+    }
+
+    // Set up active ProjectConfiguration (aka Target).
+    // NOTE: Call setActiveBuildConfiguration when creating new build configurations.
+    if (!activeTarget())
+    {
+        // Create project configuration from scratch
+
+        // TODO: Map the Kit to Boost.Build toolset option value
+        ProjectExplorer::Kit* defaultKit = ProjectExplorer::KitManager::defaultKit();
+        Q_ASSERT(defaultKit);
 
         // Creates as many {Build|Run|Deploy}Configurations for as corresponding
         // factories report as available.
@@ -222,8 +225,7 @@ bool Project::fromMap(QVariantMap const& map)
     else
     {
         // Configure project from settings sorced from .user file
-        setProjectName(map.value(BBPM_C(P_KEY_PROJECTNAME)).toString());
-
+        // TODO: ???
         BBPM_QDEBUG(displayName() << "has user file");
     }
 
@@ -252,112 +254,72 @@ bool Project::fromMap(QVariantMap const& map)
 
 void Project::refresh()
 {
-    if (QFileInfo(filesFilePath()).exists())
+    QTC_ASSERT(QFileInfo(filesFilePath()).exists(), return);
+    QTC_ASSERT(QFileInfo(includesFilePath()).exists(), return);
+
+    QSet<QString> oldFileList;
+    oldFileList = files_.toSet();
+
+    // Parse project:
+    // The manager does not parse Jamfile files.
+    // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
+    QString const projectPath(projectDirectory());
+    filesRaw_ = Utility::readLines(filesFilePath());
+    files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
+
+    QStringList includePaths =
+        Utility::makeAbsolutePaths(projectPath,
+            Utility::readLines(includesFilePath()));
+
+    emit fileListChanged();
+
+    projectNode_->refresh(oldFileList);
+
+    // TODO: Does it make sense to move this to separate asynchronous task?
+    // TODO: extract updateCppCodeModel
+    using CppTools::CppModelManagerInterface;
+    if (CppModelManagerInterface* cppModel = CppModelManagerInterface::instance())
     {
-        QSet<QString> oldFileList;
-        oldFileList = files_.toSet();
+        CppModelManagerInterface::ProjectInfo cppInfo = cppModel->projectInfo(this);
+        cppInfo.clearProjectParts();
 
-        // Parse project:
-        // The manager does not parse Jamfile files.
-        // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
-        QString const projectPath(projectDirectory());
-        filesRaw_ = Utility::readLines(filesFilePath());
-        files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
+        CppTools::ProjectPart::Ptr cppPart(new CppTools::ProjectPart());
+        cppPart->project = this;
+        cppPart->displayName = displayName();
+        cppPart->projectFile = projectFilePath();
+        cppPart->includePaths += projectDirectory();
+        cppPart->includePaths += includePaths;
 
-        QStringList includePaths =
-            Utility::makeAbsolutePaths(projectPath,
-                Utility::readLines(includesFilePath()));
+        cppPart->cxxVersion = CppTools::ProjectPart::CXX11;
+        // TODO: waiting for Jamfile parser
+        //cppPart->defines +=
 
-        emit fileListChanged();
-
-        projectNode_->refresh(oldFileList);
-
-        // TODO: Does it make sense to move this to separate asynchronous task?
-        // TODO: extract updateCppCodeModel
-        using CppTools::CppModelManagerInterface;
-        if (CppModelManagerInterface* cppModel = CppModelManagerInterface::instance())
+        ProjectExplorer::Kit const* k = activeTarget()
+            ? activeTarget()->kit() : ProjectExplorer::KitManager::defaultKit();
+        if (ProjectExplorer::ToolChain* tc
+                = ProjectExplorer::ToolChainKitInformation::toolChain(k))
         {
-            CppModelManagerInterface::ProjectInfo cppInfo = cppModel->projectInfo(this);
-            cppInfo.clearProjectParts();
-
-            CppTools::ProjectPart::Ptr cppPart(new CppTools::ProjectPart());
-            cppPart->project = this;
-            cppPart->displayName = displayName();
-            cppPart->projectFile = projectFilePath();
-            cppPart->includePaths += projectDirectory();
-            cppPart->includePaths += includePaths;
-
-            cppPart->cxxVersion = CppTools::ProjectPart::CXX11;
-            // TODO: waiting for Jamfile parser
-            //cppPart->defines +=
-
-            ProjectExplorer::Kit const* k = activeTarget()
-                ? activeTarget()->kit() : ProjectExplorer::KitManager::defaultKit();
-            if (ProjectExplorer::ToolChain* tc
-                    = ProjectExplorer::ToolChainKitInformation::toolChain(k))
-            {
-                // TODO: form GenericProjectmanager: FIXME: Can we do better?
-                QStringList cxxflags;
-                cppPart->evaluateToolchain(
-                    tc, cxxflags, cxxflags
-                  , ProjectExplorer::SysRootKitInformation::sysRoot(k));
-            }
-
-            CppTools::ProjectFileAdder adder(cppPart->files);
-            foreach (QString const& file, files_)
-                adder.maybeAdd(file);
-
-            cppModelFuture_.cancel();
-
-            cppInfo.appendProjectPart(cppPart);
-
-            cppModel ->updateProjectInfo(cppInfo);
-            bool const cppEnabled = !cppPart->files.isEmpty();
-            setProjectLanguage(ProjectExplorer::Constants::LANG_CXX, cppEnabled);
-
-            cppModelFuture_ = cppModel->updateProjectInfo(cppInfo);
+            // TODO: form GenericProjectmanager: FIXME: Can we do better?
+            QStringList cxxflags;
+            cppPart->evaluateToolchain(
+                tc, cxxflags, cxxflags
+              , ProjectExplorer::SysRootKitInformation::sysRoot(k));
         }
+
+        CppTools::ProjectFileAdder adder(cppPart->files);
+        foreach (QString const& file, files_)
+            adder.maybeAdd(file);
+
+        cppModelFuture_.cancel();
+
+        cppInfo.appendProjectPart(cppPart);
+
+        cppModel ->updateProjectInfo(cppInfo);
+        bool const cppEnabled = !cppPart->files.isEmpty();
+        setProjectLanguage(ProjectExplorer::Constants::LANG_CXX, cppEnabled);
+
+        cppModelFuture_ = cppModel->updateProjectInfo(cppInfo);
     }
-    else
-    {
-        // Read project tree on filesystem.
-
-        connect(&projectReader_, SIGNAL(readingFinished())
-              , this, SLOT(handleReadingFinished()));
-
-        projectReader_.startReading();
-    }
-}
-
-void Project::handleReadingFinished()
-{
-    QDir const projectDir(projectDirectory());
-    QString errorMessage;
-
-    // Generate .files file, all paths should be relative
-    QStringList sources = projectReader_.files();
-    Utility::makeRelativePaths(projectDir.absolutePath(), sources);
-
-    Core::GeneratedFile gfFilesFile(filesFilePath());
-    gfFilesFile.setContents(sources.join(QLatin1String("\n")));
-    if (!gfFilesFile.write(&errorMessage))
-    {
-        QMessageBox::critical(0, tr("File Generation Failure"), errorMessage);
-        return;
-    }
-
-    // Generate .includes file with all directories with headers
-    QStringList const includePaths = projectReader_.includePaths();
-    Core::GeneratedFile gfIncludesFile(includesFilePath());
-    gfIncludesFile.setContents(includePaths.join(QLatin1String("\n")));
-    if (!gfIncludesFile.write(&errorMessage))
-    {
-        QMessageBox::critical(0, tr("File Generation Failure"), errorMessage);
-        return;
-    }
-
-    // Auxiliary files ready, complete refreshing project
-    refresh();
 }
 
 } // namespace Internal

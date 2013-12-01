@@ -19,7 +19,6 @@ SOURCES += \
     bbprojectmanager.cpp \
     bbprojectmanagerplugin.cpp \
     bbprojectnode.cpp \
-    bbprojectreader.cpp \
     bbutility.cpp \
     filesselectionwizardpage.cpp \
     selectablefilesmodel.cpp \
@@ -40,7 +39,6 @@ HEADERS += \
     bbprojectmanagerconstants.hpp \
     bbprojectmanagerplugin.hpp \
     bbprojectnode.hpp \
-    bbprojectreader.hpp \
     bbutility.hpp \
     filesselectionwizardpage.hpp \
     selectablefilesmodel.hpp \
