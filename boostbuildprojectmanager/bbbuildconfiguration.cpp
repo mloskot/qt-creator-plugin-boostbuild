@@ -312,7 +312,7 @@ BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
         info->displayName = tr("Release");
     else
         info->displayName = tr("Debug");
-    info->typeName = tr("Build (%1)").arg(info->displayName);
+    info->typeName = tr("Default (%1)").arg(info->displayName);
     info->buildType = type;
     info->buildDirectory = defaultBuildDirectory(projectPath);
     info->workingDirectory = defaultWorkingDirectory(projectPath);
