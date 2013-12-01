@@ -141,11 +141,7 @@ Future
 
 An unprioritised TODO lis for the plugin:
 
-* Make ```OpenProjectWizard``` use ```Core::BaseFileWizard``` features with **Summary**
-  page at the end based on ```ProjectWizardPage```.
 * Allow to specify ```b2``` command location not in ```PATH```.
-* Add **File Selection** dialog (see ```GenericProjectManager```) to get rid of hard-wired
-  files scanning.
 * Add ```DeployConfiguration``` and ```RunConfiguration``` targets, if really needed.
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
     * See TODO item about ```user-config.jam``` lookup.
