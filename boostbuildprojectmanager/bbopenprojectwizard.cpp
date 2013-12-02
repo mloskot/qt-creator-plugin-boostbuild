@@ -57,7 +57,6 @@ bool OpenProjectWizard::run(QString const& platform, QVariantMap const& extraVal
 
     runWizard(project_->projectFilePath(), 0, platform, extraValuesCopy);
 
-    Q_ASSERT(projectOpened_ == !outputValues_.isEmpty());
     return projectOpened_;
 }
 
