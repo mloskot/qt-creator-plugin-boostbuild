@@ -40,6 +40,7 @@
 
 #include <coreplugin/mimedatabase.h>
 #include <coreplugin/icore.h>
+#include <utils/pathchooser.h>
 
 #include <QVBoxLayout>
 #include <QLineEdit>
@@ -55,6 +56,7 @@ FilesSelectionWizardPage::FilesSelectionWizardPage(OpenProjectWizardDialog *open
 
     createShowFileFilterControls(layout);
     createHideFileFilterControls(layout);
+    createChooseBaseDirControls(layout);
     createApplyButton(layout);
 
     m_view = new QTreeView;
@@ -103,6 +105,25 @@ void FilesSelectionWizardPage::createShowFileFilterControls(QVBoxLayout *layout)
     layout->addLayout(hbox);
 }
 
+void FilesSelectionWizardPage::createChooseBaseDirControls(QVBoxLayout *layout)
+{
+    QHBoxLayout *hbox = new QHBoxLayout;
+    m_baseDirLabel = new QLabel;
+    m_baseDirLabel->setText(tr("Base directory:"));
+    m_baseDirLabel->hide();
+    hbox->addWidget(m_baseDirLabel);
+
+    m_lastBaseDir = m_openProjectWizardDialog->path();
+    m_baseDirChooser = new Utils::PathChooser;
+    m_baseDirChooser->setEnabled(true);
+    m_baseDirChooser->setBaseDirectory(m_lastBaseDir);
+    m_baseDirChooser->setPath(m_lastBaseDir);
+    connect(m_baseDirChooser, SIGNAL(changed(QString)), this, SLOT(baseDirectoryChanged()));
+    hbox->addWidget(m_baseDirChooser);
+
+    layout->addLayout(hbox);
+}
+
 void FilesSelectionWizardPage::createApplyButton(QVBoxLayout *layout)
 {
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -122,7 +143,7 @@ void FilesSelectionWizardPage::initializePage()
 {
     m_view->setModel(0);
     delete m_model;
-    m_model = new SelectableFilesModel(m_openProjectWizardDialog->path(), this);
+    m_model = new SelectableFilesModel(m_lastBaseDir, this);
     connect(m_model, SIGNAL(parsingProgress(QString)),
             this, SLOT(parsingProgress(QString)));
     connect(m_model, SIGNAL(parsingFinished()),
@@ -198,5 +219,14 @@ void FilesSelectionWizardPage::applyFilter()
     m_model->applyFilter(showFilesFilter, hideFilesFilter);
 }
 
+void FilesSelectionWizardPage::baseDirectoryChanged()
+{
+    QString const baseDir(m_baseDirChooser->path());
+    if (baseDir != m_lastBaseDir && QFileInfo(baseDir).isDir())
+    {
+        m_lastBaseDir = baseDir;
+        initializePage();
+    }
+}
 } // namespace Internal
 } // namespace BoostBuildProjectManager

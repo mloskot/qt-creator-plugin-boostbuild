@@ -44,6 +44,10 @@ class QTreeView;
 class QLineEdit;
 QT_END_NAMESPACE
 
+namespace Utils {
+class PathChooser;
+}
+
 namespace BoostBuildProjectManager {
 namespace Internal {
 
@@ -68,10 +72,12 @@ private slots:
     void applyFilter();
     void parsingProgress(const QString &text);
     void parsingFinished();
+    void baseDirectoryChanged();
 
 private:
     void createHideFileFilterControls(QVBoxLayout *layout);
     void createShowFileFilterControls(QVBoxLayout *layout);
+    void createChooseBaseDirControls(QVBoxLayout *layout);
     void createApplyButton(QVBoxLayout *layout);
 
     OpenProjectWizardDialog *m_openProjectWizardDialog;
@@ -84,6 +90,10 @@ private:
     QLineEdit *m_showFilesfilterLineEdit;
 
     QPushButton *m_applyFilterButton;
+
+    QLabel* m_baseDirLabel;
+    Utils::PathChooser* m_baseDirChooser;
+    QString m_lastBaseDir;
 
     QTreeView *m_view;
     QLabel *m_label;
