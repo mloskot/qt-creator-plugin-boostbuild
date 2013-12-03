@@ -220,10 +220,14 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizardDialog* wiza
     pathLine->setText(wizard_->path());
     fl->addRow(pathLine);
 
+    QString projectName(Utility::parseJamfileProjectName(wizard_->projectFile()));
+    if (projectName.isEmpty())
+        projectName = wizard_->defaultProjectName();
+
     nameLineEdit_ = new QLineEdit(this);
     connect(nameLineEdit_, &QLineEdit::textChanged
           , wizard_, &OpenProjectWizardDialog::setProjectName);
-    nameLineEdit_->setText(wizard_->defaultProjectName());
+    nameLineEdit_->setText(projectName);
     fl->addRow(tr("Project name:"), nameLineEdit_);
 
     QLabel* defaultsLabel = new QLabel(this);
