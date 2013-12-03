@@ -124,23 +124,22 @@ QString parseJamfileProjectName(QString const& fileName)
             if (line.startsWith(QLatin1String("project")))
             {
                 projectDef.append(line);
-                do
+                while (!stream.atEnd()
+                       && (line.contains(QLatin1Char(':'))
+                           || line.contains(QLatin1Char(';'))))
                 {
                     projectDef.append(stream.readLine());
                 }
-                while (!stream.atEnd()
-                       && (line.contains(QLatin1Char(':'))
-                           || line.contains(QLatin1Char(';'))));
-
                 break;
             }
         }
 
-        QRegExp re(QLatin1String("project\\s+\\b([a-z\\-A-Z]+)\\b\\s+[\\:\\;]"));
+        QRegExp re(QLatin1String("\\s*project\\s+\\b([a-zA-Z\\-\\/]+)\\b\\s*[\\:\\;]?"));
         re.setMinimal(true);
+        QTC_CHECK(re.isValid());
         if (re.indexIn(projectDef) > -1)
         {
-            projectName = re.cap(0);
+            projectName = re.cap(1);
         }
     }
     return projectName;
