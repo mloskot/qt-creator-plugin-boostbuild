@@ -5,12 +5,14 @@
 #include "bbutility.hpp"
 // Qt Creator
 #include <utils/fileutils.h>
+#include <utils/qtcassert.h>
 // Qt
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
 #include <QList>
+#include <QRegExp>
 #include <QSet>
 #include <QString>
 #include <QStringList>
@@ -75,6 +77,7 @@ QStringList& makeRelativePaths(QString const& basePath, QStringList& paths)
         *it = baseDir.relativeFilePath(*it);
     return paths;
 }
+
 QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
                                              , QSet<QString> const& files)
 {
@@ -104,5 +107,44 @@ QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
     }
     return filesInPath;
 }
+
+QString parseJamfileProjectName(QString const& fileName)
+{
+    QString projectName;
+    QFile file(fileName);
+    if (file.exists())
+    {
+        QString projectDef;
+
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream stream(&file);
+        while (!stream.atEnd())
+        {
+            QString const line(stream.readLine().trimmed());
+            if (line.startsWith(QLatin1String("project")))
+            {
+                projectDef.append(line);
+                do
+                {
+                    projectDef.append(stream.readLine());
+                }
+                while (!stream.atEnd()
+                       && (line.contains(QLatin1Char(':'))
+                           || line.contains(QLatin1Char(';'))));
+
+                break;
+            }
+        }
+
+        QRegExp re(QLatin1String("project\\s+\\b([a-z\\-A-Z]+)\\b\\s+[\\:\\;]"));
+        re.setMinimal(true);
+        if (re.indexIn(projectDef) > -1)
+        {
+            projectName = re.cap(0);
+        }
+    }
+    return projectName;
+}
+
 } // namespace Utility
 } // namespace BoostBuildProjectManager

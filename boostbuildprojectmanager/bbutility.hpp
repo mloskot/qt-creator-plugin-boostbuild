@@ -40,6 +40,9 @@ QStringList& makeRelativePaths(QString const& basePath, QStringList& paths);
 
 QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
                                              , QSet<QString> const& files);
+
+QString parseJamfileProjectName(QString const& fileName);
+
 } // namespace Utility
 } // namespace BoostBuildProjectManager
 
