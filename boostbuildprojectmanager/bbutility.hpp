@@ -5,8 +5,8 @@
 // This file is part of Qt Creator Boost.Build plugin project.
 //
 // This is free software; you can redistribute and/or modify it under
-// the terms of the GNU Lesser General Public Licence as published
-// by the Free Software Foundation.
+// the terms of the GNU Lesser General Public License, Version 2.1
+// as published by the Free Software Foundation.
 // See the LICENSE.txt file for more information.
 //
 #ifndef BBUTILITY_HPP
