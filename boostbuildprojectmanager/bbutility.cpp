@@ -108,6 +108,11 @@ QHash<QString, QStringList> sortFilesIntoPaths(QString const& basePath
     return filesInPath;
 }
 
+// Parses Jamfile and looks for project rule to extract project name.
+// Boost.Build project rule has the following syntax:
+//      project id : attributes ;
+// The project definition can span across multiple lines, including empty lines.
+// but each syntax token must be separated with a whitespace..
 QString parseJamfileProjectName(QString const& fileName)
 {
     QString projectName;
@@ -115,10 +120,10 @@ QString parseJamfileProjectName(QString const& fileName)
     if (file.exists())
     {
         // Jamfile project rule tokens to search for
-        QString const projectBegin(QLatin1String("project"));
-        QChar const projectSep(QLatin1Char(':'));
-        QChar const projectEnd(QLatin1Char(';'));
-        QChar const projectS(QLatin1Char(';'));
+        QString const ruleBeg(QLatin1String("project"));
+        QChar const ruleEnd(QLatin1Char(';'));
+        QChar const attrSep(QLatin1Char(':'));
+        QChar const tokenSep(QLatin1Char(' ')); // used to ensure tokens separation
         QString projectDef; // buffer for complete project definition
 
         file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -126,33 +131,22 @@ QString parseJamfileProjectName(QString const& fileName)
         while (!stream.atEnd())
         {
             QString const line(stream.readLine());
-            if (projectDef.isEmpty() && line.trimmed().startsWith(projectBegin))
-                projectDef.append(line);
+            if (projectDef.isEmpty() && line.trimmed().startsWith(ruleBeg))
+                projectDef.append(line + tokenSep);
+            else if (!projectDef.isEmpty())
+                projectDef.append(line + tokenSep);
 
-            if (!projectDef.isEmpty())
-            {
-                if (projectDef != line)
-                {
-                    if (line.isEmpty())
-                        projectDef.append(QLatin1Char(' '));
-                    else
-                        projectDef.append(line);
-                }
-            }
-
-            if (line.contains(projectSep) || line.contains(projectEnd))
+            if (projectDef.contains(attrSep) || projectDef.contains(ruleEnd))
                 break;
         }
 
         if (!projectDef.isEmpty())
         {
-            QRegExp rx(QLatin1String("\\s*project\\s+([a-zA-Z\\-\\/]+)\\s+[\\:\\;]"));
+            QRegExp rx(QLatin1String("\\s*project\\s+([a-zA-Z\\-\\/]+)\\s+[\\:\\;]?"));
             rx.setMinimal(true);
             QTC_CHECK(rx.isValid());
             if (rx.indexIn(projectDef) > -1)
-            {
                 projectName = rx.cap(1);
-            }
         }
     }
     return projectName;
