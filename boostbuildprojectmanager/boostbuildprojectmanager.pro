@@ -1,4 +1,13 @@
-# BoostBuild Plugin for Qt Creator
+#
+# Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+#
+# This file is part of Qt Creator Boost.Build plugin project.
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU Lesser General Public Licence as published
+# by the Free Software Foundation.
+# See the LICENSE.txt file for more information.
+#
 QTC_PLUGIN_NAME = BoostBuildProjectManager
 
 PROVIDER = mloskot
@@ -51,7 +60,7 @@ RESOURCES += \
 
 OTHER_FILES += \
     $$QTC_PLUGIN_NAME.json \
-    LICENSE.md \
+    LICENSE.LGPL \
     NOTES.md
 
 # Qt Creator linking

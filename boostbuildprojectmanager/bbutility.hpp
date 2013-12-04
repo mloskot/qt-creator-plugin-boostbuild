@@ -1,3 +1,14 @@
+//
+// Copyright (C) 2013 Mateusz Łoskot <mateusz@loskot.net>
+// Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+//
+// This file is part of Qt Creator Boost.Build plugin project.
+//
+// This is free software; you can redistribute and/or modify it under
+// the terms of the GNU Lesser General Public Licence as published
+// by the Free Software Foundation.
+// See the LICENSE.txt file for more information.
+//
 #ifndef BBUTILITY_HPP
 #define BBUTILITY_HPP
 #ifdef _DEBUG

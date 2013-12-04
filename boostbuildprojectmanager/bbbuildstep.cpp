@@ -3,6 +3,13 @@
 // Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
 // Copyright (C) 2013 Openismus GmbH.
 //
+// This file is part of Qt Creator Boost.Build plugin project.
+//
+// This is free software; you can redistribute and/or modify it under
+// the terms of the  GNU Lesser General Public License, version 2.1
+// as published by the Free Software Foundation.
+// See the LICENSE.txt file for more information.
+//
 #include "bbbuildconfiguration.hpp"
 #include "bbbuildstep.hpp"
 #include "bboutputparser.hpp"
