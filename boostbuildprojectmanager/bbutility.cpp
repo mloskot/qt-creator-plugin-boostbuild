@@ -114,32 +114,45 @@ QString parseJamfileProjectName(QString const& fileName)
     QFile file(fileName);
     if (file.exists())
     {
-        QString projectDef;
+        // Jamfile project rule tokens to search for
+        QString const projectBegin(QLatin1String("project"));
+        QChar const projectSep(QLatin1Char(':'));
+        QChar const projectEnd(QLatin1Char(';'));
+        QChar const projectS(QLatin1Char(';'));
+        QString projectDef; // buffer for complete project definition
 
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream stream(&file);
         while (!stream.atEnd())
         {
-            QString const line(stream.readLine().trimmed());
-            if (line.startsWith(QLatin1String("project")))
-            {
+            QString const line(stream.readLine());
+            if (projectDef.isEmpty() && line.trimmed().startsWith(projectBegin))
                 projectDef.append(line);
-                while (!stream.atEnd()
-                       && (line.contains(QLatin1Char(':'))
-                           || line.contains(QLatin1Char(';'))))
+
+            if (!projectDef.isEmpty())
+            {
+                if (projectDef != line)
                 {
-                    projectDef.append(stream.readLine());
+                    if (line.isEmpty())
+                        projectDef.append(QLatin1Char(' '));
+                    else
+                        projectDef.append(line);
                 }
-                break;
             }
+
+            if (line.contains(projectSep) || line.contains(projectEnd))
+                break;
         }
 
-        QRegExp re(QLatin1String("\\s*project\\s+\\b([a-zA-Z\\-\\/]+)\\b\\s*[\\:\\;]?"));
-        re.setMinimal(true);
-        QTC_CHECK(re.isValid());
-        if (re.indexIn(projectDef) > -1)
+        if (!projectDef.isEmpty())
         {
-            projectName = re.cap(1);
+            QRegExp rx(QLatin1String("\\s*project\\s+([a-zA-Z\\-\\/]+)\\s+[\\:\\;]"));
+            rx.setMinimal(true);
+            QTC_CHECK(rx.isValid());
+            if (rx.indexIn(projectDef) > -1)
+            {
+                projectName = rx.cap(1);
+            }
         }
     }
     return projectName;
