@@ -25,7 +25,7 @@ corresponding build, run, deploy steps and more.
 So, the Boost.Build plugin implements as little as necessary,
 and currently, it does **not** provide:
 
-* parsing capabilities for Boost.Build ```Jamroot``` or ```Jamfile.v2``` files
+* any parsing capabilities for Boost.Build Jamfiles (not true, see [Features](#Features))
 * any kind of GUI for updating or managing configuration stored in Jamfiles
 
 Authors
@@ -57,6 +57,8 @@ Features
 ------------------------------------------------------------------------------
 
 What the Boost.Build plugin can do for me?
+
+* It can parse selected Jamfile to retrieve project name, if defined.
 
 *TODO*
 
