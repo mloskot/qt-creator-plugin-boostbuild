@@ -65,12 +65,13 @@ What the Boost.Build plugin can do?
   directory name is used as a project name. Finally, project name can be freely changed.
 * Generate list of include paths based on configured project files tree.
 * Utilise C++ browsing and editing capabilities and features of Qt Creator.
-* Run Boost.Build command from within Qt Creator.
+* Run Boost.Build command ```b``` from within Qt Creator.
 * Configure Boost.Build command arguments.
 * Configure Boost.Build command working directory where ```b2``` is executed.
 * Configure Boost.Build command build directory with ```b2``` option ```--build-dir```.
 * Parse Boost.Build command and Boost.Build toolset output to generate Qt Creator's
   Issues list and allow navigation to file and line of error or warning.
+    * Currently, GCC and Clang parsers are provided.
 * Configure build and clean steps.
 * Configure run targets for testing and debugging.
 * Save all Qt Creator project configuration changes in sidecar file ```.user```.
@@ -79,10 +80,12 @@ What the Boost.Build plugin can do?
 * ...
 
 What the Boost.Build plugin can not do?
+
 * Parse Jamfiles to collect list of source files which are actually used.
 * Parse Jamfiles to collect configuration of targets, attributes, requirements, etc.
 * Capture any project changes made in Qt Creator UI and automatically update Jamfiles.
-
+* Change any Boost.Build configuration.
+* ...
 
 Installation
 ------------------------------------------------------------------------------
