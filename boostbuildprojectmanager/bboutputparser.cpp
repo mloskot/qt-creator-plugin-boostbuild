@@ -67,10 +67,10 @@ void BoostBuildParser::setToolsetParser(QString const& toolsetName)
         }
         else
         {
-            // TOOD
+            // TODO: Add more toolsets (Intel, VC++, etc.)
         }
 
-        BBPM_QDEBUG("matched " << toolsetName_);
+        //BBPM_QDEBUG("matched " << toolsetName_);
     }
 }
 
