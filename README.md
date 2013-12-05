@@ -16,6 +16,8 @@ Three main features:
 * **Build** project in Qt Creator as it is configured by its Jamfile(s).
 * **Parse** Boost.Build command output to enable navigation to error or warning locations.
 
+Think of the plugin as an equivalent of Vim or Emacs with ctags and bunch of other scripts.
+
 It turns out, that in order to achieve the three basic features above,
 a project manager plugin for Qt Creator needs to implement a few beefy features like:
 opening a project, reading project directory structure, creating nodes of project 
@@ -98,7 +100,7 @@ section from the
 [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html)
 guide.
 
-Specifically, I used Qt and Qt Creator built from sources in their Git repositories:
+I use Qt and Qt Creator built from sources in their Git repositories:
 
 * Qt 5 from branch: stable
 * Qt Creator from branch: 3.0
@@ -145,6 +147,21 @@ See also the [Installation](#Installation) section.
 ### How to install the plugin?
 
 [Build](#Building) it.
+
+### Do I need to build Qt?
+
+I don't know. Ask Qt folks.
+
+I follow their [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html):
+
+> Qt Creator requires private headers of Qt, which are unfortunately
+> not installed by the Qt binary packages
+
+### Do I need to build Qt Creator?
+
+Apparently, yes, as per [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html):
+
+> It is also necessary if you want to create your own Qt Creator plugin.
 
 ### What is the roadmap?
 
