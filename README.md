@@ -176,11 +176,11 @@ See [Future](#Future) section for some feature ideas.
 [Fork the repo](https://help.github.com/articles/fork-a-repo) and make the plugin better!
 
 
-### Have you tested it on Windows?
+### Have you used it on Windows?
 
 No.
 
-### Have you tested it on Mac OS X?
+### Have you used it on Mac OS X?
 
 No.
 
@@ -189,6 +189,7 @@ Future
 
 An unprioritised TODO list for the plugin:
 
+* Add tests! Add tests! Add tests! But first, learn how to test with Qt wealth!
 * Parse and colour test output (failed in red, passed in green)
 * Add file watchers for Jamfile and sidecar files to automatically reload any changes.
 * Allow to specify ```b2``` command location not in ```PATH```.
