@@ -153,10 +153,6 @@ An unprioritised TODO lis for the plugin:
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
     * See TODO item about ```user-config.jam``` lookup.
 * Collect and resolve include paths as specified in all Jamfiles in project tree.
-* Add support for parallel tree with header files, like Boost itself.
-  Currently, in order to resolve includes from ```$BOOSTROOT``` for projects
-  in ```$BOOSTROOT/libs``` user needs to manually add ```$BOOSTROOT```
-  to ```*.qtcreator.includes``` file.
 * Collect preprocessor defines from all project Jamfiles.
 * Look for ```user-config.jam``` to determine some useful settings, projects that may be
   referenced, include paths.
