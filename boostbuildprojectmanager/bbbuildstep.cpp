@@ -182,9 +182,7 @@ bool BuildStep::fromMap(QVariantMap const& map)
 
 QString BuildStep::makeCommand(Utils::Environment const& env) const
 {
-    BBPM_QDEBUG("TODO: bjam vs b2 selection");
     Q_UNUSED(env);
-
     return QLatin1String(Constants::COMMAND_BB2);
 }
 
