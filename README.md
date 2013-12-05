@@ -67,7 +67,7 @@ What the Boost.Build plugin can do?
   directory name is used as a project name. Finally, project name can be freely changed.
 * Generate list of include paths based on configured project files tree.
 * Utilise C++ browsing and editing capabilities and features of Qt Creator.
-* Run Boost.Build command ```b``` from within Qt Creator.
+* Run Boost.Build command ```b2``` from within Qt Creator.
 * Configure Boost.Build command arguments.
 * Configure Boost.Build command working directory where ```b2``` is executed.
 * Configure Boost.Build command build directory with ```b2``` option ```--build-dir```.
