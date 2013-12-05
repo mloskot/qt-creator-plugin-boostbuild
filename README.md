@@ -169,7 +169,7 @@ None, apart form plan to roll the project forward fixing bugs and adding feature
 as they appear useful or necessary in order to make work with Boost.Build-based
 a bit more accessible and efficient.
 
-See [Future[(#Future) section for some feature ideas.
+See [Future](#Future) section for some feature ideas.
 
 ### How can I contribute?
 
