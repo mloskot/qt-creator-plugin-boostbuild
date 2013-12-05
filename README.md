@@ -152,8 +152,10 @@ An unprioritised TODO lis for the plugin:
 * Add ```DeployConfiguration``` and ```RunConfiguration``` targets, if really needed.
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
     * See TODO item about ```user-config.jam``` lookup.
-* Collect and resolve include paths as specified in all Jamfiles in project tree.
-* Collect preprocessor defines from all project Jamfiles.
+* Improve use of [Qt Creator’s C++ model](http://ltcmelo.com/blog/2013/03/17/a-bit-about-qt-creators-c-model/)
+  for better code browsing experience
+    * Collect and resolve include paths as specified in all Jamfiles in project tree.
+    * Collect preprocessor defines from all project Jamfiles.
 * Look for ```user-config.jam``` to determine some useful settings, projects that may be
   referenced, include paths.
     * Default toolset and use it for Kit selection/validation? See separate TODO item.
