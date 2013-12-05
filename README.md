@@ -173,6 +173,7 @@ Future
 An unprioritised TODO lis for the plugin:
 
 * Parse and colour test output (failed in red, passed in green)
+* Add file watchers for Jamfile and sidecar files to automatically reload any changes.
 * Allow to specify ```b2``` command location not in ```PATH```.
 * Add ```DeployConfiguration``` and ```RunConfiguration``` targets, if really needed.
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
