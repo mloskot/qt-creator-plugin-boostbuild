@@ -224,7 +224,7 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizardDialog* wiza
     QLineEdit* pathLine = new QLineEdit(this);
     pathLine->setReadOnly(true);
     pathLine->setDisabled(true);
-    pathLine->setText(wizard_->path());
+    pathLine->setText(wizard_->projectFile());
     fl->addRow(pathLine);
 
     QString projectName(Utility::parseJamfileProjectName(wizard_->projectFile()));
@@ -244,13 +244,13 @@ PathsSelectionWizardPage::PathsSelectionWizardPage(OpenProjectWizardDialog* wiza
     QLineEdit* workingLine = new QLineEdit(this);
     workingLine->setReadOnly(true);
     workingLine->setDisabled(true);
-    workingLine->setText(Project::defaultWorkingDirectory(wizard_->path()));
+    workingLine->setText(Project::defaultWorkingDirectory(wizard_->projectFile()));
     fl->addRow(tr("Working directory:"), workingLine);
 
     QLineEdit* buildLine = new QLineEdit(this);
     buildLine->setReadOnly(true);
     buildLine->setDisabled(true);
-    buildLine->setText(Project::defaultBuildDirectory(wizard_->path()));
+    buildLine->setText(Project::defaultBuildDirectory(wizard_->projectFile()));
     fl->addRow(tr("Build directory:"), buildLine);
 
     // TODO: indicate if we can find Boost.Build executable?
