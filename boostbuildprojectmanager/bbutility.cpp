@@ -52,7 +52,6 @@ QStringList readLines(QString const& filePath)
 
 QStringList makeAbsolutePaths(QString const& basePath, QStringList const& paths)
 {
-    // TODO: QDir baseDir(QFileInfo(basePath)....
     QDir const baseDir(basePath);
 
     QFileInfo fileInfo;

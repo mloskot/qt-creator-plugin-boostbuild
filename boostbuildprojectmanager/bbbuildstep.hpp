@@ -35,7 +35,6 @@ namespace Internal {
 
 class BuildConfiguration;
 
-// TODO: see doc in AutogenStep
 class BuildStep : public ProjectExplorer::AbstractProcessStep
 {
     Q_OBJECT

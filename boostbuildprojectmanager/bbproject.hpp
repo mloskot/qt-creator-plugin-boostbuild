@@ -94,10 +94,6 @@ private:
     ProjectNode* projectNode_;
 
     QFuture<void> cppModelFuture_;
-
-    // TODO:
-    // Add watcher for Jamfile changes.
-    // Add Jamfile parsing.
 };
 
 } // namespace Internal

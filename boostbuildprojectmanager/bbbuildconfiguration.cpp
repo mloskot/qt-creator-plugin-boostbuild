@@ -204,8 +204,6 @@ BuildConfigurationFactory::create(ProjectExplorer::Target* parent
     QTC_ASSERT(info->kitId == parent->kit()->id(), return 0);
     QTC_ASSERT(!info->displayName.isEmpty(), return 0);
     BBPM_QDEBUG(info->displayName);
-    // TODO: check Jamfile/Jamroot exists
-    // Q_ASSERT(QFile(parent->project()->projectDirectory() + QLatin1String("/Jamfile.v2"));
 
     Project* project = qobject_cast<Project*>(parent->project());
     QTC_ASSERT(project, return 0);
@@ -324,7 +322,7 @@ BuildConfigurationFactory::createBuildInfo(ProjectExplorer::Kit const* k
     info->buildDirectory = defaultBuildDirectory(projectPath);
     info->workingDirectory = defaultWorkingDirectory(projectPath);
     info->kitId = k->id();
-    info->supportsShadowBuild = true; // TODO
+    info->supportsShadowBuild = true; // TODO: is --build-dir a shadow build?
 
     BBPM_QDEBUG(info->typeName << " in " << projectPath);
     return info;

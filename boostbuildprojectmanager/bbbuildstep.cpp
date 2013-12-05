@@ -83,10 +83,6 @@ bool BuildStep::init()
 
     setIgnoreReturnValue(Constants::ReturnValueNotIgnored);
 
-    // TODO: we're waiting for Jamfile parser or b2 --list-targets feature
-    //QString arguments = Utils::QtcProcess::joinArgs(buildTargets_);
-    //Utils::QtcProcess::addArgs(&arguments, additionalArguments());
-
     ProjectExplorer::ProcessParameters* pp = processParameters();
     pp->setMacroExpander(bc->macroExpander());
     {
@@ -232,7 +228,7 @@ void BuildStep::setAdditionalArguments(QString const& args)
 ProjectExplorer::BuildConfiguration::BuildType
 BuildStep::buildType() const
 {
-    // FIXME: what is user inputs "variant = release" or mixed-case value?
+    // TODO: what is user inputs "variant = release" or mixed-case value?
     return arguments_.contains(QLatin1String("variant=release"))
             ? BuildConfiguration::Release
             : BuildConfiguration::Debug;

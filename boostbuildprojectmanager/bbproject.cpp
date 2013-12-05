@@ -68,7 +68,7 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     manager_->registerProject(this);
 
-    // TODO
+    // TODO: Add file watchers
     //projectFileWatcher_->addPath(projectFilePath);
     //connect(projectFileWatcher_, SIGNAL(fileChanged(QString)), this, SLOT(refresh()));
 
@@ -133,8 +133,7 @@ QString Project::includesFilePath() const
 
 bool Project::needsConfiguration() const
 {
-    // TODO:
-    // Does Boost.Build project require any configuration on loading?
+    // TODO: Does Boost.Build project require any configuration on loading?
     // - Kit selection
     // - build/stage directory
     // - targets listing
@@ -232,7 +231,7 @@ bool Project::fromMap(QVariantMap const& map)
     else
     {
         // Configure project from settings sorced from .user file
-        // TODO: ???
+        // TODO: Do we need to handle anything from .user here? Do we need this case?
         BBPM_QDEBUG(displayName() << "has user file");
     }
 
@@ -306,7 +305,8 @@ void Project::refresh()
         if (ProjectExplorer::ToolChain* tc
                 = ProjectExplorer::ToolChainKitInformation::toolChain(k))
         {
-            // TODO: form GenericProjectmanager: FIXME: Can we do better?
+            // TODO: CXX flags for  C++ model
+            // Form GenericProjectmanager: FIXME: Can we do better?
             QStringList cxxflags;
             cppPart->evaluateToolchain(
                 tc, cxxflags, cxxflags

@@ -170,7 +170,7 @@ No.
 Future
 ------------------------------------------------------------------------------
 
-An unprioritised TODO lis for the plugin:
+An unprioritised TODO list for the plugin:
 
 * Parse and colour test output (failed in red, passed in green)
 * Add file watchers for Jamfile and sidecar files to automatically reload any changes.
@@ -193,3 +193,5 @@ An unprioritised TODO lis for the plugin:
       [tools/build/v2/engine](https://github.com/boostorg/build/tree/master/v2/engine)
       as reusable library
     * making some love with [Boost.Spirit](http://boost.org/libs/spirit)
+
+Search through the sources for ```TODO```, there is more items.
