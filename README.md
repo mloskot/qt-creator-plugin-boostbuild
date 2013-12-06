@@ -4,6 +4,8 @@ Boost.Build Plugin for Qt Creator
 A plugin with basic [Boost.Build](http://www.boost.org/boost-build2/) support
 for [Qt Creator](http://qt-project.org/wiki/Category:Tools::QtCreator).
 
+https://github.com/mloskot/qt-creator-plugin-boostbuild
+
 Overview
 ------------------------------------------------------------------------------
 
