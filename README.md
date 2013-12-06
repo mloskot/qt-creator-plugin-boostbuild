@@ -47,7 +47,8 @@ Credits
   [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
   and support through qt-creator list,
 * Vladimir Prus for answering questions about Boost.Build,
-* Authors of existing project manager plugins for Qt Creator - prime learning source,
+* Authors of existing project manager plugins for Qt Creator - prime 
+  learning resource,
 
 lots of thanks to!
 
