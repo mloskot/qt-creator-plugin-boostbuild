@@ -143,11 +143,11 @@ I use Qt Creator 3.0 or later.
 It should work with earlier versions too.
 Please, drop me a line if you've tested it with Qt Creator 2.8 or earlier.
 
-See also the [Installation](#Installation) section.
+See also the [Installation](#installation) section.
 
 ### How to install the plugin?
 
-[Build](#Building) it.
+[Build](#building) it.
 
 ### Do I need to build Qt?
 
@@ -170,7 +170,7 @@ None, apart form plan to roll the project forward fixing bugs and adding feature
 as they appear useful or necessary in order to make work with Boost.Build-based
 a bit more accessible and efficient.
 
-See [Future](#Future) section for some feature ideas.
+See [Future](#future) section for some feature ideas.
 
 ### How can I contribute?
 
