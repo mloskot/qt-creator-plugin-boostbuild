@@ -4,7 +4,13 @@
     <sub-class-of type="text/plain"/>
     <comment>Boost.Build Project file</comment>
     <glob pattern="Jamroot"/>
+    <glob pattern="jamroot"/>
+    <glob pattern="Jamroot.jam"/>
+    <glob pattern="jamroot.jam"/>
+    <glob pattern="Jamfile"/>
+    <glob pattern="jamfile"/>
     <glob pattern="Jamfile.v2"/>
+    <glob pattern="jamfile.v2"/>
     <!--
     TODO: add more patterns?
     see http://svn.boost.org/svn/boost/trunk/tools/build/v2/build/project.[py|jam]
@@ -13,7 +19,11 @@
   <mime-type type="application/vnd.qtcreator.boostbuild.files">
     <sub-class-of type="text/plain"/>
     <comment>Boost.Build Project Files</comment>
-    <glob pattern="Jamfile.v2.files"/>
-    <glob pattern="Jamroot.files"/>
+    <glob pattern="[Jj]am*.qtcreator.files"/>
+  </mime-type>
+  <mime-type type="application/vnd.qtcreator.boostbuild.includes">
+    <sub-class-of type="text/plain"/>
+    <comment>Boost.Build Project Includes</comment>
+    <glob pattern="[Jj]am*.qtcreator.includes"/>
   </mime-type>
 </mime-info>
