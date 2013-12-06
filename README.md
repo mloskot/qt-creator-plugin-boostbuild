@@ -35,7 +35,7 @@ and currently, it does **not** provide:
 Authors
 ------------------------------------------------------------------------------
 
-* [Mateusz Loskot](http://mateusz.loskot.net) (mateusz@loskot.net)
+* [Mateusz Łoskot](http://mateusz.loskot.net) (mateusz@loskot.net)
 
 Credits
 ------------------------------------------------------------------------------
