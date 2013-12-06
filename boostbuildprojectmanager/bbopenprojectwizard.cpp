@@ -7,7 +7,8 @@
 // This is free software; you can redistribute and/or modify it under
 // the terms of the  GNU Lesser General Public License, Version 2.1
 // as published by the Free Software Foundation.
-// See the LICENSE.txt file for more information.
+// See accompanying file LICENSE.txt or copy at 
+// http://www.gnu.org/licenses/lgpl-2.1-standalone.html.
 //
 #include "bbopenprojectwizard.hpp"
 #include "bbproject.hpp"

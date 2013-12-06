@@ -6,8 +6,9 @@ GNU Lesser General Public License, Version 2.1
 
 This is free software; you can redistribute and/or modify it under the terms
 of the GNU Lesser General Public License, Version 2.1 as published
-by the Free Software Foundation. See accompanying fike LICENSE.txt file or
-copy athttp://www.gnu.org/licenses/lgpl-2.1-standalone.html for more information.
+by the Free Software Foundation.
+See accompanying fike LICENSE.txt file or
+copy at http://www.gnu.org/licenses/lgpl-2.1-standalone.html for more information.
 </license>
     <category>Build Systems</category>
     <description>Qt Creator plugin for Boost.Build</description>
