@@ -1,10 +1,11 @@
 Boost.Build Plugin for Qt Creator
 ==============================================================================
 
-A plugin with basic [Boost.Build](http://www.boost.org/boost-build2/) support
+The Boost.Build (long name: **Boost.Build Project Manager**) plugin provides basic
+[Boost.Build](http://www.boost.org/boost-build2/) support
 for [Qt Creator](http://qt-project.org/wiki/Category:Tools::QtCreator).
 
-https://github.com/mloskot/qt-creator-plugin-boostbuild
+Project at https://github.com/mloskot/qt-creator-plugin-boostbuild.
 
 Overview
 ------------------------------------------------------------------------------
@@ -14,8 +15,8 @@ a basic GUI shell to interact with the Boost.Build command.
 
 Three main features:
 
-* **Open** ```Jamroot``` or ```Jamfile.v2``` as a project in Qt Creator.
-* **Build** project in Qt Creator as it is configured by its Jamfile(s).
+* **Open** Boost.Build *Jamfile* as a project in Qt Creator.
+* **Build** project in Qt Creator according to its configuration in *Jamfile*.
 * **Parse** Boost.Build command output to enable navigation to error or warning locations.
 
 Think of the plugin as an equivalent of Vim or Emacs with ctags and bunch of other scripts.
@@ -169,16 +170,52 @@ See also the [Installation](#installation) section.
 
 I don't know. Ask Qt folks.
 
-I follow their [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html):
+I follow their
+[Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html):
 
 > Qt Creator requires private headers of Qt, which are unfortunately
 > not installed by the Qt binary packages
 
 ### Do I need to build Qt Creator?
 
-Apparently, yes, as per [Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html):
+Apparently, yes, as per
+[Getting and Building Qt Creator](http://doc-snapshot.qt-project.org/qtcreator-extending/getting-and-building.html):
 
 > It is also necessary if you want to create your own Qt Creator plugin.
+
+### Have you used it on Windows?
+
+No.
+
+### Have you used it on Mac OS X?
+
+No.
+
+### What is a *Jamfile*?
+
+*Jamfile* is a makefile of Boost.Build written in dedicated
+[Boost.Jam language](http://www.boost.org/boost-build2/doc/html/bbv2/overview/jam_language.html)
+and interpreted by Boost.Build engine which is executed and controlled by
+Boost.Build command ```b2```.
+See [Boost.Build Overview](http://www.boost.org/boost-build2/doc/html/bbv2/overview.html)
+for more details.
+
+Boost.Build convention is that the top of
+[project hierarchy](http://www.boost.org/boost-build2/doc/html/bbv2/tutorial/hierarchy.html)
+is called project root where lives a *Jamfile* called ```Jamroot```.
+A project may define subprojects and each subproject is defined by a *Jamfile*
+called ```Jamfile``` in a descendant directory of the project root.
+
+For both, root and subproject *Jamfiles*, Boost.Build recognises variety of file names:
+* ```[Jj]amroot``` as well as ```[Jj]amroot.jam``` and ```project-root.jam```
+* ```[Jj]amfile``` as well as ```[Jj]amfile.jam```, ```[Jj]amfile.v2" and
+    ```[Bb]uild.jam```.
+
+Most of those names are recognised by the Boost.Build Project Manager plugin.
+
+
+
+
 
 ### What is the roadmap?
 
@@ -192,14 +229,6 @@ See [Future](#future) section for some feature ideas.
 
 [Fork the repo](https://help.github.com/articles/fork-a-repo) and make the plugin better!
 
-
-### Have you used it on Windows?
-
-No.
-
-### Have you used it on Mac OS X?
-
-No.
 
 Future
 ------------------------------------------------------------------------------
