@@ -29,7 +29,7 @@ corresponding build, run, deploy steps and more.
 So, the Boost.Build plugin implements as little as necessary,
 and currently, it does **not** provide:
 
-* any parsing capabilities for Boost.Build Jamfiles (not entirely true, see [Features](#Features))
+* any parsing capabilities for Boost.Build Jamfiles (not entirely true, see [Features](#features))
 * any kind of GUI for updating or managing configuration stored in Jamfiles
 
 Authors
@@ -71,6 +71,7 @@ What the Boost.Build plugin can do?
   directory name is used as a project name. Finally, project name can be freely changed.
 * Generate list of include paths based on configured project files tree.
 * Utilise C++ browsing and editing capabilities and features of Qt Creator.
+    * Including the fantastic [searching with the Locator](http://qt-project.org/doc/qtcreator-2.8/creator-editor-locator.html)
 * Run Boost.Build command ```b2``` from within Qt Creator.
 * Configure Boost.Build command arguments.
 * Configure Boost.Build command working directory where ```b2``` is executed.
