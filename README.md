@@ -115,6 +115,18 @@ So, I recommend to follow these guides:
 1. [Building Qt 5 from Git](http://qt-project.org/wiki/Building_Qt_5_from_Git)
 1. [Building Qt Creator from Git](http://qt-project.org/wiki/Building-Qt-Creator-from-Git)
 
+Once you have Qt Creator build ready, you need to set two environment variables:
+
+* ```QTC_SOURCE``` - Qt Creator sources location (e.g. path to Git clone)
+* ```QTC_BUILD``` - Qt Creator build or install prefix where the plugin will be deployed
+
+You can either set the variables in CLI console, if you're going to run ```qmake```
+directly or in Qt Creator, in
+[Build Environment](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-build-settings.html)
+settings of the ```boostbuildprojectmanager.pro``` project, after you open it in the IDE
+in order to build the plugin from Qt Creator.
+
+
 FAQ
 ------------------------------------------------------------------------------
 

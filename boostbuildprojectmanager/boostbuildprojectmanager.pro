@@ -67,11 +67,14 @@ OTHER_FILES += \
 
 ## set the QTC_SOURCE environment variable to override the setting here
 QTCREATOR_SOURCES = $$(QTC_SOURCE)
-isEmpty(QTCREATOR_SOURCES):QTCREATOR_SOURCES=/home/mloskot/dev/qt/_git/qt-creator
+isEmpty(QTCREATOR_SOURCES):error(QTC_SOURCE environment variable not defined)
 
 ## set the QTC_BUILD environment variable to override the setting here
 IDE_BUILD_TREE = $$(QTC_BUILD)
-isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/home/mloskot/dev/qt/_git/qt-creator/_build
+isEmpty(IDE_BUILD_TREE):error(QTC_BUILD environment variable not defined)
+
+message("Qt Creator sources: QTC_SOURCE=$$(QTC_SOURCE)")
+message("Qt Creator binaries: QTC_BUILD=$$(QTC_BUILD)")
 
 ## uncomment to build plugin into user config directory
 ## <localappdata>/plugins/<ideversion>
@@ -84,7 +87,6 @@ isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/home/mloskot/dev/qt/_git/qt-creator/_bui
 ###### If the plugin can be depended upon by other plugins, this code needs to be outsourced to
 ###### <dirname>_dependencies.pri, where <dirname> is the name of the directory containing the
 ###### plugin's sources.
-
 
 QTC_LIB_DEPENDS += \
     # nothing here at this time
