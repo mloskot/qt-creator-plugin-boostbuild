@@ -225,7 +225,7 @@ Role of this file is exactly the same as role of ```.files``` file for the
 It just uses different extension to clearly indicate its role and avoid file name clashes.
 
 To add or remove files, edit the ```.qtcreator.files``` file in Qt Creator.
-    * **TODO:** Qt Creator recreates your project tree when you save the .files file.
+(**TODO:** Qt Creator recreates your project tree when you save the .files file.)
 
 ### What is ```*.qtcreator.includes``` file for?
 
@@ -279,6 +279,7 @@ An unprioritised TODO list for the plugin:
 * Add tests! Add tests! Add tests! But first, learn how to test with Qt wealth!
 * Parse and colour test output (failed in red, passed in green)
 * Add file watchers for Jamfile and sidecar files to automatically reload any changes.
+    * Qt Creator recreates your project tree when you save the .files file.
 * Allow to specify ```b2``` command location not in ```PATH```.
 * Add ```DeployConfiguration``` and ```RunConfiguration``` targets, if really needed.
 * Determine toolset name from Kit and add ```toolset``` to additional arguments of step.
