@@ -89,6 +89,7 @@ What the Boost.Build plugin can do?
 
 What the Boost.Build plugin can not do?
 
+* Create new projects based on Boost.Build (simply, create *Jamfile* manually).
 * Parse Jamfiles to collect list of source files which are actually used.
 * Parse Jamfiles to collect configuration of targets, attributes, requirements, etc.
 * Capture any project changes made in Qt Creator UI and automatically update Jamfiles.
