@@ -234,7 +234,7 @@ automatically generates ```.qtcreator.includes``` file.
 
 This file is dedicated to specify any include paths which are **solely** used by
 Qt Creator for analysing C/C++ code of the project.
-**Note**, these include paths do not affect compilation of source files whatsoever
+**Note**, these include paths do **not** affect compilation of source files whatsoever
 as *Jamfile* files remain the only source of build configuration.
 
 The project wizard generates initial list of include paths adding every directory
