@@ -282,6 +282,26 @@ corresponding *Jamfile* project, like:
 * path of working directory used to run Boost.Build command ```b2```
 * path of build directory passed as value of ```b2``` option ```--build-dir```
 
+### What is the Project Name in the Open Project wizard used for?
+
+
+The **Open Boost.Build Project** wizard suggests project name on its first
+page titled **Project Name and Paths**.
+
+The wizard tries to extract project name from the Boost.Build *project* rule,
+if present in the *Jamfile* being opened.
+Otherwise, the wizard uses name of parent directory of the *Jamfile*.
+Finally, user can change the **Project name** freely as it is only used by Qt Creator,
+not by Boost.Build configuration.
+
+The idea is to provide certain degree of freedom in arranging *Jamfile*-based projects
+in Qt Creator session, regardless of their arrangements on disk.
+
+This feature, for example, allows to generate and open multiple projects into Qt Creator
+and all projects may refer to the same Boost library. For instance, working with
+Boost.Geometry library, one may load  *Jamfile* for tests and *Jamfile* for examples,
+selecting the same set of headers in both, and name the projects to reflect their purpose.
+
 ### What is the roadmap?
 
 None, apart form plan to roll the project forward fixing bugs and adding features
