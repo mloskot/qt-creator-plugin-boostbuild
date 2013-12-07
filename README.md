@@ -213,9 +213,49 @@ For both, root and subproject *Jamfiles*, Boost.Build recognises variety of file
 
 Most of those names are recognised by the Boost.Build Project Manager plugin.
 
+### What is ```*.qtcreator.files``` file for?
 
+Qt Creator, the Boost.Build plugin, for a *Jamfile* which is opened as a project,
+automatically generates ```.qtcreator.files``` file with list of all files selected
+in the **Files Selection** page of the project wizard.
 
+Role of this file is exactly the same as role of ```.files``` file for the
+[Generic Project](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-project-generic.html).
+It just uses different extension to clearly indicate its role and avoid file name clashes.
 
+To add or remove files, edit the ```.qtcreator.files``` file in Qt Creator.
+    * **TODO:** Qt Creator recreates your project tree when you save the .files file.
+
+### What is ```*.qtcreator.includes``` file for?
+
+Qt Creator, the Boost.Build plugin, for a *Jamfile* which is opened as a project,
+automatically generates ```.qtcreator.includes``` file.
+
+This file is dedicated to specify any include paths which are **solely** used by
+Qt Creator for analysing C/C++ code of the project.
+**Note**, these include paths do not affect compilation of source files whatsoever
+as *Jamfile* files remain the only source of build configuration.
+
+The project wizard generates initial list of include paths adding every directory
+of project which contains C/C++ header files.
+For large projects, like Boost, this may generate long list of includes paths,
+though it should be easy to filter it.
+
+To add or remove include paths, edit the ```.qtcreator.includes``` file in Qt Creator.
+The paths can be either absolute or relative to the ```.qtcreator.includes``` file.
+
+### What is ```*.user``` file for?
+
+This file is natively created by Qt Creator when
+[Opening Projects](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-project-opening.html):
+
+> Qt Creator stores information that it needs to build projects in a .user file.
+
+The Boost.Build Project Manager also uses this file to store information specific to
+corresponding *Jamfile* project, like:
+* name of *Jamfile* project which can be customised by user in the **Open Project** wizard
+* path of working directory used to run Boost.Build command ```b2```
+* path of build directory passed as value of ```b2``` option ```--build-dir```
 
 ### What is the roadmap?
 
