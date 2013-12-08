@@ -39,10 +39,17 @@ private:
 
     QString findToolset(QString const& line) const;
     void setToolsetParser(QString const& toolsetName);
+    void setTask(ProjectExplorer::Task const& task);
+
+    QRegExp rxToolsetNameCommand_; // matches line with ".compile." command
+    QRegExp rxToolsetNameWarning_; // matches line with "warning: " status
+    QRegExp rxTestPassed_; // matches line with "**passed**" status
 
     QString toolsetName_;
-    QRegExp toolsetNameReCommand_; // matches line with ".compile." command
-    QRegExp toolsetNameReWarning_; // matches line with "warning: " status
+
+    // Boost.Build command mode relates to first command token in line.
+    enum LineMode { Common, Toolset, Testing };
+    LineMode lineMode_;
 
     ProjectExplorer::Task lastTask_;
     QPointer<ProjectExplorer::IOutputParser> parser_;

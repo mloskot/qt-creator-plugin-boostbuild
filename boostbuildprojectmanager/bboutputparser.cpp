@@ -16,6 +16,7 @@
 #include "external/projectexplorer/clangparser.h"
 // Qt Creator
 #include <projectexplorer/ioutputparser.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/task.h>
 #include <utils/qtcassert.h>
 // Qt
@@ -29,25 +30,32 @@ namespace Internal {
 namespace {
 char const* const RxToolsetFromCommand = "^([\\w-]+)(?:\\.)([\\w-]+).+$";
 char const* const RxToolsetFromWarning = "^warning\\:.+toolset.+\\\"([\\w-]+)\\\".*$";
+char const* const RxTestPassed = "^\\*\\*(\\w+)\\*\\*.+\\W(\\w+\\.test)";
 }
 
 BoostBuildParser::BoostBuildParser()
-    : toolsetNameReCommand_(QLatin1String(RxToolsetFromCommand))
-    , toolsetNameReWarning_(QLatin1String(RxToolsetFromWarning))
+    : rxToolsetNameCommand_(QLatin1String(RxToolsetFromCommand))
+    , rxToolsetNameWarning_(QLatin1String(RxToolsetFromWarning))
+    , rxTestPassed_(QLatin1String(RxTestPassed))
+    , lineMode_(Common)
 {
-    toolsetNameReCommand_.setMinimal(true);
-    toolsetNameReWarning_.setMinimal(true);
-    QTC_CHECK(toolsetNameReCommand_.isValid());
-    QTC_CHECK(toolsetNameReWarning_.isValid());
+    rxToolsetNameCommand_.setMinimal(true);
+    QTC_CHECK(rxToolsetNameCommand_.isValid());
+
+    rxToolsetNameWarning_.setMinimal(true);
+    QTC_CHECK(rxToolsetNameWarning_.isValid());
+
+    rxTestPassed_.setMinimal(true);
+    QTC_CHECK(rxTestPassed_.isValid());
 }
 
 QString BoostBuildParser::findToolset(QString const& line) const
 {
     QString name;
-    if (toolsetNameReWarning_.indexIn(line) > -1)
-        name = toolsetNameReWarning_.cap(1);
-    else if (toolsetNameReCommand_.indexIn(line) > -1)
-        name = toolsetNameReCommand_.cap(1);
+    if (rxToolsetNameWarning_.indexIn(line) > -1)
+        name = rxToolsetNameWarning_.cap(1);
+    else if (rxToolsetNameCommand_.indexIn(line) > -1)
+        name = rxToolsetNameCommand_.cap(1);
     return name;
 }
 
@@ -68,17 +76,64 @@ void BoostBuildParser::setToolsetParser(QString const& toolsetName)
         }
         else
         {
-            // TODO: Add more toolsets (Intel, VC++, etc.)
+            BBPM_QDEBUG("TODO: Add more toolsets (Intel, VC++, etc.)");
         }
-
-        //BBPM_QDEBUG("matched " << toolsetName_);
     }
 }
 
-void BoostBuildParser::stdOutput(QString const& line)
+void BoostBuildParser::stdOutput(QString const& rawLine)
 {
+    QString const line = rightTrimmed(rawLine);
     setToolsetParser(findToolset(line));
-    ProjectExplorer::IOutputParser::stdError(line);
+
+    if (!toolsetName_.isEmpty() && line.startsWith(toolsetName_))
+        lineMode_ = Toolset;
+    else if (line.startsWith(QLatin1String("testing")))
+        lineMode_ = Testing;
+    else if (line.startsWith(QLatin1String("common")))
+        lineMode_ = Common;
+
+    // TODO: Handle (failed-as-expected) - cancel error Task
+
+    if (lineMode_ == Toolset)
+    {
+        // Boost.Build seems to send everything to stdout,
+        // whereas gcc and clang to use stderr.
+        ProjectExplorer::IOutputParser::stdError(line);
+    }
+    else if (lineMode_ == Testing)
+    {
+
+        if (rxTestPassed_.indexIn(line) > -1)
+        {
+            BBPM_QDEBUG(rxTestPassed_.capturedTexts());
+
+            QString const testStatus = rxTestPassed_.cap(1);
+            QString const testName = rxTestPassed_.cap(2);
+            if (testStatus == QLatin1String("passed"))
+            {
+                ProjectExplorer::Task task(ProjectExplorer::Task::Unknown
+                    , testName
+                    , Utils::FileName()
+                    , -1 // line
+                    , ProjectExplorer::Constants::TASK_CATEGORY_COMPILE);
+
+                QTextLayout::FormatRange fr;
+                fr.format.setForeground(QBrush(Qt::green));
+                task.formats.append(fr);
+
+                setTask(task);
+            }
+
+            lineMode_ = Common;
+        }
+    }
+    else
+    {
+
+        doFlush();
+        ProjectExplorer::IOutputParser::stdOutput(line);
+    }
 }
 
 void BoostBuildParser::stdError(QString const& line)
@@ -95,6 +150,12 @@ void BoostBuildParser::doFlush()
         lastTask_.clear();
         emit addTask(t);
     }
+}
+
+void BoostBuildParser::setTask(ProjectExplorer::Task const& task)
+{
+    doFlush();
+    lastTask_ = task;
 }
 
 } // namespace Internal
