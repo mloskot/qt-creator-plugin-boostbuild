@@ -321,7 +321,6 @@ Future
 An unprioritised TODO list for the plugin:
 
 * Add tests! Add tests! Add tests! But first, learn how to test with Qt wealth!
-* Parse and colour test output (failed in red, passed in green)
 * Add file watchers for Jamfile and sidecar files to automatically reload any changes.
     * Qt Creator recreates your project tree when you save the .files file.
 * Allow to specify ```b2``` command location not in ```PATH```.
@@ -344,4 +343,5 @@ An unprioritised TODO list for the plugin:
       as reusable library
     * making some love with [Boost.Spirit](http://boost.org/libs/spirit)
 
-Search through the sources for ```TODO```, there is more items.
+See also [opened enhancement issues](https://github.com/mloskot/qt-creator-plugin-boostbuild/issues?labels=enhancement&state=open)
+at GitHub or search through the sources for ```TODO```, there is more items.
