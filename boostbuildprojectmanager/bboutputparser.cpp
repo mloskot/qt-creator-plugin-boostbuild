@@ -113,10 +113,13 @@ void BoostBuildParser::stdOutput(QString const& rawLine)
     else if (line.startsWith(QLatin1String("common")))
         lineMode_ = Common;
 
+    // TODO: Why forwarding stdOutput to ProjectExplorer::IOutputParser::stdError?
+    // Because of a bug (or feature?) in Boost.Build:
+    // stdout and stderr not forwarded to respective channels
+    // https://svn.boost.org/trac/boost/ticket/9485
+
     if (lineMode_ == Toolset)
     {
-        // Boost.Build seems to send everything to stdout,
-        // whereas gcc and clang to use stderr.
         ProjectExplorer::IOutputParser::stdError(line);
     }
     else if (lineMode_ == Testing)
