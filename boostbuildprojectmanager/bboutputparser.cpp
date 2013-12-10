@@ -113,8 +113,6 @@ void BoostBuildParser::stdOutput(QString const& rawLine)
     else if (line.startsWith(QLatin1String("common")))
         lineMode_ = Common;
 
-    // TODO: Handle (failed-as-expected) - cancel error Task
-
     if (lineMode_ == Toolset)
     {
         // Boost.Build seems to send everything to stdout,
@@ -153,8 +151,14 @@ void BoostBuildParser::stdOutput(QString const& rawLine)
         {
             BBPM_QDEBUG(rxTestFailedAsExpected_.capturedTexts());
 
-            // TODO: messages are reversed: first compile command, then testing status
-            // So, first compilation tasks are added, then we receive testing status
+            // TODO: Handling of "(failed-as-expected)" is not great, might be confusing.
+            // Boost.Build spits out compile command first, so compilation errors arrive
+            // and are parsed immediately (issue tasks are created)
+            // due to lineMode_==Toolset.
+            // Then, "(failed-as-expected)" status arrives and there seem to be no way to
+            // look back and clear all the issue tasks created for compilation errors.
+            // TODO: Ask Volodya if b2 could announce "testing." before compile command
+            // for a compile-time test.
 
             QString fileName(rxTestFailedAsExpected_.cap(1));
             if (rxTestFileObj_.indexIn(fileName))
@@ -178,7 +182,6 @@ void BoostBuildParser::stdOutput(QString const& rawLine)
     }
     else
     {
-
         doFlush();
         ProjectExplorer::IOutputParser::stdOutput(line);
     }
