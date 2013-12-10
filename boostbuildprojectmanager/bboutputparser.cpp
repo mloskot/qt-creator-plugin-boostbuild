@@ -30,13 +30,22 @@ namespace Internal {
 namespace {
 char const* const RxToolsetFromCommand = "^([\\w-]+)(?:\\.)([\\w-]+).+$";
 char const* const RxToolsetFromWarning = "^warning\\:.+toolset.+\\\"([\\w-]+)\\\".*$";
-char const* const RxTestPassed = "^\\*\\*(\\w+)\\*\\*.+\\W(\\w+\\.test)";
+// TODO: replace filename with full path? ^\*\*passed\*\*\s(.+\.test)
+char const* const RxTestPassed = "^\\*\\*passed\\*\\*\\s+(.+\\.test)\\s*$";
+char const* const RxTestFailed = "^\\.\\.\\.failed\\s+testing\\.capture-output\\s+(.+\\.run)\\.\\.\\.$";
+char const* const RxTestFailedAsExpected = "^\\(failed-as-expected\\)\\s+(.+\\.o)\\s*$";
+char const* const RxTestFileLineN = "(\\.[ch][px]*)\\(([0-9]+)\\)"; // replace \\1:\\2
+char const* const RxTestFileObj = "\\W(\\w+)(\\.o)";
 }
 
 BoostBuildParser::BoostBuildParser()
     : rxToolsetNameCommand_(QLatin1String(RxToolsetFromCommand))
     , rxToolsetNameWarning_(QLatin1String(RxToolsetFromWarning))
     , rxTestPassed_(QLatin1String(RxTestPassed))
+    , rxTestFailed_(QLatin1String(RxTestFailed))
+    , rxTestFailedAsExpected_(QLatin1String(RxTestFailedAsExpected))
+    , rxTestFileLineN_(QLatin1String(RxTestFileLineN))
+    , rxTestFileObj_(QLatin1String(RxTestFileObj))
     , lineMode_(Common)
 {
     rxToolsetNameCommand_.setMinimal(true);
@@ -47,6 +56,15 @@ BoostBuildParser::BoostBuildParser()
 
     rxTestPassed_.setMinimal(true);
     QTC_CHECK(rxTestPassed_.isValid());
+
+    rxTestFailed_.setMinimal(true);
+    QTC_CHECK(rxTestFailed_.isValid());
+
+    rxTestFailedAsExpected_.setMinimal(true);
+    QTC_CHECK(rxTestFailedAsExpected_.isValid());
+
+    rxTestFileLineN_.setMinimal(true);
+    QTC_CHECK(rxTestFileLineN_.isValid());
 }
 
 QString BoostBuildParser::findToolset(QString const& line) const
@@ -76,19 +94,21 @@ void BoostBuildParser::setToolsetParser(QString const& toolsetName)
         }
         else
         {
-            BBPM_QDEBUG("TODO: Add more toolsets (Intel, VC++, etc.)");
+            // TODO: Add more toolsets (Intel, VC++, etc.)
         }
     }
 }
 
 void BoostBuildParser::stdOutput(QString const& rawLine)
 {
-    QString const line = rightTrimmed(rawLine);
-    setToolsetParser(findToolset(line));
+    setToolsetParser(findToolset(rawLine));
 
+    QString const line
+        = rightTrimmed(rawLine).replace(rxTestFileLineN_, QLatin1String("\\1:\\2"));
     if (!toolsetName_.isEmpty() && line.startsWith(toolsetName_))
         lineMode_ = Toolset;
-    else if (line.startsWith(QLatin1String("testing")))
+    else if (line.startsWith(QLatin1String("testing"))
+            || line.startsWith(QLatin1String("(failed-as-expected)")))
         lineMode_ = Testing;
     else if (line.startsWith(QLatin1String("common")))
         lineMode_ = Common;
@@ -103,29 +123,57 @@ void BoostBuildParser::stdOutput(QString const& rawLine)
     }
     else if (lineMode_ == Testing)
     {
-
         if (rxTestPassed_.indexIn(line) > -1)
         {
             BBPM_QDEBUG(rxTestPassed_.capturedTexts());
+            // TODO: issue #3
+            ProjectExplorer::Task task(ProjectExplorer::Task::Unknown
+                , rxTestPassed_.cap(0)
+                , Utils::FileName::fromString(rxTestPassed_.cap(1))
+                , -1 // line
+                , ProjectExplorer::Constants::TASK_CATEGORY_COMPILE);
+            setTask(task);
+            lineMode_ = Common;
+        }
+        else if (rxTestFailed_.indexIn(line) > -1)
+        {
+            BBPM_QDEBUG(rxTestFailed_.capturedTexts());
 
-            QString const testStatus = rxTestPassed_.cap(1);
-            QString const testName = rxTestPassed_.cap(2);
-            if (testStatus == QLatin1String("passed"))
-            {
-                ProjectExplorer::Task task(ProjectExplorer::Task::Unknown
-                    , testName
-                    , Utils::FileName()
-                    , -1 // line
-                    , ProjectExplorer::Constants::TASK_CATEGORY_COMPILE);
-
-                QTextLayout::FormatRange fr;
-                fr.format.setForeground(QBrush(Qt::green));
-                task.formats.append(fr);
-
-                setTask(task);
-            }
+            // Report summary task for "...failed testing.capture-output /myfile.run"
+            ProjectExplorer::Task task(ProjectExplorer::Task::Error
+                , rxTestFailed_.cap(0)
+                , Utils::FileName::fromString(rxTestFailed_.cap(1))
+                , -1 // line
+                , ProjectExplorer::Constants::TASK_CATEGORY_COMPILE);
+            setTask(task);
 
             lineMode_ = Common;
+        }
+        else if (rxTestFailedAsExpected_.indexIn(line) > -1)
+        {
+            BBPM_QDEBUG(rxTestFailedAsExpected_.capturedTexts());
+
+            // TODO: messages are reversed: first compile command, then testing status
+            // So, first compilation tasks are added, then we receive testing status
+
+            QString fileName(rxTestFailedAsExpected_.cap(1));
+            if (rxTestFileObj_.indexIn(fileName))
+                fileName = rxTestFileObj_.cap(1) + QLatin1String(".cpp");// FIXME:hardcoded ext
+
+            // ATM, we can only indicate in UI that test failed-as-expected
+            ProjectExplorer::Task task(ProjectExplorer::Task::Error
+                , rxTestFailedAsExpected_.cap(0)
+                , Utils::FileName::fromString(fileName)
+                , -1 // line
+                , ProjectExplorer::Constants::TASK_CATEGORY_COMPILE);
+            setTask(task);
+
+            lineMode_ = Common;
+        }
+        else
+        {
+            // Parses compilation errors of run-time tests, creates issue tasks
+            ProjectExplorer::IOutputParser::stdError(line);
         }
     }
     else

@@ -41,10 +41,13 @@ private:
     void setToolsetParser(QString const& toolsetName);
     void setTask(ProjectExplorer::Task const& task);
 
-    QRegExp rxToolsetNameCommand_; // matches line with ".compile." command
-    QRegExp rxToolsetNameWarning_; // matches line with "warning: " status
-    QRegExp rxTestPassed_; // matches line with "**passed**" status
-
+    QRegExp rxToolsetNameCommand_; // ".compile." command line
+    QRegExp rxToolsetNameWarning_; // "warning: " status line
+    QRegExp rxTestPassed_; // "**passed**" status line
+    QRegExp rxTestFailed_; // "...failed testing" status line
+    QRegExp rxTestFailedAsExpected_; // "(failed-as-expected)" status line
+    QRegExp rxTestFileLineN_; // file.cpp(XX) => file.cpp:XX
+    QRegExp rxTestFileObj_; // file.o => file.cpp
     QString toolsetName_;
 
     // Boost.Build command mode relates to first command token in line.
