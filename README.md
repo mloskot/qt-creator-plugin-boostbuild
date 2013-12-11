@@ -179,7 +179,7 @@ No.
 
 No demand, no man power, no plans.
 
-### Why not Generic Project plugin?
+### How does it compare to Generic Project plugin?
 
 The Boost.Build plugin is inspired and largely based on the Generic Project plugin
 (aka GenericProjectManager), both idea and implementation.
