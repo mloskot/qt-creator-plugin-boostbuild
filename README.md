@@ -179,6 +179,37 @@ No.
 
 No demand, no man power, no plans.
 
+### Why not Generic Project plugin?
+
+The Boost.Build plugin is inspired and largely based on the Generic Project plugin
+(aka GenericProjectManager), both idea and implementation.
+
+The Boost.Build plugin is a hybrid between "Open Project" and "Import Project" plugin.
+
+Similarly to Generic Project support, the Boost.Build plugin:
+* allows to use Qt Creator as a code editor,
+* generates ```.files``` and ```.includes``` kinds of auxiliary files
+* allows to control some of aspects of the way project is built by modifying the build
+  command in the Projects mode under Build Settings
+* needs to be told which executable to run in in the Projects mode under Run Settings,
+  because Qt Creator cannot automatically determine it (see **TODO** items)
+
+Unlike Generic Project support, the Boost.Build plugin:
+* can only use Boost.Build system and its ```b2``` command,
+* relies on build configuration existing in project *Jamfile* files
+* relies on Boost.Build project hierarchy set up by *Jamroot* and *Jamfile* files.
+* allows to specify ```b2``` *working directory* which can be different
+ from both, *build directory* and *project directory*, where project directory means
+ directory with Jamfile selected to open as a project.
+* allows, thanks to previous features, to open only sub-project of a large project,
+  for example, while working with Boost, one may use the Boost.Build plugin to compose
+  a project which loads files only for selection of libraries, but request to run build
+  against the whole Boost C++ libraries collection.
+
+Finally, the Boost.Build plugin is a pilot project integrating Boost.Build system
+with an IDE and this experience may be useful for future improvements and development
+of Boost.Build system itself.
+
 ### What version of Qt Creator is supported?
 
 I use Qt Creator 3.0 or later.
@@ -342,6 +373,8 @@ An unprioritised TODO list for the plugin:
       [tools/build/v2/engine](https://github.com/boostorg/build/tree/master/v2/engine)
       as reusable library
     * making some love with [Boost.Spirit](http://boost.org/libs/spirit)
+* Parse Jamfile(s) or use b2 features if possible, to utomatically determine what
+  executable(s) to run.
 
 See also [opened enhancement issues](https://github.com/mloskot/qt-creator-plugin-boostbuild/issues?labels=enhancement&state=open)
 at GitHub or search through the sources for ```TODO```, there is more items.
