@@ -181,8 +181,9 @@ No demand, no man power, no plans.
 
 ### How does it compare to Generic Project plugin?
 
-The Boost.Build plugin is inspired and largely based on the Generic Project plugin
-(aka GenericProjectManager), both idea and implementation.
+The Boost.Build plugin is inspired and largely based on the 
+[Generic Project](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-project-generic.html) 
+plugin (aka GenericProjectManager), both idea and implementation.
 
 The Boost.Build plugin is a hybrid between "Open Project" and "Import Project" plugin.
 
