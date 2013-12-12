@@ -63,8 +63,7 @@ OTHER_FILES += \
     $${QTC_PLUGIN_NAME}.mimetypes.xml \
     $${QTC_PLUGIN_NAME}.pluginspec.in \
     ../LICENSE.txt \
-    ../README.md \
-    ../NOTES.md
+    ../README.md
 
 # Qt Creator linking
 
