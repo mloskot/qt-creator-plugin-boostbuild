@@ -56,6 +56,7 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     setProjectContext(Core::Context(Constants::PROJECT_CONTEXT));
     setProjectLanguages(Core::Context(ProjectExplorer::Constants::LANG_CXX));
+    setId(Constants::PROJECT_ID);
 
     QFileInfo const projectFileInfo(filePath_);
     QDir const projectDir(projectFileInfo.dir());
@@ -85,11 +86,6 @@ Project::~Project()
 QString Project::displayName() const
 {
     return projectName_;
-}
-
-Core::Id Project::id() const
-{
-    return Core::Id(Constants::PROJECT_ID);
 }
 
 Core::IDocument* Project::document() const

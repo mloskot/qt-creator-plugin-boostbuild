@@ -12,7 +12,6 @@
 //
 #ifndef BBUTILITY_HPP
 #define BBUTILITY_HPP
-#ifdef _DEBUG
 
 #include "bbprojectmanagerconstants.hpp"
 // Qt
@@ -23,6 +22,7 @@
 #include <QStringList>
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG
 
 #define BBPM_QDEBUG(msg) \
     qDebug() \
@@ -31,7 +31,6 @@
     qDebug().nospace() << "\t" << msg
 
 #else
-nospace
 #define BBPM_QDEBUG(msg)
 
 #endif // _DEBUG
