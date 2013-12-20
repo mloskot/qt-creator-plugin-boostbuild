@@ -13,6 +13,7 @@
 #define BBPROJECT_HPP
 
 // Qt Creator
+#include <app/app_version.h>
 #include <coreplugin/idocument.h>
 #include <projectexplorer/project.h>
 #include <utils/fileutils.h>
@@ -37,6 +38,9 @@ public:
     Project(ProjectManager* manager, QString const& fileName);
     ~Project();
 
+#if defined(IDE_VERSION_MAJOR) && (IDE_VERSION_MAJOR == 3 && IDE_VERSION_MINOR == 0)
+    Core::Id id() const;
+#endif
     QString displayName() const;
     Core::IDocument* document() const;
     ProjectExplorer::IProjectManager* projectManager() const;

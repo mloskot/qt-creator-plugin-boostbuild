@@ -20,6 +20,7 @@
 #include "bbprojectnode.hpp"
 #include "bbutility.hpp"
 // Qt Creator
+#include <app/app_version.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/generatedfile.h>
@@ -56,7 +57,9 @@ Project::Project(ProjectManager* manager, QString const& fileName)
 
     setProjectContext(Core::Context(Constants::PROJECT_CONTEXT));
     setProjectLanguages(Core::Context(ProjectExplorer::Constants::LANG_CXX));
+#if defined(IDE_VERSION_MAJOR) && (IDE_VERSION_MAJOR == 3 && IDE_VERSION_MINOR > 0)
     setId(Constants::PROJECT_ID);
+#endif
 
     QFileInfo const projectFileInfo(filePath_);
     QDir const projectDir(projectFileInfo.dir());
@@ -88,6 +91,13 @@ QString Project::displayName() const
     return projectName_;
 }
 
+#if defined(IDE_VERSION_MAJOR) && (IDE_VERSION_MAJOR == 3 && IDE_VERSION_MINOR == 0)
+Core::Id Project::id() const
+{
+    return Core::Id(Constants::PROJECT_ID);
+}
+#endif
+    
 Core::IDocument* Project::document() const
 {
     return projectFile_;
