@@ -221,7 +221,7 @@ See also the [Installation](#installation) section.
 
 ### How to install the plugin?
 
-[Build](#building) it.
+[Build](#installation) it.
 
 ### Do I need to build Qt?
 
