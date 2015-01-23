@@ -40,7 +40,6 @@ class Project;
 // No special operations (addFiles(), removeFiles(), renameFile(), etc.) are offered.
 class ProjectNode : public ProjectExplorer::ProjectNode
 {
-    Q_OBJECT
 
 public:
     ProjectNode(Project* project, Core::IDocument* projectFile);
