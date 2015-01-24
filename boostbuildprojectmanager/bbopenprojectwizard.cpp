@@ -16,7 +16,7 @@
 #include "bbutility.hpp"
 #include "filesselectionwizardpage.hpp"
 // Qt Creator
-#include <coreplugin/dialogs/iwizard.h>
+#include <coreplugin/iwizardfactory.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mimedatabase.h>
 #include <projectexplorer/customwizard/customwizard.h>
@@ -63,22 +63,19 @@ bool OpenProjectWizard::run(QString const& platform, QVariantMap const& extraVal
     projectOpened_ = false;
     outputValues_.clear();
 
-    runWizard(project_->projectFilePath(), 0, platform, extraValuesCopy);
+    runWizard(project_->projectFilePath().toString(), 0, platform, extraValuesCopy);
 
     return projectOpened_;
 }
 
-QWizard*
-OpenProjectWizard::createWizardDialog(QWidget* parent
-    , Core::WizardDialogParameters const& parameters) const
+Core::BaseFileWizard *OpenProjectWizard::create(QWidget* parent, Core::WizardDialogParameters const& parameters) const
 {
-
     OpenProjectWizardDialog* wizard(new OpenProjectWizardDialog(parent
         , parameters.defaultPath(), parameters.extraValues()
         , const_cast<OpenProjectWizard*>(this)->outputValues_));
 
     foreach (QWizardPage* p, parameters.extensionPages())
-        BaseFileWizard::applyExtensionPageShortTitle(wizard, wizard->addPage(p));
+        wizard->addPage(p);
 
     return wizard;
 }
@@ -153,7 +150,7 @@ OpenProjectWizard::postGenerateFiles(QWizard const* wizard
 OpenProjectWizardDialog::OpenProjectWizardDialog(QWidget* parent
     , QString const& projectFile
     , QVariantMap const& extraValues, QVariantMap& outputValues)
-    : Utils::Wizard(parent)
+    : Core::BaseFileWizard(parent)
     , outputValues_(outputValues)
     , extraValues_(extraValues)
     , projectFile_(projectFile)
