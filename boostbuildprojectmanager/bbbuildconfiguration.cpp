@@ -47,7 +47,7 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent)
 {
     ProjectExplorer::Project const* p = parent->project();
     Q_ASSERT(p);
-    setWorkingDirectory(Utils::FileName::fromString(p->projectDirectory()));
+    setWorkingDirectory(p->projectDirectory());
 }
 
 BuildConfiguration::BuildConfiguration(
@@ -64,7 +64,7 @@ BuildConfiguration::BuildConfiguration(ProjectExplorer::Target* parent, Core::Id
 {
     ProjectExplorer::Project const* p = parent->project();
     Q_ASSERT(p);
-    setWorkingDirectory(Utils::FileName::fromString(p->projectDirectory()));
+    setWorkingDirectory(p->projectDirectory());
 }
 
 QVariantMap BuildConfiguration::toMap() const
@@ -124,7 +124,7 @@ void BuildConfiguration::setWorkingDirectory(Utils::FileName const& dir)
         if (ProjectExplorer::Target* t = target())
         {
             QString const dwd
-                = Project::defaultWorkingDirectory(t->project()->projectDirectory());
+                = Project::defaultWorkingDirectory(t->project()->projectDirectory().toString());
             workingDirectory_ = Utils::FileName::fromString(dwd);
         }
     }
@@ -175,7 +175,7 @@ BuildConfigurationFactory::availableBuilds(ProjectExplorer::Target const* parent
     BBPM_QDEBUG("target: " << parent->displayName());
 
     ProjectExplorer::Project* project = parent->project();
-    QString const projectPath(project->projectDirectory());
+    QString const projectPath(project->projectDirectory().toString());
     BBPM_QDEBUG(projectPath);
 
     QList<ProjectExplorer::BuildInfo*> result;
@@ -351,7 +351,7 @@ BuildSettingsWidget::BuildSettingsWidget(BuildConfiguration* bc)
     fl->setContentsMargins(0, -1, 0, -1);
     fl->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
-    QString const projectPath(bc_->target()->project()->projectDirectory());
+    QString const projectPath(bc_->target()->project()->projectDirectory().toString());
 
     // Working directory
     workPathChooser_ = new Utils::PathChooser(this);
