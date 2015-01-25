@@ -297,8 +297,6 @@ void Project::refresh()
         CppTools::ProjectInfo pinfo(this);
 
         CppTools::ProjectPartBuilder builder(pinfo);
-        builder.setDisplayName(displayName());
-        builder.setProjectFile(projectFilePath().toString());
         //builder.setDefines();	// TODO: waiting for Jamfile parser
         builder.setIncludePaths(QStringList() << projectDirectory().toString() << includePaths);
 
