@@ -294,7 +294,7 @@ void Project::refresh()
     CppTools::CppModelManager *modelmanager =
         CppTools::CppModelManager::instance();
     if (modelmanager) {
-        CppTools::ProjectInfo pinfo = modelmanager->projectInfo(this);
+        CppTools::ProjectInfo pinfo(this);
 
         CppTools::ProjectPartBuilder builder(pinfo);
         builder.setDisplayName(displayName());
