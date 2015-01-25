@@ -40,13 +40,12 @@ class Project;
 // No special operations (addFiles(), removeFiles(), renameFile(), etc.) are offered.
 class ProjectNode : public ProjectExplorer::ProjectNode
 {
-    Q_OBJECT
 
 public:
     ProjectNode(Project* project, Core::IDocument* projectFile);
 
     bool hasBuildTargets() const;
-    QList<ProjectExplorer::ProjectNode::ProjectAction> supportedActions(Node* node) const;
+    QList<ProjectExplorer::ProjectAction> supportedActions(Node* node) const;
     bool canAddSubProject(QString const& filePath) const;
     bool addSubProjects(QStringList const& filePaths);
     bool removeSubProjects(QStringList const& filePaths);
