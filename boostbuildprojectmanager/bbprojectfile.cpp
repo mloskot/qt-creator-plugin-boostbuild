@@ -23,7 +23,7 @@ ProjectFile::ProjectFile(Project* project, QString const& fileName)
 {
     Q_ASSERT(!fileName.isEmpty());
 
-    setFilePath(Utils::FileName::fromString(fileName));
+    setFilePath(Utils::FileName::fromString(fileName).toString());
 
     BBPM_QDEBUG(fileName);
 }

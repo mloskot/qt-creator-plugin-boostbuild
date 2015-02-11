@@ -29,7 +29,7 @@ namespace BoostBuildProjectManager {
 namespace Internal {
 
 ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
-    : ProjectExplorer::ProjectNode(projectFile->filePath().toString())
+    : ProjectExplorer::ProjectNode(projectFile->filePath())
     , project_(project)
     , projectFile_(projectFile)
 {
