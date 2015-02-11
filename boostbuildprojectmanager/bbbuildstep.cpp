@@ -216,7 +216,7 @@ void BuildStep::appendAdditionalArgument(QString const& arg)
 void BuildStep::setAdditionalArguments(QString const& args)
 {
     Utils::QtcProcess::SplitError err;
-    QStringList argsList = Utils::QtcProcess::splitArgs(args, false, &err);
+    QStringList argsList = Utils::QtcProcess::splitArgs(args, Utils::HostOsInfo::hostOs(), false, &err);
     if (err == Utils::QtcProcess::SplitOk)
     {
         arguments_ = argsList;

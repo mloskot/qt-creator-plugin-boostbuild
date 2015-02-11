@@ -26,7 +26,8 @@
 #include <coreplugin/generatedfile.h>
 #include <coreplugin/mimedatabase.h>
 #include <coreplugin/progressmanager/progressmanager.h>
-#include <cpptools/cppmodelmanagerinterface.h>
+#include <cpptools/cppmodelmanager.h>
+#include <cpptools/cppprojects.h>
 #include <cpptools/cpptoolsconstants.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/kitinformation.h>
@@ -168,7 +169,7 @@ QString Project::defaultBuildDirectory(QString const& top)
 QString Project::defaultWorkingDirectory(QString const& top)
 {
     // Accepts both, project file or project directory, as top.
-    return ProjectExplorer::Project::projectDirectory(top);
+    return ProjectExplorer::Project::projectDirectory(Utils::FileName::fromString(top)).toString();
 }
 
 void Project::setProjectName(QString const& name)
@@ -276,7 +277,7 @@ void Project::refresh()
     // Parse project:
     // The manager does not parse Jamfile files.
     // Only generates and parses list of source files in Jamfile.${JAMFILE_FILES_EXT}
-    QString const projectPath(projectDirectory());
+    QString const projectPath(projectDirectory().toString());
     filesRaw_ = Utility::readLines(filesFilePath());
     files_ = Utility::makeAbsolutePaths(projectPath, filesRaw_);
 
@@ -290,49 +291,22 @@ void Project::refresh()
 
     // TODO: Does it make sense to move this to separate asynchronous task?
     // TODO: extract updateCppCodeModel
-    using CppTools::CppModelManagerInterface;
-    if (CppModelManagerInterface* cppModel = CppModelManagerInterface::instance())
-    {
-        CppModelManagerInterface::ProjectInfo cppInfo = cppModel->projectInfo(this);
-        cppInfo.clearProjectParts();
+    CppTools::CppModelManager *modelmanager =
+        CppTools::CppModelManager::instance();
+    if (modelmanager) {
+        CppTools::ProjectInfo pinfo(this);
 
-        CppTools::ProjectPart::Ptr cppPart(new CppTools::ProjectPart());
-        cppPart->project = this;
-        cppPart->displayName = displayName();
-        cppPart->projectFile = projectFilePath();
-        cppPart->includePaths += projectDirectory();
-        cppPart->includePaths += includePaths;
+        CppTools::ProjectPartBuilder builder(pinfo);
+        //builder.setDefines(); // TODO: waiting for Jamfile parser
+        builder.setIncludePaths(QStringList() << projectDirectory().toString() << includePaths);
 
-        cppPart->cxxVersion = CppTools::ProjectPart::CXX11;
-        // TODO: waiting for Jamfile parser
-        //cppPart->defines +=
-
-        ProjectExplorer::Kit const* k = activeTarget()
-            ? activeTarget()->kit() : ProjectExplorer::KitManager::defaultKit();
-        if (ProjectExplorer::ToolChain* tc
-                = ProjectExplorer::ToolChainKitInformation::toolChain(k))
-        {
-            // TODO: CXX flags for  C++ model
-            // Form GenericProjectmanager: FIXME: Can we do better?
-            QStringList cxxflags;
-            cppPart->evaluateToolchain(
-                tc, cxxflags, cxxflags
-              , ProjectExplorer::SysRootKitInformation::sysRoot(k));
-        }
-
-        CppTools::ProjectFileAdder adder(cppPart->files);
-        foreach (QString const& file, files_)
-            adder.maybeAdd(file);
+        const QList<Core::Id> languages = builder.createProjectPartsForFiles(files_);
+        foreach (Core::Id language, languages)
+            setProjectLanguage(language, true);
 
         cppModelFuture_.cancel();
-
-        cppInfo.appendProjectPart(cppPart);
-
-        cppModel ->updateProjectInfo(cppInfo);
-        bool const cppEnabled = !cppPart->files.isEmpty();
-        setProjectLanguage(ProjectExplorer::Constants::LANG_CXX, cppEnabled);
-
-        cppModelFuture_ = cppModel->updateProjectInfo(cppInfo);
+        pinfo.finish();
+        cppModelFuture_ = modelmanager->updateProjectInfo(pinfo);
     }
 }
 
