@@ -265,8 +265,7 @@ called ```Jamfile``` in a descendant directory of the project root.
 
 For both, root and subproject *Jamfiles*, Boost.Build recognises variety of file names:
 * ```[Jj]amroot``` as well as ```[Jj]amroot.jam``` and ```project-root.jam```
-* ```[Jj]amfile``` as well as ```[Jj]amfile.jam```, ```[Jj]amfile.v2" and
-    ```[Bb]uild.jam```.
+* ```[Jj]amfile``` as well as ```[Jj]amfile.jam```, ```[Jj]amfile.v2" and  ```[Bb]uild.jam```.
 
 Most of those names are recognised by the Boost.Build Project Manager plugin.
 
