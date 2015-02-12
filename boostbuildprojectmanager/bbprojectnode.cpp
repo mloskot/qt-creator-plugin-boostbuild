@@ -29,7 +29,7 @@ namespace BoostBuildProjectManager {
 namespace Internal {
 
 ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
-    : ProjectExplorer::ProjectNode(projectFile->filePath())
+    : ProjectExplorer::ProjectNode(projectFile->filePath().toString())
     , project_(project)
     , projectFile_(projectFile)
 {
@@ -41,13 +41,13 @@ bool ProjectNode::hasBuildTargets() const
     return false;
 }
 
-QList<ProjectExplorer::ProjectNode::ProjectAction>
+QList<ProjectExplorer::ProjectAction>
 ProjectNode::supportedActions(Node* node) const
 {
     Q_UNUSED(node);
 
     // TODO: Jamfiles (auto)editing not supported, does it make sense to manage files?
-    return QList<ProjectNode::ProjectAction>();
+    return QList<ProjectExplorer::ProjectAction>();
 }
 
 bool ProjectNode::canAddSubProject(QString const& filePath) const
@@ -109,7 +109,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     if (oldFileList.isEmpty())
     {
         using ProjectExplorer::FileNode;
-        FileNode* projectFileNode = new FileNode(project_->projectFilePath()
+        FileNode* projectFileNode = new FileNode(project_->projectFilePath().toString()
                                                , ProjectExplorer::ProjectFileType
                                                , Constants::FileNotGenerated);
 
@@ -122,7 +122,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
                                              , Constants::FileNotGenerated);
 
         addFileNodes(QList<FileNode*>()
-            << projectFileNode << filesFileNode << includesFileNode, this);
+            << projectFileNode << filesFileNode << includesFileNode);
     }
 
     oldFileList.remove(project_->filesFilePath());
@@ -169,7 +169,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
             fileNodes.append(fileNode);
         }
 
-        addFileNodes(fileNodes, folder);
+        addFileNodes(fileNodes);
     }
 
     // Process all removed files
@@ -192,7 +192,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
                     fileNodes.append(fn);
         }
 
-        removeFileNodes(fileNodes, folder);
+        removeFileNodes(fileNodes);
     }
 
     // Clean up
@@ -207,7 +207,7 @@ void ProjectNode::removeEmptySubFolders(FolderNode* parent, FolderNode* subParen
         removeEmptySubFolders(subParent, fn);
 
     if (subParent->subFolderNodes().isEmpty() && subParent->fileNodes().isEmpty())
-        removeFolderNodes(QList<FolderNode*>() << subParent, parent);
+        removeFolderNodes(QList<FolderNode*>() << subParent);
 }
 
 QString appendPathComponents(QStringList const& components, int const end)
@@ -236,7 +236,7 @@ ProjectNode::createFolderByName(QStringList const& components, int const end)
     FolderNode* parent = findFolderByName(components, end - 1);
     if (!parent)
         parent = createFolderByName(components, end - 1);
-    addFolderNodes(QList<FolderNode*>() << folder, parent);
+    addFolderNodes(QList<FolderNode*>() << folder);
 
     return folder;
 }
