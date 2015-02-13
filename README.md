@@ -107,10 +107,10 @@ section from the
 [Creating Plugins](http://doc-snapshot.qt-project.org/qtcreator-extending/creating-plugins.html)
 guide.
 
-I use Qt and Qt Creator built from sources in their Git repositories:
+I use Qt and Qt Creator built from sources in their Git repositories, for example:
 
 * Qt 5 from branch: stable
-* Qt Creator from branch: 3.0
+* Qt Creator from branch: 3.3
 
 So, I recommend to follow these guides:
 
@@ -124,7 +124,7 @@ Once you have Qt Creator build ready, you need to set two environment variables:
 
 You can either set the variables in CLI console, if you're going to run ```qmake```
 directly or in Qt Creator, in
-[Build Environment](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-build-settings.html)
+[Build Environment](http://doc-snapshot.qt-project.org/qtcreator-3.3/creator-build-settings.html)
 settings of the ```boostbuildprojectmanager.pro``` project, after you open it in the IDE
 in order to build the plugin from Qt Creator.
 
@@ -182,7 +182,7 @@ No demand, no man power, no plans.
 ### How does it compare to Generic Project plugin?
 
 The Boost.Build plugin is inspired and largely based on the 
-[Generic Project](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-project-generic.html) 
+[Generic Project](http://doc-snapshot.qt-project.org/qtcreator-3.3/creator-project-generic.html) 
 plugin (aka GenericProjectManager), both idea and implementation.
 
 The Boost.Build plugin is a hybrid between "Open Project" and "Import Project" plugin.
@@ -213,9 +213,8 @@ of Boost.Build system itself.
 
 ### What version of Qt Creator is supported?
 
-I use Qt Creator 3.0 or later.
-It should work with earlier versions too.
-Please, drop me a line if you've tested it with Qt Creator 2.8 or earlier.
+I use Qt Creator 3.3, but it should work with Qt Creator or later.
+There are git tags corresponding to Qt Creator versions.
 
 See also the [Installation](#installation) section.
 
@@ -276,7 +275,7 @@ automatically generates ```.qtcreator.files``` file with list of all files selec
 in the **Files Selection** page of the project wizard.
 
 Role of this file is exactly the same as role of ```.files``` file for the
-[Generic Project](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-project-generic.html).
+[Generic Project](http://doc-snapshot.qt-project.org/qtcreator-3.3/creator-project-generic.html).
 It just uses different extension to clearly indicate its role and avoid file name clashes.
 
 To add or remove files, edit the ```.qtcreator.files``` file in Qt Creator.
@@ -303,7 +302,7 @@ The paths can be either absolute or relative to the ```.qtcreator.includes``` fi
 ### What is ```*.user``` file for?
 
 This file is natively created by Qt Creator when
-[Opening Projects](http://doc-snapshot.qt-project.org/qtcreator-3.0/creator-project-opening.html):
+[Opening Projects](http://doc-snapshot.qt-project.org/qtcreator-3.3/creator-project-opening.html):
 
 > Qt Creator stores information that it needs to build projects in a .user file.
 
