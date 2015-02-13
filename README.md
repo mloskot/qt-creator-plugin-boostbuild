@@ -213,7 +213,7 @@ of Boost.Build system itself.
 
 ### What version of Qt Creator is supported?
 
-I use Qt Creator 3.3, but it should work with Qt Creator or later.
+I use Qt Creator 3.3, but it should work with Qt Creator 3.0 or later.
 There are git tags corresponding to Qt Creator versions.
 
 See also the [Installation](#installation) section.
