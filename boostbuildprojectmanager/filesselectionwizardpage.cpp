@@ -38,13 +38,13 @@
 #include "bbprojectmanagerconstants.hpp"
 #include "selectablefilesmodel.hpp"
 
-#include <coreplugin/mimedatabase.h>
 #include <coreplugin/icore.h>
 #include <utils/pathchooser.h>
 
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QFileInfo>
 
 namespace BoostBuildProjectManager {
 namespace Internal {
