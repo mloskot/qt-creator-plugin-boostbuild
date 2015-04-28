@@ -24,7 +24,6 @@
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/generatedfile.h>
-#include <coreplugin/mimedatabase.h>
 #include <coreplugin/progressmanager/progressmanager.h>
 #include <cpptools/cppmodelmanager.h>
 #include <cpptools/cppprojects.h>

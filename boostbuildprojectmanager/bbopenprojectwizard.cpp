@@ -18,11 +18,11 @@
 // Qt Creator
 #include <coreplugin/iwizardfactory.h>
 #include <coreplugin/icore.h>
-#include <coreplugin/mimedatabase.h>
 #include <projectexplorer/customwizard/customwizard.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <utils/pathchooser.h>
 #include <utils/qtcassert.h>
+#include <utils/mimetypes/mimedatabase.h>
 // Qt
 #include <QFileInfo>
 #include <QFormLayout>
@@ -95,11 +95,13 @@ OpenProjectWizard::generateFiles(QWizard const* wizard, QString* errorMessage) c
     QStringList headerFilters;
     QStringList const headerMimeTypes = QStringList()
         << QLatin1String("text/x-chdr") << QLatin1String("text/x-c++hdr");
+
+    Utils::MimeDatabase mdb;
     foreach (QString const& headerMime, headerMimeTypes)
     {
-        Core::MimeType mime = Core::MimeDatabase::findByType(headerMime);
-        foreach (Core::MimeGlobPattern const& gp, mime.globPatterns())
-            headerFilters.append(gp.pattern());
+        Utils::MimeType mime = mdb.mimeTypeForName(headerMime);
+        foreach (QString const& gp, mime.globPatterns())
+            headerFilters.append(gp);
     }
 
     // Generate list of include paths.

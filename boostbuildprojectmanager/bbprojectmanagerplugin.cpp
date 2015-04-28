@@ -20,7 +20,8 @@
 #include <coreplugin/actionmanager/command.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/coreconstants.h>
-#include <coreplugin/mimedatabase.h>
+#include <utils/mimetypes/mimedatabase.h>
+// Qt
 #include <QAction>
 #include <QMessageBox>
 #include <QMainWindow>
@@ -44,6 +45,7 @@ BoostBuildPlugin::~BoostBuildPlugin()
 bool BoostBuildPlugin::initialize(QStringList const& arguments, QString* errorString)
 {
     Q_UNUSED(arguments)
+    Q_UNUSED(errorString)
 
     // Register objects in the plugin manager's object pool
     // Load settings
@@ -53,8 +55,7 @@ bool BoostBuildPlugin::initialize(QStringList const& arguments, QString* errorSt
     // depends on have initialized their members.
 
     QLatin1String const mimeTypes(":boostbuildproject/BoostBuildProjectManager.mimetypes.xml");
-    if (!Core::MimeDatabase::addMimeTypes(mimeTypes, errorString))
-        return false;
+    Utils::MimeDatabase::addMimeTypes(mimeTypes);
 
     addAutoReleasedObject(new BuildStepFactory);
     addAutoReleasedObject(new BuildConfigurationFactory);

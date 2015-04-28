@@ -29,7 +29,7 @@ namespace BoostBuildProjectManager {
 namespace Internal {
 
 ProjectNode::ProjectNode(Project* project, Core::IDocument* projectFile)
-    : ProjectExplorer::ProjectNode(projectFile->filePath().toString())
+    : ProjectExplorer::ProjectNode(projectFile->filePath())
     , project_(project)
     , projectFile_(projectFile)
 {
@@ -109,15 +109,15 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     if (oldFileList.isEmpty())
     {
         using ProjectExplorer::FileNode;
-        FileNode* projectFileNode = new FileNode(project_->projectFilePath().toString()
+        FileNode* projectFileNode = new FileNode(project_->projectFilePath()
                                                , ProjectExplorer::ProjectFileType
                                                , Constants::FileNotGenerated);
 
-        FileNode* filesFileNode = new FileNode(project_->filesFilePath()
+        FileNode* filesFileNode = new FileNode(Utils::FileName::fromString(project_->filesFilePath())
                                              , ProjectExplorer::ProjectFileType
                                              , Constants::FileNotGenerated);
 
-        FileNode* includesFileNode = new FileNode(project_->includesFilePath()
+        FileNode* includesFileNode = new FileNode(Utils::FileName::fromString(project_->includesFilePath())
                                              , ProjectExplorer::ProjectFileType
                                              , Constants::FileNotGenerated);
 
@@ -142,7 +142,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
     typedef FilesInPaths::ConstIterator FilesInPathsIterator;
     using ProjectExplorer::FileNode;
     using ProjectExplorer::FileType;
-    QString const baseDir = QFileInfo(path()).absolutePath();
+    QString const baseDir = QFileInfo(path().toString()).absolutePath();
 
     // Process all added files
     FilesInPaths filesInPaths = Utility::sortFilesIntoPaths(baseDir, added);
@@ -165,7 +165,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
         {
             // TODO: handle various types, mime to FileType
             FileType fileType = ProjectExplorer::SourceType;
-            FileNode* fileNode = new FileNode(file, fileType, Constants::FileNotGenerated);
+            FileNode* fileNode = new FileNode(Utils::FileName::fromString(file), fileType, Constants::FileNotGenerated);
             fileNodes.append(fileNode);
         }
 
@@ -188,7 +188,7 @@ void ProjectNode::refresh(QSet<QString> oldFileList)
         foreach (QString const& file, it.value())
         {
             foreach (FileNode* fn, folder->fileNodes())
-                if (fn->path() == file)
+                if (fn->path() == Utils::FileName::fromString(file))
                     fileNodes.append(fn);
         }
 
@@ -228,9 +228,9 @@ ProjectNode::createFolderByName(QStringList const& components, int const end)
         return this;
 
     using ProjectExplorer::FolderNode;
-    QString const baseDir = QFileInfo(path()).path();
+    QString const baseDir = QFileInfo(path().toString()).path();
     QString const folderName = appendPathComponents(components, end);
-    FolderNode* folder = new FolderNode(baseDir + QLatin1Char('/') + folderName);
+    FolderNode* folder = new FolderNode(Utils::FileName::fromString(baseDir + QLatin1Char('/') + folderName));
     folder->setDisplayName(components.at(end - 1));
 
     FolderNode* parent = findFolderByName(components, end - 1);
@@ -253,10 +253,10 @@ ProjectNode::findFolderByName(QStringList const& components, int const end) cons
         return 0;
 
     QString const folderName = appendPathComponents(components, end);
-    QString const baseDir = QFileInfo(path()).path();
+    QString const baseDir = QFileInfo(path().toString()).path();
     foreach (FolderNode* fn, parent->subFolderNodes())
     {
-        if (fn->path() == baseDir + QLatin1Char('/') + folderName)
+        if (fn->path() == Utils::FileName::fromString(baseDir + QLatin1Char('/') + folderName))
             return fn;
     }
 

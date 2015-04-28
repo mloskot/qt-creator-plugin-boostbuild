@@ -18,7 +18,6 @@
 #include "bbutility.hpp"
 // Qt Creator
 #include <coreplugin/icore.h>
-#include <coreplugin/mimedatabase.h>
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/buildsteplist.h>
 #include <projectexplorer/projectexplorerconstants.h>
@@ -29,6 +28,8 @@
 #include <utils/pathchooser.h>
 #include <utils/fileutils.h>
 #include <utils/qtcassert.h>
+#include <utils/mimetypes/mimedatabase.h>
+
 // Qt
 #include <QFileInfo>
 #include <QFormLayout>
@@ -163,8 +164,10 @@ BuildConfigurationFactory::priority(ProjectExplorer::Kit const* k
 {
     BBPM_QDEBUG(k->displayName() << ", " << projectPath);
 
-    Core::MimeType const mt = Core::MimeDatabase::findByFile(QFileInfo(projectPath));
-    return (k && mt.matchesType(QLatin1String(Constants::MIMETYPE_JAMFILE)))
+    Utils::MimeDatabase mdb;
+    Utils::MimeType mimeType = mdb.mimeTypeForFile(QFileInfo(projectPath));
+
+    return (k && mimeType.matchesName(QLatin1String(Constants::MIMETYPE_JAMFILE)))
             ? 0
             : -1;
 }
