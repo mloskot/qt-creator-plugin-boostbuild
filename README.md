@@ -179,6 +179,9 @@ No.
 
 No demand, no man power, no plans.
 
+UPDATE: There was an attempt to prepare contribution of this plug-in for to Qt Creator,
+but it failed. See the [Issue #13](https://github.com/mloskot/qt-creator-plugin-boostbuild/issues/13) for details.
+
 ### How does it compare to Generic Project plugin?
 
 The Boost.Build plugin is inspired and largely based on the 
